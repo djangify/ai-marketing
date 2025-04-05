@@ -1,0 +1,16 @@
+Django==5.0.4
+python-dotenv==1.0.1
+django-environ==0.11.2
+PyMySQL==1.1.0
+stripe==7.6.0
+Pillow==10.2.0
+uuid==1.30
+django-crispy-forms==2.1
+crispy-bootstrap5==2023.10
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+requests==2.31.0
+pydantic==2.6.3
+gunicorn==21.2.0
+python-decouple==3.8
+whitenoise==6.6.0

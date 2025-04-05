@@ -100,3 +100,4 @@ secrets.json
 
 
 Production/
+.env
