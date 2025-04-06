@@ -1,6 +1,6 @@
 {% load static %}
 <!-- projects/templates/projects/tabs/upload_tab.html -->
-{% load static %}
+
 
 <div id="upload-tab" hx-trigger="load" hx-get="{% url 'projects:asset_list' project_id=project.id %}" hx-target="#asset-list-container">
     <h2 class="text-xl md:text-2xl lg:text-2xl font-bold mb-8">Step 1: Upload Media</h2>
@@ -62,7 +62,7 @@
 </div>
 
 <!-- Modal Template -->
-<div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+<div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
     <div class="bg-white rounded-lg p-6 max-w-md w-full">
         <h3 class="text-lg font-semibold mb-4">Delete Asset</h3>
         <p class="mb-6">Are you sure you want to delete this asset? This action cannot be undone.</p>

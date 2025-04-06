@@ -1,6 +1,6 @@
+{% extends 'base.html' %}
 {% load static %}
 <!-- content_templates/templates/content_templates/template_list.html -->
-{% extends 'base.html' %}
 
 {% block title %}My Templates - AI Marketing Platform{% endblock %}
 
@@ -21,7 +21,7 @@
             </div>
             <form action="{% url 'templates:template_create' %}" method="post" class="w-full sm:w-auto">
                 {% csrf_token %}
-                <button type="submit" class="rounded-3xl text-base w-full sm:w-auto inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">
+                <button type="submit" class="rounded-3xl w-full sm:w-auto inline-flex items-center justify-center whitespace-nowrap  text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" strokeWidth="3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                     </svg>
