@@ -8,6 +8,7 @@ uuid==1.30
 django-crispy-forms==2.3
 djangorestframework==3.16.0
 django-cors-headers==4.7.0
+django-widget-tweaks==1.5.0
 requests==2.32.3
 pydantic==2.11.2
 gunicorn==23.0.0

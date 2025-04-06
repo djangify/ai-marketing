@@ -30,7 +30,7 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                next_url = request.GET.get('next', 'dashboard')
+                next_url = request.GET.get('next', 'accounts:dashboard')
                 messages.success(request, f"Welcome back, {user.username}!")
                 return redirect(next_url)
         else:

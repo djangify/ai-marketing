@@ -1,71 +1,59 @@
-{% load static %}
 <!-- templates/base.html -->
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}AI Marketing Platform{% endblock %}</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="AI Marketing Platform - Save time by posting content with AI."
+    />
+    <meta
+      name="keywords"
+      content="AI Marketing, AI, Marketing Platform, AI Tools, Content Creation"
+    />
+    <meta name="author" content="AI Marketing Platform" />
+
+    <!-- Open Graph / Social Media Meta Tags -->
+    {% comment %} <meta property="fb:app_id" content="1196335268692565" />  {% endcomment %}
+    <meta property="og:title" content="AI Marketing Platform" />
+    <meta
+      property="og:description"
+      content="AI Marketing Platform - Save time by posting content with AI."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+    <meta property="og:image" content="{% static 'images/amp-trans.jpg' %}" />
     
-   
-     <!-- css style link -->
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
-    <link href="{% static 'css/output.css' %}" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      href="{% static 'img/favicon.ico' %}"
+      type="image/x-icon"
+    />
+    <title>AI Marketing Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/output.css' %}" rel="stylesheet" />
+    {% block extra_meta %}{% endblock %}
+  </head>
+  <body>
+    {% include 'includes/messages.html' %} 
+
+    {% include 'includes/navbar.html' %}
     
+    <main class="bg-white dark:bg-gray-900">
+      
+        {% block content %}{% endblock %}
+      
+    </main>
+    <!-- Footer -->
+    <footer role="contentinfo">{% include 'includes/footer.html' %}</footer>
+
     
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- HTMX -->
-    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
-    
-    <!-- Alpine.js -->
-    <script defer src="https://unpkg.com/alpinejs@3.12.3/dist/cdn.min.js"></script>
-    
-    {% block extra_css %}{% endblock %}
-</head>
-<body class="bg-gray-100">
-    {% if user.is_authenticated %}
-        <div class="flex h-screen">
-            <!-- Sidebar -->
-            <div class="hidden lg:block w-64 bg-gray-100 shadow">
-                {% include 'includes/sidebar.html' %}
-            </div>
-            
-            <!-- Mobile sidebar -->
-            <div x-data="{ sidebarOpen: false }" class="lg:hidden">
-                <div x-show="sidebarOpen" class="fixed inset-0 bg-black bg-opacity-50 z-20" x-on:click="sidebarOpen = false"></div>
-                <div x-show="sidebarOpen" class="fixed inset-y-0 left-0 w-64 bg-gray-100 shadow z-30">
-                    {% include 'includes/sidebar.html' %}
-                </div>
-                <button x-on:click="sidebarOpen = true" class="fixed top-4 left-4 z-10 p-2 bg-white rounded-md shadow">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-            
-            <!-- Main content -->
-            <div class="flex-1 overflow-auto">
-                {% include 'includes/messages.html' %}
-                <main class="p-6">
-                    {% block content %}{% endblock %}
-                </main>
-            </div>
-        </div>
-    {% else %}
-        <!-- Header for non-authenticated users -->
-        {% include 'includes/header.html' %}
-        
-        <!-- Messages -->
-        {% include 'includes/messages.html' %}
-        
-        <!-- Content for non-authenticated users -->
-        {% comment %} {% block content %}{% endblock %} {% endcomment %}
-        
-        <!-- Footer for non-authenticated users -->
-        {% include 'includes/footer.html' %}
-    {% endif %}
-    
-    {% block extra_js %}{% endblock %}
-</body>
+  </body>
 </html>

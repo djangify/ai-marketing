@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'widget_tweaks',
 # Local apps
     'accounts',
     'projects',
@@ -58,9 +59,9 @@ MIDDLEWARE = [
 ]
 
 # Authentication settings
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/dashboard/'
-LOGOUT_REDIRECT_URL = '/accounts/login/'
+# LOGIN_URL = '/accounts/login/'
+# LOGIN_REDIRECT_URL = '/dashboard/'
+# LOGOUT_REDIRECT_URL = '/accounts/login/'
 ADMIN_URL = 'admin/'
 
 # Constants for the application
