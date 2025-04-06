@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'subscriptions.apps.SubscriptionsConfig',
+# Third-party apps
     'widget_tweaks',
 # Local apps
     'accounts',
@@ -85,6 +87,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'subscriptions.context_processors.subscription_status',
             ],
         },
     },
@@ -149,3 +152,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# settings.py
+STRIPE_PUBLISHABLE_KEY = 'your_publishable_key'
+STRIPE_SECRET_KEY = 'your_secret_key'
+STRIPE_WEBHOOK_SECRET = 'your_webhook_signing_secret'
+
+# Product/price IDs from your Stripe dashboard
+STRIPE_PRICE_ID_MONTHLY = 'price_xxxxx'
+STRIPE_PRICE_ID_QUARTERLY = 'price_xxxxx'
+STRIPE_PRICE_ID_YEARLY = 'price_xxxxx'
