@@ -1,0 +1,48 @@
+<!-- templates/projects/project_list.html -->
+{% extends 'base.html' %}
+
+{% block title %}Projects - AI Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="mb-6 flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-gray-800">My Projects</h1>
+    <a href="{% url 'project_create' %}" class="bg-main text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+        <i class="fas fa-plus mr-2"></i> New Project
+    </a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% if projects %}
+        {% for project in projects %}
+            <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-200 hover:border-main">
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold mb-1">{{ project.title }}</h3>
+                    <p class="text-gray-500 text-sm mb-4">Updated {{ project.updated_at|date:"M d, Y" }}</p>
+                    
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-file-alt mr-2 text-main"></i>
+                            <span>{{ project.assets.count }} files</span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-comment mr-2 text-main"></i>
+                            <span>{{ project.prompts.count }} prompts</span>
+                        </div>
+                        <div class="flex items-center text-gray-600">
+                            <i class="fas fa-magic mr-2 text-main"></i>
+                            <span>{{ project.generated_contents.count }} generated contents</span>
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'project_detail' project_id=project.id %}" class="text-main hover:underline text-sm">View Project</a>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-span-full bg-yellow-50 text-yellow-700 p-4 rounded-lg">
+            You don't have any projects yet. 
+            <a href="{% url 'project_create' %}" class="text-main hover:underline">Create your first project</a>!
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

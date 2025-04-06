@@ -6,6 +6,3 @@ def index(request):
     if request.user.is_authenticated:
         return redirect('accounts:dashboard')
     return render(request, 'index.html')
-
-def pricing(request):
-    return render(request, 'core/pricing.html')
