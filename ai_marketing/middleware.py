@@ -3,6 +3,8 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib import messages
 
+# ai_marketing/middleware.py
+
 class AuthRequiredMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
@@ -12,13 +14,17 @@ class AuthRequiredMiddleware:
             '/accounts/login/',
             '/accounts/signup/',
             '/pricing/',
-            '/admin/',
         ]
+        # Admin paths will be handled separately
     
     def __call__(self, request):
         # Check if the path requires authentication
         path = request.path
         
+        # Allow all admin paths
+        if path.startswith('/admin/'):
+            return self.get_response(request)
+            
         # Allow all public paths and paths that start with them
         if any(path == public_path or path.startswith(public_path + 'media/') or 
                path.startswith(public_path + 'static/') for public_path in self.public_paths):
@@ -30,4 +36,3 @@ class AuthRequiredMiddleware:
             return redirect(f"{reverse('accounts:login')}?next={path}")
         
         return self.get_response(request)
-    

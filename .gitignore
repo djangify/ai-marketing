@@ -101,3 +101,5 @@ secrets.json
 
 Production/
 .env
+static/
+staticfiles/

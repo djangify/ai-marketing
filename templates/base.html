@@ -1,3 +1,4 @@
+{% load static %}
 <!-- templates/base.html -->
 <!DOCTYPE html>
 <html lang="en">
@@ -6,7 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}AI Marketing Platform{% endblock %}</title>
     
-    <!-- Tailwind CSS -->
+   
+     <!-- css style link -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/output.css' %}" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     
     

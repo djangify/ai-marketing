@@ -61,6 +61,7 @@ MIDDLEWARE = [
 LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
+ADMIN_URL = 'admin/'
 
 # Constants for the application
 MAX_TOKENS_ASSETS = 100000
