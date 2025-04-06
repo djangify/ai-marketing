@@ -1,0 +1,154 @@
+<!-- templates/landing/home.html -->
+{% extends 'base.html' %}
+
+{% block title %}AI Marketing Platform - Save Time with AI-Generated Content{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h1 class="display-4 fw-bold text-secondary mb-3">Save time by posting content...</h1>
+                <p class="lead mb-4">
+                    Yes, you have heard it right! Do not waste time editing, just upload your text, audio and video content and watch AI turn it into ready-to-post social media publications.
+                </p>
+                <a href="{% url 'signup' %}" class="btn btn-primary btn-lg px-4 py-3">Start Now</a>
+            </div>
+            <div class="col-lg-6 text-center">
+                <img src="https://via.placeholder.com/600x400" alt="AI Marketing Platform" class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5 text-secondary">How It Works</h2>
+        
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex p-3 mb-3">
+                            <i class="fas fa-upload fa-2x text-primary"></i>
+                        </div>
+                        <h4>Upload Media</h4>
+                        <p class="text-muted">Upload your text, audio and video content to our platform.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex p-3 mb-3">
+                            <i class="fas fa-file-alt fa-2x text-primary"></i>
+                        </div>
+                        <h4>Summarize</h4>
+                        <p class="text-muted">Our AI automatically generates a concise summary of your content.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex p-3 mb-3">
+                            <i class="fas fa-comment fa-2x text-primary"></i>
+                        </div>
+                        <h4>Prompts</h4>
+                        <p class="text-muted">Add custom prompts to tailor the content exactly how you like.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card h-100 text-center border-0 shadow-sm">
+                    <div class="card-body">
+                        <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex p-3 mb-3">
+                            <i class="fas fa-magic fa-2x text-primary"></i>
+                        </div>
+                        <h4>Generate</h4>
+                        <p class="text-muted">Generate marketing materials tailored to your content and audience.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5 text-secondary">Frequently Asked Questions</h2>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item">
+                        <h3 class="accordion-header" id="faqHeading1">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse1" aria-expanded="true" aria-controls="faqCollapse1">
+                                How do I upload my content to the platform?
+                            </button>
+                        </h3>
+                        <div id="faqCollapse1" class="accordion-collapse collapse show" aria-labelledby="faqHeading1" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Simply click on the 'Upload Media' button and select the text, audio, or video files you want to upload. Our platform supports a variety of formats, making it easy to get your content ready for processing.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h3 class="accordion-header" id="faqHeading2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse2" aria-expanded="false" aria-controls="faqCollapse2">
+                                How does the AI summarize my content?
+                            </button>
+                        </h3>
+                        <div id="faqCollapse2" class="accordion-collapse collapse" aria-labelledby="faqHeading2" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                After you upload your content, our AI analyzes the text, audio, or video to identify key points and generate a concise summary. This summary helps you quickly grasp the main ideas of your content without going through the entire material.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h3 class="accordion-header" id="faqHeading3">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse3" aria-expanded="false" aria-controls="faqCollapse3">
+                                What are custom prompts, and how do I use them?
+                            </button>
+                        </h3>
+                        <div id="faqCollapse3" class="accordion-collapse collapse" aria-labelledby="faqHeading3" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Custom prompts allow you to guide the AI in generating content that aligns with your specific needs. You can add prompts to tailor the output, ensuring it reflects your style, tone, and messaging goals.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <h3 class="accordion-header" id="faqHeading4">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqCollapse4" aria-expanded="false" aria-controls="faqCollapse4">
+                                What types of marketing materials can the app generate?
+                            </button>
+                        </h3>
+                        <div id="faqCollapse4" class="accordion-collapse collapse" aria-labelledby="faqHeading4" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                The app can create a wide range of marketing materials, including social media posts, blog summaries, promotional videos, newsletters, courses, prelaunch, launch, reminder campaigns and more. By analyzing your uploaded content and following your custom prompts, our AI generates materials tailored to your audience and marketing strategy.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-primary text-white text-center">
+    <div class="container">
+        <h2 class="mb-4">Yes! I want to start marketing with AI now!</h2>
+        <a href="{% url 'accounts:signup' %}" class="btn btn-light btn-lg px-4">Start Now</a>
+    </div>
+</section>
+{% endblock %}

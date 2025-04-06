@@ -20,7 +20,7 @@ def project_create(request):
             project.user = request.user
             project.save()
             messages.success(request, "Project created successfully!")
-            return redirect('project_detail', project_id=project.id)
+            return redirect('projects:project_detail', project_id=project.id)
     else:
         form = ProjectForm()
     
@@ -61,7 +61,7 @@ def project_update(request, project_id):
         if form.is_valid():
             form.save()
             messages.success(request, "Project updated successfully!")
-            return redirect('project_detail', project_id=project.id)
+            return redirect('projects:project_detail', project_id=project.id)
     else:
         form = ProjectForm(instance=project)
     
@@ -74,6 +74,6 @@ def project_delete(request, project_id):
     if request.method == 'POST':
         project.delete()
         messages.success(request, "Project deleted successfully!")
-        return redirect('project_list')
+        return redirect('projects:project_list')
     
     return render(request, 'projects/project_confirm_delete.html', {'project': project})

@@ -1,0 +1,47 @@
+<!-- templates/landing/pricing.html -->
+{% extends 'base.html' %}
+
+{% block title %}Pricing - AI Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-5 fw-bold text-secondary">Simple, Transparent Pricing</h1>
+        <p class="fs-5 text-muted">Choose the plan that works best for you</p>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-header bg-primary text-white text-center py-4">
+                    <h2 class="my-0 fw-normal">AI Marketer Pro</h2>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <img src="https://via.placeholder.com/300x200" alt="AI Marketer Pro" class="img-fluid">
+                    </div>
+                    <h2 class="card-title pricing-card-title">
+                        $14.99
+                        <small class="text-muted fw-light">/month</small>
+                    </h2>
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li class="mb-2">
+                            <i class="fas fa-check text-primary me-2"></i>
+                            Unlimited projects
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-primary me-2"></i>
+                            Unlimited templates
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-primary me-2"></i>
+                            Unlimited storage
+                        </li>
+                    </ul>
+                    <a href="{% url 'accounts:signup' %}" class="w-100 btn btn-lg btn-primary">Purchase Now</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

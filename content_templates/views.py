@@ -19,7 +19,7 @@ def template_create(request):
             template.user = request.user
             template.save()
             messages.success(request, "Template created successfully!")
-            return redirect('template_detail', template_id=template.id)
+            return redirect('content_templates:template_detail', template_id=template.id)
     else:
         form = TemplateForm()
     
@@ -55,7 +55,7 @@ def template_update(request, template_id):
         if form.is_valid():
             form.save()
             messages.success(request, "Template updated successfully!")
-            return redirect('template_detail', template_id=template.id)
+            return redirect('content_templates:template_detail', template_id=template.id)
     else:
         form = TemplateForm(instance=template)
     
@@ -68,6 +68,6 @@ def template_delete(request, template_id):
     if request.method == 'POST':
         template.delete()
         messages.success(request, "Template deleted successfully!")
-        return redirect('template_list')
+        return redirect('content_templates:template_list')
     
     return render(request, 'content_templates/template_confirm_delete.html', {'template': template})

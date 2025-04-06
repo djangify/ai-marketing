@@ -27,7 +27,7 @@ class AuthRequiredMiddleware:
         # For non-public paths, check if the user is authenticated
         if not request.user.is_authenticated:
             messages.warning(request, "Please log in to access this page.")
-            return redirect(f"{reverse('login')}?next={path}")
+            return redirect(f"{reverse('accounts:login')}?next={path}")
         
         return self.get_response(request)
     

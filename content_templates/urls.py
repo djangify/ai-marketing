@@ -2,6 +2,8 @@
 from django.urls import path
 from . import views
 
+app_name = 'content_templates'
+
 urlpatterns = [
     path('', views.template_list, name='template_list'),
     path('create/', views.template_create, name='template_create'),

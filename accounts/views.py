@@ -12,7 +12,7 @@ def signup_view(request):
             user = form.save()
             login(request, user)
             messages.success(request, "Account created successfully! Welcome to AI Marketing Platform.")
-            return redirect('dashboard')
+            return redirect('accounts:dashboard')
     else:
         form = SignUpForm()
     
@@ -20,7 +20,7 @@ def signup_view(request):
 
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        return redirect('accounts:dashboard')
         
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
@@ -43,7 +43,7 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.info(request, "You have been logged out.")
-    return redirect('login')
+    return redirect('accounts:login')
 
 @login_required
 def profile_view(request):
@@ -52,7 +52,7 @@ def profile_view(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Your profile has been updated!")
-            return redirect('profile')
+            return redirect('accounts:profile')
     else:
         form = ProfileUpdateForm(instance=request.user.profile)
     
