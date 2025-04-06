@@ -1,0 +1,276 @@
+<!-- projects/templates/projects/tabs/generate_tab.html -->
+{% load static %}
+
+<div id="generate-tab" hx-trigger="load" hx-get="{% url 'projects:content_status' project_id=project.id %}" hx-target="#content-status-container" hx-swap="innerHTML">
+    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-4 lg:mb-6">
+        <h2 class="text-xl md:text-2xl lg:text-2xl font-bold text-gray-800 mb-3 lg:mb-0">
+            Step 3: Generate Content
+        </h2>
+        <button 
+            id="generate-content-button"
+            hx-post="{% url 'projects:generate_content' project_id=project.id %}"
+            hx-target="#content-status-container"
+            hx-swap="innerHTML"
+            hx-indicator="#loading-indicator"
+            class="bg-main/10 text-main font-semibold hover:bg-main/15 text-sm lg:text-md rounded-lg w-full lg:w-auto inline-flex items-center justify-center h-10 px-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            Generate Content
+        </button>
+    </div>
+
+    <!-- Loading indicator -->
+    <div id="loading-indicator" class="htmx-indicator flex justify-center my-4">
+        <svg class="animate-spin h-5 w-5 text-main" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+    </div>
+
+    <!-- Content status and generated content will be loaded here -->
+    <div id="content-status-container">
+        <!-- Content will be loaded by HTMX -->
+        <div class="text-center py-10">
+            <svg class="animate-spin h-8 w-8 text-main mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p>Loading content status...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Template for content card -->
+<template id="content-card-template">
+    <div class="border border-gray-200 rounded-xl lg:rounded-2xl shadow-sm hover:border-main hover:shadow-md hover:scale-[1.01] transition-all duration-300 mb-6">
+        <div class="p-5 lg:p-8 space-y-2 flex-grow min-w-0">
+            <div class="flex flex-row items-center justify-between">
+                <h3 class="font-bold text-lg lg:text-xl text-main truncate lg:mb-0 content-title"></h3>
+                <div class="space-x-2 flex-shrink-0 lg:ml-2">
+                    <button class="edit-button bg-main/10 text-main hover:bg-main/20 rounded-full w-8 h-8 p-0 inline-flex items-center justify-center" title="Edit">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                    </button>
+                    <button class="copy-button bg-main/10 text-main hover:bg-main/20 rounded-full w-8 h-8 p-0 inline-flex items-center justify-center" title="Copy to Clipboard">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="content-display whitespace-pre-wrap text-gray-700 lg:px-2 text-sm lg:text-base"></div>
+            <div class="content-edit-form hidden space-y-2">
+                <textarea class="min-h-[200px] whitespace-pre-wrap text-gray-700 p-0 lg:px-2 resize-none border-none text-sm lg:text-base bg-white focus:outline-none focus-visible:ring-0 focus-visible:ring-offset-0 w-full"></textarea>
+                <div class="flex justify-end space-x-2">
+                    <button class="cancel-edit-button bg-gray-100 text-gray-500 hover:bg-gray-200/80 hover:text-gray-500 border-2 border-gray-200 rounded-lg text-sm px-3 py-1 inline-flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Cancel
+                    </button>
+                    <button class="save-edit-button bg-green-500 hover:bg-green-600/80 rounded-lg text-sm px-3 py-1 text-white inline-flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<!-- Template for generating content progress -->
+<template id="content-generating-template">
+    <div class="space-y-3 animate-pulse max-w-full lg:max-w-4xl mx-auto px-4 lg:px-0">
+        <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center text-main">
+            <h3 class="font-bold text-lg lg:text-xl mb-2 lg:mb-0">
+                Generating Content...
+            </h3>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+            <div class="bg-main h-2.5 rounded-full animate-pulse progress-bar" style="width: 0%"></div>
+        </div>
+        <div class="text-sm text-muted-foreground progress-text">
+            Generated 0 of 0 prompts
+        </div>
+    </div>
+</template>
+
+<!-- Template for error message -->
+<template id="content-error-template">
+    <div class="flex justify-center">
+        <div class="w-full lg:w-1/2 text-center rounded-xl p-3 lg:p-4 bg-red-50 text-red-500 text-sm lg:text-base error-message">
+        </div>
+    </div>
+</template>
+
+<script>
+    let contentItems = [];
+    let contentGenerationInterval;
+    
+    document.addEventListener('htmx:afterSwap', function(event) {
+        if (event.detail.target.id === 'content-status-container') {
+            initializeContentCards();
+            
+            // If currently generating, start the polling
+            if (document.querySelector('.generating-content')) {
+                startContentPolling();
+            }
+        }
+    });
+    
+    function initializeContentCards() {
+        document.querySelectorAll('.content-card').forEach(card => {
+            const contentId = card.dataset.contentId;
+            const title = card.querySelector('.content-title').textContent;
+            const content = card.querySelector('.content-display').textContent;
+            
+            // Add to content items array
+            contentItems.push({
+                id: contentId,
+                title: title,
+                content: content
+            });
+            
+            // Set up edit button
+            card.querySelector('.edit-button').addEventListener('click', () => {
+                toggleEditMode(card, true);
+            });
+            
+            // Set up copy button
+            card.querySelector('.copy-button').addEventListener('click', () => {
+                copyToClipboard(content);
+            });
+            
+            // Set up cancel button
+            card.querySelector('.cancel-edit-button').addEventListener('click', () => {
+                toggleEditMode(card, false);
+            });
+            
+            // Set up save button
+            card.querySelector('.save-edit-button').addEventListener('click', () => {
+                saveContent(card);
+            });
+        });
+    }
+    
+    function toggleEditMode(card, isEditing) {
+        const displayDiv = card.querySelector('.content-display');
+        const editForm = card.querySelector('.content-edit-form');
+        const textarea = editForm.querySelector('textarea');
+        
+        if (isEditing) {
+            textarea.value = displayDiv.textContent;
+            displayDiv.classList.add('hidden');
+            editForm.classList.remove('hidden');
+            textarea.focus();
+        } else {
+            displayDiv.classList.remove('hidden');
+            editForm.classList.add('hidden');
+        }
+    }
+    
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            showNotification('Copied to clipboard');
+        }).catch(err => {
+            console.error('Could not copy text: ', err);
+            showNotification('Failed to copy to clipboard', 'error');
+        });
+    }
+    
+    function saveContent(card) {
+        const contentId = card.dataset.contentId;
+        const newContent = card.querySelector('textarea').value;
+        const saveButton = card.querySelector('.save-edit-button');
+        const originalText = saveButton.innerHTML;
+        
+        // Show loading state
+        saveButton.innerHTML = '<svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Saving...';
+        saveButton.disabled = true;
+        
+        // Send request to save content
+        fetch('{% url "projects:update_content" project_id=project.id %}', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: JSON.stringify({
+                id: contentId,
+                result: newContent
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.id) {
+                // Update the display
+                card.querySelector('.content-display').textContent = newContent;
+                
+                // Update our local content items
+                const itemIndex = contentItems.findIndex(item => item.id === contentId);
+                if (itemIndex !== -1) {
+                    contentItems[itemIndex].content = newContent;
+                }
+                
+                toggleEditMode(card, false);
+                showNotification('Changes saved successfully');
+            } else {
+                showNotification('Failed to save changes', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Failed to save changes', 'error');
+        })
+        .finally(() => {
+            // Reset button
+            saveButton.innerHTML = originalText;
+            saveButton.disabled = false;
+        });
+    }
+    
+    function startContentPolling() {
+        if (contentGenerationInterval) {
+            clearInterval(contentGenerationInterval);
+        }
+        
+        contentGenerationInterval = setInterval(() => {
+            fetch('{% url "projects:content_status" project_id=project.id %}?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    // Update progress
+                    if (data.isGenerating) {
+                        updateProgressBar(data.generatedCount, data.totalPrompts);
+                    } else {
+                        // Generation complete, refresh the content display
+                        clearInterval(contentGenerationInterval);
+                        htmx.trigger('#content-status-container', 'hx-trigger:reload');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error polling content status:', error);
+                });
+        }, 1000);
+    }
+    
+    function updateProgressBar(generatedCount, totalPrompts) {
+        const progressBar = document.querySelector('.progress-bar');
+        const progressText = document.querySelector('.progress-text');
+        
+        if (progressBar && progressText) {
+            const percentage = (generatedCount / totalPrompts) * 100;
+            progressBar.style.width = `${percentage}%`;
+            progressText.textContent = `Generated ${generatedCount} of ${totalPrompts} prompts`;
+        }
+    }
+    
+    function showNotification(message, type = 'success') {
+        // You can implement a notification system here
+        // For simplicity, we'll use alert but in production you'd want a proper notification
+        alert(message);
+    }
+</script>

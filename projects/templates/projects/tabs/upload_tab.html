@@ -1,0 +1,240 @@
+<!-- projects/templates/projects/tabs/upload_tab.html -->
+{% load static %}
+
+<div id="upload-tab" hx-trigger="load" hx-get="{% url 'projects:asset_list' project_id=project.id %}" hx-target="#asset-list-container">
+    <h2 class="text-xl md:text-2xl lg:text-2xl font-bold mb-8">Step 1: Upload Media</h2>
+    
+    <!-- Upload Box -->
+    <div id="upload-box" 
+         class="p-10 border-2 border-dashed border-main bg-white rounded-3xl text-center cursor-pointer mb-10"
+         onclick="document.getElementById('file-input').click();"
+         ondragover="event.preventDefault();"
+         ondrop="handleDrop(event)">
+        
+        <form id="upload-form" method="post" enctype="multipart/form-data" action="{% url 'projects:asset_upload' project_id=project.id %}" class="hidden">
+            {% csrf_token %}
+            <input type="file" id="file-input" name="files" multiple 
+                   accept=".mp4,.txt,.md,video/*,audio/*,text/plain,text/markdown"
+                   onchange="handleFileSelect(event)">
+        </form>
+        
+        <div id="upload-placeholder">
+            <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-8 w-8 sm:h-10 sm:w-10 text-main" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+            <p class="mt-2 text-xs sm:text-sm text-main font-semibold">
+                Drag and drop files here, or click to select files
+            </p>
+        </div>
+        
+        <div id="selected-files" class="hidden">
+            <h3 class="font-bold mb-2">Selected Files:</h3>
+            <ul id="file-list" class="text-sm"></ul>
+            <button type="button" id="upload-button" 
+                    class="mt-4 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                </svg>
+                Upload Files
+            </button>
+        </div>
+    </div>
+    
+    <!-- Assets List -->
+    <div>
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end mb-4 mt-3">
+            <h3 class="font-bold text-lg mb-2 sm:mb-0">Uploaded Files:</h3>
+            <div id="usage-stats" class="w-full sm:max-w-xs space-y-2"></div>
+        </div>
+        
+        <div id="asset-list-container">
+            <!-- Asset list will be loaded by HTMX -->
+            <div class="flex justify-center p-8">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Loading assets...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Template -->
+<div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-lg p-6 max-w-md w-full">
+        <h3 class="text-lg font-semibold mb-4">Delete Asset</h3>
+        <p class="mb-6">Are you sure you want to delete this asset? This action cannot be undone.</p>
+        <div class="flex justify-end space-x-3">
+            <button type="button" onclick="closeDeleteModal()" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md">Cancel</button>
+            <button type="button" id="confirm-delete-btn" class="px-4 py-2 bg-red-600 text-white rounded-md">Delete</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedFiles = [];
+    let assetToDelete = null;
+    
+    function handleFileSelect(event) {
+        selectedFiles = Array.from(event.target.files);
+        updateFileList();
+    }
+    
+    function handleDrop(event) {
+        event.preventDefault();
+        if (event.dataTransfer.files) {
+            selectedFiles = Array.from(event.dataTransfer.files);
+            updateFileList();
+        }
+    }
+    
+    function updateFileList() {
+        const fileList = document.getElementById('file-list');
+        const placeholder = document.getElementById('upload-placeholder');
+        const selectedFilesDiv = document.getElementById('selected-files');
+        
+        if (selectedFiles.length > 0) {
+            fileList.innerHTML = '';
+            selectedFiles.forEach(file => {
+                const li = document.createElement('li');
+                li.textContent = file.name;
+                fileList.appendChild(li);
+            });
+            
+            placeholder.classList.add('hidden');
+            selectedFilesDiv.classList.remove('hidden');
+        } else {
+            placeholder.classList.remove('hidden');
+            selectedFilesDiv.classList.add('hidden');
+        }
+    }
+    
+    document.getElementById('upload-button').addEventListener('click', function() {
+        const formData = new FormData();
+        
+        selectedFiles.forEach(file => {
+            formData.append('files', file);
+        });
+        
+        // Show loading state
+        const uploadButton = document.getElementById('upload-button');
+        const originalText = uploadButton.innerHTML;
+        uploadButton.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Uploading...';
+        uploadButton.disabled = true;
+        
+        fetch('{% url "projects:asset_upload" project_id=project.id %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Reset form
+                selectedFiles = [];
+                document.getElementById('file-input').value = '';
+                updateFileList();
+                
+                // Refresh assets list
+                htmx.trigger('#asset-list-container', 'hx-trigger:reload');
+                
+                // Show success message
+                showNotification('Files uploaded successfully');
+            } else {
+                showNotification('Error uploading files: ' + data.error, 'error');
+            }
+        })
+        .catch(error => {
+            showNotification('Error uploading files', 'error');
+            console.error('Error:', error);
+        })
+        .finally(() => {
+            // Reset button
+            uploadButton.innerHTML = originalText;
+            uploadButton.disabled = false;
+        });
+    });
+    
+    function showDeleteModal(assetId) {
+        assetToDelete = assetId;
+        document.getElementById('delete-modal').classList.remove('hidden');
+        document.getElementById('confirm-delete-btn').addEventListener('click', confirmDelete);
+    }
+    
+    function closeDeleteModal() {
+        document.getElementById('delete-modal').classList.add('hidden');
+        document.getElementById('confirm-delete-btn').removeEventListener('click', confirmDelete);
+        assetToDelete = null;
+    }
+    
+    function confirmDelete() {
+        if (!assetToDelete) return;
+        
+        fetch(`{% url 'projects:asset_list' project_id=project.id %}?asset_id=${assetToDelete}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Refresh assets list
+                htmx.trigger('#asset-list-container', 'hx-trigger:reload');
+                showNotification('Asset deleted successfully');
+            } else {
+                showNotification('Error deleting asset: ' + data.error, 'error');
+            }
+        })
+        .catch(error => {
+            showNotification('Error deleting asset', 'error');
+            console.error('Error:', error);
+        })
+        .finally(() => {
+            closeDeleteModal();
+        });
+    }
+    
+    function showNotification(message, type = 'success') {
+        // You can implement a proper notification system here
+        alert(message);
+    }
+    
+    // Update usage stats
+    function updateUsageStats(data) {
+        const statsContainer = document.getElementById('usage-stats');
+        if (!statsContainer || !data) return;
+        
+        const totalTokens = data.totalTokenCount || 0;
+        const maxTokens = data.maxTokens || 100000;
+        const percentage = Math.min((totalTokens / maxTokens) * 100, 100);
+        const isExceeded = totalTokens > maxTokens;
+        
+        statsContainer.innerHTML = `
+            <p class="text-sm text-center sm:text-right truncate ${isExceeded ? 'text-red-500 font-medium' : 'text-gray-600'}">
+                ${isExceeded ? 'Content Limit Exceeded. Please delete assets' : `${Math.round(percentage)}% of ${maxTokens.toLocaleString()} tokens used`}
+            </p>
+            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-1">
+                <div class="${isExceeded ? 'bg-red-500' : 'bg-main'} h-2.5 rounded-full" style="width: ${percentage}%"></div>
+            </div>
+        `;
+    }
+    
+    // HTMX event listeners
+    document.addEventListener('htmx:load', function(event) {
+        if (event.detail.elt.id === 'asset-list-container') {
+            const statsData = event.detail.xhr.getResponseHeader('X-Usage-Stats');
+            if (statsData) {
+                try {
+                    updateUsageStats(JSON.parse(statsData));
+                } catch (e) {
+                    console.error('Error parsing usage stats:', e);
+                }
+            }
+        }
+    });
+</script>

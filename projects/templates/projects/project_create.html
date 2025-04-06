@@ -1,21 +1,15 @@
-<!-- projects/templates/projects/project_form.html -->
+<!-- projects/templates/projects/project_create.html -->
 {% extends 'base.html' %}
 
-{% block title %}{{ action }} Project - AI Marketing Platform{% endblock %}
+{% block title %}Create Project - AI Marketing Platform{% endblock %}
 
 {% block content %}
 <div class="max-w-screen-xl mx-auto p-4 sm:p-6 lg:p-8 bg-white space-y-12">
     <div class="flex items-center justify-between">
-        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">{{ action }} Project</h1>
-        {% if project %}
-        <a href="{% url 'projects:project_detail' project_id=project.id %}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-secondary/10 text-secondary font-semibold hover:bg-secondary/20 h-9 px-4 py-2">
-            Cancel
-        </a>
-        {% else %}
+        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">Create Project</h1>
         <a href="{% url 'projects:project_list' %}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-secondary/10 text-secondary font-semibold hover:bg-secondary/20 h-9 px-4 py-2">
             Cancel
         </a>
-        {% endif %}
     </div>
     
     <div class="bg-gray-50 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-sm">
@@ -39,7 +33,7 @@
             
             <div class="pt-4">
                 <button type="submit" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">
-                    Save
+                    Create Project
                 </button>
             </div>
         </form>
