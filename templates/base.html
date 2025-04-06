@@ -67,7 +67,7 @@
         {% include 'includes/messages.html' %}
         
         <!-- Content for non-authenticated users -->
-        {% block content %}{% endblock %}
+        {% comment %} {% block content %}{% endblock %} {% endcomment %}
         
         <!-- Footer for non-authenticated users -->
         {% include 'includes/footer.html' %}
