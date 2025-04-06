@@ -32,3 +32,4 @@ class TemplatePromptAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         return qs.filter(template__user=request.user)
+    

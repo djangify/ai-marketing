@@ -43,7 +43,7 @@ INSTALLED_APPS = [
 # Local apps
     'accounts',
     'projects',
-    'templates',
+    'content_templates',
 ]
 
 MIDDLEWARE = [
@@ -54,7 +54,21 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'ai_marketing.middleware.AuthRequiredMiddleware', 
 ]
+
+# Authentication settings
+LOGIN_URL = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+# Constants for the application
+MAX_TOKENS_ASSETS = 100000
+MAX_TOKENS_PROMPT = 20000
+
+# Node.js processing service settings
+PROCESSING_SERVICE_URL = 'http://processing-api.yourdomain.com'
+PROCESSING_SERVICE_API_KEY = 'your_api_key'
 
 ROOT_URLCONF = 'ai_marketing.urls'
 
