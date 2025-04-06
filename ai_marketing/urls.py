@@ -9,8 +9,7 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('projects/', include('projects.urls')),
     path('templates/', include('content_templates.urls')),
-    # Add the landing page
-    path('', include('landing.urls')),
+    path('', include('core.urls')),
 ]
 
 if settings.DEBUG:

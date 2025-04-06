@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 def home(request):
     if request.user.is_authenticated:
         return redirect('dashboard')
-    return render(request, 'landing/home.html')
+    return render(request, 'core/home.html')
 
 def pricing(request):
-    return render(request, 'landing/pricing.html')
+    return render(request, 'core/pricing.html')
