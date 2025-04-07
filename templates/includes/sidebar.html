@@ -3,7 +3,7 @@
 <div class="bg-gray-50 flex flex-col h-screen transition-all duration-300 overflow-y-auto">
   <div class="flex flex-col flex-grow p-6 pt-10">
     
-    <h1 class="text-4xl text-center  pt-10 mb-10">
+    <h1 class="text-4xl text-center pt-10 mb-10">
         <img src="{% static 'images/amp-trans2.png' %}" alt="Logo" class="h-12 items-center w-auto">
       AI Marketing Platform
     </h1>
@@ -42,6 +42,9 @@
       </a>
     </div>
   </div>
+
+  <!-- Subscription Status Widget -->
+  {% include 'subscriptions/dashboard_status.html' %}
 
   <div class="p-4 border-t border-gray-200">
     <div class="flex items-center space-x-3 text-gray-700 hover:scale-[1.02] transition-all duration-300">
