@@ -1,0 +1,39 @@
+<!-- templates/subscriptions/emails/trial_welcome.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Your Trial</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px;">
+        <h1 style="color: #359efe;">Welcome to Your Trial!</h1>
+        
+        <p>Hello {{ user.first_name|default:user.username }},</p>
+        
+        <p>Thank you for signing up! You now have <strong>{{ days_remaining }} days</strong> of full access to all our premium features.</p>
+        
+        <p>Your trial will expire on <strong>{{ trial_end_date|date:"F j, Y" }}</strong>.</p>
+        
+        <p>During your trial, you can:</p>
+        <ul>
+            <li>Upload unlimited content</li>
+            <li>Create custom prompts</li>
+            <li>Generate AI content</li>
+            <li>And much more!</li>
+        </ul>
+        
+        <p>To continue using these features after your trial, you'll need to subscribe to one of our plans.</p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{ site_url }}{% url 'subscriptions:dashboard_status' %}" style="background-color: #359efe; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">View Subscription Options</a>
+        </div>
+        
+        <p>If you have any questions, feel free to contact our support team.</p>
+        
+        <p>Happy creating!</p>
+        
+        <p>The AI Marketing Platform Team</p>
+    </div>
+</body>
+</html>

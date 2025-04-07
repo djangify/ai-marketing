@@ -1,0 +1,35 @@
+<!-- templates/subscriptions/emails/trial_ended.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Trial Ended</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px;">
+        <h1 style="color: #e74c3c;">Your Trial Has Ended</h1>
+        
+        <p>Hello {{ user.first_name|default:user.username }},</p>
+        
+        <p>Your free trial period has ended. To continue accessing our premium features, please subscribe to one of our plans.</p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{ site_url }}{% url 'subscriptions:dashboard_status' %}" style="background-color: #e74c3c; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">Subscribe Now</a>
+        </div>
+        
+        <p>Our subscription plans offer:</p>
+        <ul>
+            <li>Unlimited uploads and processing</li>
+            <li>Advanced AI content generation</li>
+            <li>Custom prompt management</li>
+            <li>Priority support</li>
+        </ul>
+        
+        <p>We hope you enjoyed your trial and look forward to having you as a subscriber!</p>
+        
+        <p>Best regards,</p>
+        
+        <p>The AI Marketing Platform Team</p>
+    </div>
+</body>
+</html>

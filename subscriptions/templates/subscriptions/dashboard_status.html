@@ -1,0 +1,92 @@
+<!-- templates/subscriptions/dashboard_status.html -->
+<div class="subscription-status-widget">
+  {% if subscription and subscription.is_active %}
+      <!-- Active subscription status -->
+      <div class="card bg-success-subtle border-success mb-3">
+          <div class="card-header bg-success text-white">
+              <h5 class="mb-0">Active Subscription</h5>
+          </div>
+          <div class="card-body">
+              <p class="card-text">
+                  You're currently on the <strong>{{ subscription.get_subscription_type_display }}</strong> plan.
+              </p>
+              <p class="card-text">
+                  Next billing date: <strong>{{ subscription.end_date|date:"F j, Y" }}</strong>
+              </p>
+              <a href="{% url 'subscriptions:subscription_portal' %}" class="btn btn-primary">
+                  Manage Subscription
+              </a>
+          </div>
+      </div>
+  {% elif in_trial %}
+      <!-- Trial period status -->
+      <div class="card bg-info-subtle border-info mb-3">
+          <div class="card-header bg-info text-white">
+              <h5 class="mb-0">
+                  Trial Period: {{ trial_days_remaining }} day{{ trial_days_remaining|pluralize }} remaining
+              </h5>
+          </div>
+          <div class="card-body">
+              <p class="card-text">
+                  Your trial expires on <strong>{{ trial_end_date|date:"F j, Y" }}</strong>.
+                  Subscribe now to maintain uninterrupted access to all features.
+              </p>
+              
+              <div class="progress mb-3" style="height: 20px;">
+                  {% with percentage=trial_days_remaining|mul:33.33 %}
+                      <div class="progress-bar bg-info" role="progressbar" style="width: {{ percentage }}%;" 
+                           aria-valuenow="{{ trial_days_remaining }}" aria-valuemin="0" aria-valuemax="3">
+                          {{ trial_days_remaining }} day{{ trial_days_remaining|pluralize }} left
+                      </div>
+                  {% endwith %}
+              </div>
+              
+              <h6 class="mt-4">Choose a subscription plan:</h6>
+              <div class="row mt-3">
+                  {% for plan in subscription_types %}
+                      <div class="col-md-4 mb-3">
+                          <div class="card h-100">
+                              <div class="card-body text-center">
+                                  <h5 class="card-title">{{ plan.name }}</h5>
+                                  <p class="card-text price">{{ plan.price }}</p>
+                                  <p class="card-text description">{{ plan.description }}</p>
+                                  <a href="{% url 'subscriptions:subscription_checkout' subscription_type=plan.type %}" 
+                                     class="btn btn-primary btn-block">Select</a>
+                              </div>
+                          </div>
+                      </div>
+                  {% endfor %}
+              </div>
+          </div>
+      </div>
+  {% else %}
+      <!-- Expired trial status -->
+      <div class="card bg-danger-subtle border-danger mb-3">
+          <div class="card-header bg-danger text-white">
+              <h5 class="mb-0">Trial Expired</h5>
+          </div>
+          <div class="card-body">
+              <p class="card-text">
+                  Your trial period has ended. Subscribe now to regain access to all features.
+              </p>
+              
+              <h6 class="mt-4">Choose a subscription plan:</h6>
+              <div class="row mt-3">
+                  {% for plan in subscription_types %}
+                      <div class="col-md-4 mb-3">
+                          <div class="card h-100">
+                              <div class="card-body text-center">
+                                  <h5 class="card-title">{{ plan.name }}</h5>
+                                  <p class="card-text price">{{ plan.price }}</p>
+                                  <p class="card-text description">{{ plan.description }}</p>
+                                  <a href="{% url 'subscriptions:subscription_checkout' subscription_type=plan.type %}" 
+                                     class="btn btn-primary btn-block">Select</a>
+                              </div>
+                          </div>
+                      </div>
+                  {% endfor %}
+              </div>
+          </div>
+      </div>
+  {% endif %}
+</div>

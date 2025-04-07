@@ -16,7 +16,7 @@ class Command(BaseCommand):
             user = profile.user
             
             # Skip users who already have an active subscription
-            if hasattr(user, 'subscription') and user.subscription.is_active():
+            if hasattr(user, 'stripe_subscription') and user.stripe_subscription.is_active():
                 continue
             
             # Check trial status

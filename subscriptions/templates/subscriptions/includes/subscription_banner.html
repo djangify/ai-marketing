@@ -1,0 +1,25 @@
+<!-- templates/subscriptions/includes/subscription_banner.html -->
+{% if request.user.is_authenticated %}
+    {% if not subscription or not subscription.is_active %}
+        {% if in_trial %}
+            <div class="alert alert-info trial-banner" role="alert">
+                <div class="container d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Trial Period:</strong> {{ trial_days_remaining }} day{{ trial_days_remaining|pluralize }} remaining. 
+                        Your trial ends on {{ trial_end_date|date:"F j, Y" }}.
+                    </div>
+                    <a href="{% url 'subscriptions:dashboard_status' %}" class="btn btn-primary btn-sm">Subscribe Now</a>
+                </div>
+            </div>
+        {% elif not has_access %}
+            <div class="alert alert-danger trial-banner" role="alert">
+                <div class="container d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Trial Expired:</strong> Please subscribe to regain access to all features.
+                    </div>
+                    <a href="{% url 'subscriptions:dashboard_status' %}" class="btn btn-danger btn-sm">Subscribe Now</a>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endif %}

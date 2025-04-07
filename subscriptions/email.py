@@ -9,8 +9,8 @@ def send_trial_welcome_email(user):
     subject = 'Welcome to Your Trial!'
     context = {
         'user': user,
-        'days_remaining': user.profile.get_trial_days_remaining(),
-        'trial_end_date': user.profile.get_trial_end_date(),
+        'days_remaining': user.subscription_profile.get_trial_days_remaining(),
+        'trial_end_date': user.subscription_profile.get_trial_end_date(),
     }
     html_message = render_to_string('subscriptions/emails/trial_welcome.html', context)
     plain_message = strip_tags(html_message)
@@ -29,7 +29,7 @@ def send_trial_reminder_email(user, days_remaining):
     context = {
         'user': user,
         'days_remaining': days_remaining,
-        'trial_end_date': user.profile.get_trial_end_date(),
+        'trial_end_date': user.subscription_profile.get_trial_end_date(),
     }
     html_message = render_to_string('subscriptions/emails/trial_reminder.html', context)
     plain_message = strip_tags(html_message)

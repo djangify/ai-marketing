@@ -19,8 +19,8 @@ from .stripe_utils import create_checkout_session, create_portal_session
 def subscription_required(request):
     """View shown when a user tries to access content without an active subscription"""
     context = {
-        'has_subscription': hasattr(request.user, 'subscription') and request.user.subscription.is_active(),
-        'in_trial': hasattr(request.user, 'profile') and request.user.profile.is_in_trial_period(),
+        'has_subscription': hasattr(request.user, 'subscription') and request.user.stripe_subscription.is_active(),
+        'in_trial': hasattr(request.user, 'subscription_profile') and request.user.subscription_profile.is_in_trial_period(),
     }
     return render(request, 'subscriptions/subscription_required.html', context)
 
