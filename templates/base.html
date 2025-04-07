@@ -44,16 +44,11 @@
   </head>
   <body>
     {% include 'includes/messages.html' %} 
-
     {% include 'includes/navbar.html' %}
     {% include 'subscriptions/includes/subscription_banner.html' %}
-    <main class="bg-white dark:bg-gray-900">
-      
-        {% block content %}{% endblock %}
-      
+    
+    <main class="bg-white dark:bg-gray-900 min-h-screen">
+      {% block content %}{% endblock %}
     </main>
-    
-
-    
   </body>
 </html>

@@ -10,6 +10,7 @@ urlpatterns = [
     path('projects/', include('projects.urls', namespace='projects')),
     path('templates/', include('content_templates.urls', namespace='content_templates')),
     path('', include('core.urls', namespace='core')),
+    path('subscriptions/', include('subscriptions.urls', namespace='subscriptions')),
 ]
 
 if settings.DEBUG:

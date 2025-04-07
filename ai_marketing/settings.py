@@ -153,12 +153,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# settings.py
+# Stripe settings
 STRIPE_PUBLISHABLE_KEY = 'your_publishable_key'
 STRIPE_SECRET_KEY = 'your_secret_key'
 STRIPE_WEBHOOK_SECRET = 'your_webhook_signing_secret'
-
-# Product/price IDs from your Stripe dashboard
-STRIPE_PRICE_ID_MONTHLY = 'price_xxxxx'
-STRIPE_PRICE_ID_QUARTERLY = 'price_xxxxx'
-STRIPE_PRICE_ID_YEARLY = 'price_xxxxx'
+STRIPE_PRICE_ID_MONTHLY = 'price_1RBA24BSytWSX0dbNigRddaw'
+STRIPE_PRICE_ID_QUARTERLY = 'price_1RBA5nBSytWSX0db0aRqPViR'
+STRIPE_PRICE_ID_YEARLY = 'price_1RBA7sBSytWSX0dbLcfpVxKw'
