@@ -1,19 +1,18 @@
 # subscriptions/views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Subscription, UserProfile
-from .utils import has_access
-import stripe
+from django.contrib import messages
 from django.conf import settings
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils import timezone
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.models import User
-from django.urls import reverse
+
+from .models import Subscription
 from .stripe_utils import create_checkout_session, create_portal_session
 
+import stripe
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 @login_required
 def subscription_required(request):
@@ -29,16 +28,16 @@ def subscription_required(request):
 def subscription_detail(request):
     """View for displaying subscription details"""
     try:
-        subscription = request.user.stripe_subscription  # Changed from subscription to stripe_subscription
+        subscription = request.user.stripe_subscription
         context = {
             'subscription': subscription,
-            'in_trial': request.user.subscription_profile.is_in_trial_period() if hasattr(request.user, 'subscription_profile') else False,  # Changed from profile to subscription_profile
+            'in_trial': request.user.subscription_profile.is_in_trial_period() if hasattr(request.user, 'subscription_profile') else False,
         }
         return render(request, 'subscriptions/subscription_detail.html', context)
     except:
         context = {
             'subscription': None,
-            'in_trial': request.user.subscription_profile.is_in_trial_period() if hasattr(request.user, 'subscription_profile') else False,  # Changed from profile to subscription_profile
+            'in_trial': request.user.subscription_profile.is_in_trial_period() if hasattr(request.user, 'subscription_profile') else False,
         }
         return render(request, 'subscriptions/subscription_detail.html', context)
 
@@ -239,4 +238,117 @@ def dashboard_subscription_status(request):
         ]
     }
     return render(request, 'subscriptions/dashboard_status.html', context)
-  
+@login_required
+def subscription_management(request):
+    user_profile = request.user.userprofile
+    active_subscription = Subscription.objects.filter(
+        user=request.user, 
+        status__in=['active', 'trialing']
+    ).first()
+    
+    subscription_data = None
+    if active_subscription and active_subscription.stripe_subscription_id:
+        try:
+            stripe_subscription = stripe.Subscription.retrieve(
+                active_subscription.stripe_subscription_id
+            )
+            subscription_data = {
+                'status': stripe_subscription.status,
+                'current_period_end': stripe_subscription.current_period_end,
+                'cancel_at_period_end': stripe_subscription.cancel_at_period_end,
+                'plan': stripe_subscription.plan.nickname or 'Premium Plan',
+                'amount': stripe_subscription.plan.amount / 100,  # Convert cents to dollars
+                'currency': stripe_subscription.plan.currency.upper(),
+            }
+        except stripe.error.StripeError as e:
+            messages.error(request, f"Error retrieving subscription details: {str(e)}")
+    
+    context = {
+        'user_profile': user_profile,
+        'active_subscription': active_subscription,
+        'subscription_data': subscription_data,
+        'is_in_trial': user_profile.is_in_trial_period(),  # Changed from is_in_trial() to is_in_trial_period()
+        'trial_days_remaining': user_profile.get_trial_days_remaining(),  # Changed from trial_days_remaining() to get_trial_days_remaining()
+    }
+    
+    return render(request, 'subscriptions/manage.html', context)
+
+
+@login_required
+def create_portal_session(request):
+    active_subscription = Subscription.objects.filter(
+        user=request.user, 
+        payment_status__in=['active', 'trialing']  # Changed from status__in to payment_status__in
+    ).first()
+    
+    if not active_subscription or not active_subscription.stripe_customer_id:
+        messages.error(request, "No active subscription found.")
+        return redirect('subscription_management')
+    
+    try:
+        # Create a Stripe Customer Portal session
+        session = stripe.billing_portal.Session.create(
+            customer=active_subscription.stripe_customer_id,
+            return_url=request.build_absolute_uri('/subscriptions/manage/'),
+        )
+        
+        # Redirect to the portal
+        return redirect(session.url)
+    
+    except stripe.error.StripeError as e:
+        messages.error(request, f"Error creating portal session: {str(e)}")
+        return redirect('subscription_management')
+
+@login_required
+def cancel_subscription(request):
+    if request.method != 'POST':
+        return redirect('subscription_management')
+    
+    active_subscription = Subscription.objects.filter(
+        user=request.user, 
+        payment_status__in=['active', 'trialing']  # Changed from status__in to payment_status__in
+    ).first()
+    
+    if not active_subscription or not active_subscription.stripe_subscription_id:
+        messages.error(request, "No active subscription found.")
+        return redirect('subscription_management')
+    
+    try:
+        # Cancel the subscription at period end
+        stripe.Subscription.modify(
+            active_subscription.stripe_subscription_id,
+            cancel_at_period_end=True
+        )
+        
+        messages.success(request, "Your subscription will be canceled at the end of the current billing period.")
+    except stripe.error.StripeError as e:
+        messages.error(request, f"Error canceling subscription: {str(e)}")
+    
+    return redirect('subscription_management')
+
+@login_required
+def resume_subscription(request):
+    if request.method != 'POST':
+        return redirect('subscription_management')
+    
+    active_subscription = Subscription.objects.filter(
+        user=request.user, 
+        payment_status__in=['active', 'trialing']  # Changed from status__in to payment_status__in
+    ).first()
+    
+    if not active_subscription or not active_subscription.stripe_subscription_id:
+        messages.error(request, "No active subscription found.")
+        return redirect('subscription_management')
+    
+    try:
+        # Resume the subscription
+        stripe.Subscription.modify(
+            active_subscription.stripe_subscription_id,
+            cancel_at_period_end=False
+        )
+        
+        messages.success(request, "Your subscription has been resumed.")
+    except stripe.error.StripeError as e:
+        messages.error(request, f"Error resuming subscription: {str(e)}")
+    
+    return redirect('subscription_management')

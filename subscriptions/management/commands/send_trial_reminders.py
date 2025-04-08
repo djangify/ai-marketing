@@ -37,4 +37,3 @@ class Command(BaseCommand):
                 if trial_end_date.date() == timezone.now().date():
                     send_trial_ended_email(user)
                     self.stdout.write(self.style.SUCCESS(f'Sent trial ended email to {user.email}'))
-                    

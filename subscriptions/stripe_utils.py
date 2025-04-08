@@ -32,8 +32,9 @@ def create_checkout_session(request, subscription_type):
     user = request.user
     
     # Get or create Stripe customer
-    if hasattr(user, 'stripe_subscription') and user.subscription.stripe_customer_id:
-        customer_id = user.subscription.stripe_customer_id
+        # Get or create Stripe customer
+    if hasattr(user, 'stripe_subscription') and user.stripe_subscription.stripe_customer_id:  
+        customer_id = user.stripe_subscription.stripe_customer_id  # Changed from subscription to stripe_subscription
     else:
         customer_id = create_stripe_customer(user)
         # Create or update subscription record with customer ID

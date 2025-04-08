@@ -14,7 +14,7 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     """Save the UserProfile when the User is saved"""
     if hasattr(instance, 'subscription_profile'):
-        instance.profile.save()
+        instance.subscription_profile.save()  # Changed from profile to subscription_profile
     else:
         # Create profile if it doesn't exist yet
         UserProfile.objects.create(user=instance)
