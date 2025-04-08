@@ -1,7 +1,7 @@
 <!-- templates/includes/navbar.html -->
 {% load static %}
 
-<header class="fixed w-full top-0 z-50 bg-white">
+<header class="fixed w-full top-0 z-50 bg-white py-4 mx-4">
     <nav class="bg-white border-gray-200 py-2.5 dark:bg-gray-900">
         <div class="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
             <a href="#" class="flex items-center">
@@ -25,32 +25,32 @@
                 <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
                     {% if user.is_authenticated %}
                         <li>
-                            <a href="{% url 'accounts:dashboard' %}" class="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 uppercase font-medium">HOME</a>
+                            <a href="{% url 'accounts:dashboard' %}" class="block mt-2 py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 uppercase font-medium">HOME</a>
                         </li>
                         <li>
-                            <a href="#" class="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 uppercase font-medium">BLOG</a>
+                            <a href="#" class="block mt-2 py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 uppercase font-medium">BLOG</a>
                         </li>
                         <li>
-                            <a href="{% url 'accounts:logout' %}" class="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 uppercase font-medium">LOGOUT</a>
+                            <a href="{% url 'accounts:logout' %}" class="block mt-2 py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 uppercase font-medium">LOGOUT</a>
                         </li>
                     {% else %}
                         <li>
-                            <a href="{% url 'core:index' %}" class="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 uppercase font-medium">HOME</a>
+                            <a href="{% url 'core:index' %}" class="block mt-2 py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 uppercase font-medium">HOME</a>
                         </li>
                         <li>
-                            <a href="/#about" class="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 uppercase font-medium">ABOUT</a>
+                            <a href="/#about" class="block mt-2 py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 uppercase font-medium">ABOUT</a>
                         </li>
                         <li>
-                            <a href="/#pricing" class="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 uppercase font-medium">PRICING</a>
+                            <a href="/#pricing" class="block mt-2 py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 uppercase font-medium">PRICING</a>
                         </li>
                         <li>
-                            <a href="/#faq" class="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 uppercase font-medium">FAQ</a>
+                            <a href="/#faq" class="block mt-2 py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 uppercase font-medium">FAQ</a>
                         </li>
                         <li>
-                            <a href="#" class="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 uppercase font-medium">BLOG</a>
+                            <a href="#" class="block mt-2 py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 uppercase font-medium">BLOG</a>
                         </li>
                         <li>
-                            <a href="{% url 'accounts:login' %}" class="block py-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 uppercase font-medium">LOGIN</a>
+                            <a href="{% url 'accounts:login' %}" class="block mt-2 pl-3 pr-4 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-purple-700 lg:p-0 uppercase font-medium">LOGIN</a>
                         </li>
                         <li>
                             <a href="{% url 'accounts:signup' %}" class="block py-2 pl-3 pr-4 bg-purple-200 text-purple-900 px-4 rounded-md font-bold uppercase hover:bg-purple-300 transition-colors">SIGN UP</a>
