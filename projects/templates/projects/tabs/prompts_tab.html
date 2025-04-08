@@ -3,13 +3,17 @@
 <!-- This template is for the prompts tab in the project management interface. It includes a button to load templates, a button to add a new prompt, and a list of existing prompts. -->
 <!-- The prompts are loaded dynamically using HTMX. -->
 <div id="prompts-tab" hx-trigger="load" hx-get="{% url 'prompts:prompt_list' project_id=project.id %}" hx-target="#prompt-list-container" hx-swap="innerHTML">
+    <!-- Add CSRF token here -->
+    {% csrf_token %}
+    
     <div class="flex flex-col sm:flex-row items-start justify-between">
         <h2 class="text-xl md:text-2xl lg:text-2xl font-bold mb-4 sm:mb-0">Step 2: Prompts</h2>
         <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
             <button 
                 hx-get="{% url 'prompts:template_selection' project_id=project.id %}"
                 hx-target="#modal-container"
-                class="bg-[#9810fa]/10 text-[#9810fa] font-semibold hover:bg-[#9810fa]/15 text-sm sm:text-base rounded-lg w-full sm:w-auto h-8 sm:h-10 inline-flex items-center justify-center">
+                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                class="bg-[#9810fa]/10 font-semibold hover:bg-[#9810fa]/15 text-sm sm:text-base rounded-lg w-full sm:w-auto h-8 sm:h-10 inline-flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
@@ -21,7 +25,7 @@
                 hx-swap="innerHTML"
                 hx-indicator="#loading-indicator"
                 hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                class="bg-[#9810fa]/10 text-[#9810fa] font-semibold hover:bg-[#9810fa]/15 text-sm sm:text-base rounded-lg w-full sm:w-auto h-8 sm:h-10 inline-flex items-center justify-center">
+                class="bg-[#9810fa]/10  font-semibold text-sm sm:text-base rounded-lg w-full sm:w-auto h-8 sm:h-10 inline-flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
@@ -99,30 +103,42 @@
     function confirmDelete() {
         if (!promptToDelete) return;
         
-        fetch(`{% url 'prompts:prompt_delete' project_id=project.id prompt_id='PLACEHOLDER_ID' %}`.replace('PLACEHOLDER_ID', promptToDelete), {
-            method: 'DELETE',
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                'Content-Type': 'application/json'
+        // Modified to use XMLHttpRequest for better compatibility
+        const xhr = new XMLHttpRequest();
+        const url = `{% url 'prompts:prompt_delete' project_id=project.id prompt_id='PLACEHOLDER_ID' %}`.replace('PLACEHOLDER_ID', promptToDelete);
+        
+        xhr.open('DELETE', url, true);
+        xhr.setRequestHeader('X-CSRFToken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                closeDeleteConfirmation();
+                
+                if (xhr.status === 200) {
+                    try {
+                        const response = JSON.parse(xhr.responseText);
+                        if (response.status === 'success') {
+                            // Manually reload the prompt list container
+                            const promptListContainer = document.getElementById('prompt-list-container');
+                            htmx.ajax('GET', '{% url "prompts:prompt_list" project_id=project.id %}', {
+                                target: promptListContainer,
+                                swap: 'innerHTML'
+                            });
+                            showNotification('Prompt deleted successfully');
+                        } else {
+                            showNotification('Error: ' + (response.message || 'Unknown error'), 'error');
+                        }
+                    } catch (e) {
+                        showNotification('Error parsing response', 'error');
+                    }
+                } else {
+                    showNotification('Error: HTTP status ' + xhr.status, 'error');
+                }
             }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === 'success') {
-                // Refresh prompt list
-                htmx.trigger('#prompt-list-container', 'htmx:refresh');
-                showNotification('Prompt deleted successfully');
-            } else {
-                showNotification('Error deleting prompt: ' + data.message, 'error');
-            }
-        })
-        .catch(error => {
-            showNotification('Error deleting prompt', 'error');
-            console.error('Error:', error);
-        })
-        .finally(() => {
-            closeDeleteConfirmation();
-        });
+        };
+        
+        xhr.send();
     }
     
     function openPromptEditor(promptId) {
@@ -165,5 +181,11 @@
         if (modal) {
             modal.remove();
         }
+    }
+    
+    // Helper function to show notifications
+    function showNotification(message, type = 'success') {
+        // Simple alert for now, can be replaced with a more sophisticated notification system later
+        alert(message);
     }
 </script>

@@ -14,6 +14,7 @@ class AuthRequiredMiddleware:
             '/accounts/login/',
             '/accounts/signup/',
             '/pricing/',
+            '/blog/',
         ]
         # Admin paths will be handled separately
     

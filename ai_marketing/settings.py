@@ -43,12 +43,14 @@ INSTALLED_APPS = [
     'subscriptions.apps.SubscriptionsConfig',
 # Third-party apps
     'widget_tweaks',
+    'tinymce',
 # Local apps
     'accounts',
     'projects',
     'content_templates',
     'prompts',
     'assets',
+    'blog',
    
 ]
 

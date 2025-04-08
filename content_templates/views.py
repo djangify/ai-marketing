@@ -1,4 +1,5 @@
 # content_templates/views.py
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -76,6 +77,28 @@ def template_delete(request, template_id):
 @login_required
 def template_prompt_list(request, template_id):
     template = get_object_or_404(Template, id=template_id, user=request.user)
+    
+    # Handle DELETE requests
+    if request.method == 'DELETE':
+        prompt_id = request.GET.get('id')
+        if not prompt_id:
+            return JsonResponse({'status': 'error', 'message': 'Prompt ID is required'}, status=400)
+        
+        try:
+            prompt = get_object_or_404(TemplatePrompt, id=prompt_id, template=template)
+            prompt.delete()
+            
+            # Reorder remaining prompts
+            remaining_prompts = TemplatePrompt.objects.filter(template=template).order_by('order')
+            for i, p in enumerate(remaining_prompts):
+                p.order = i
+                p.save()
+                
+            return JsonResponse({'status': 'success'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    
+    # Normal GET request to display prompts
     prompts = template.prompts.all().order_by('order')
     return render(request, 'content_templates/template_prompt_list.html', {'prompts': prompts})
 

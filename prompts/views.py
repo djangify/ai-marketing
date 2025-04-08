@@ -84,30 +84,32 @@ def prompt_update(request):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
+
 @login_required
 def prompt_delete(request, project_id, prompt_id):
     """Delete a prompt."""
-    if request.method != 'DELETE':
-        return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+    project = get_object_or_404(Project, id=project_id, user=request.user)
+    prompt = get_object_or_404(Prompt, id=prompt_id, project=project)
     
-    try:
-        project = get_object_or_404(Project, id=project_id, user=request.user)
-        prompt = get_object_or_404(Prompt, id=prompt_id, project=project)
-        
-        # Delete the prompt
-        prompt.delete()
-        
-        # Reorder remaining prompts
-        remaining_prompts = Prompt.objects.filter(project=project).order_by('order')
-        for i, p in enumerate(remaining_prompts):
-            p.order = i
-            p.save()
-        
-        return JsonResponse({'status': 'success'})
+    if request.method == 'DELETE':
+        try:
+            # Delete the prompt
+            prompt.delete()
+            
+            # Reorder remaining prompts
+            remaining_prompts = Prompt.objects.filter(project=project).order_by('order')
+            for i, p in enumerate(remaining_prompts):
+                p.order = i
+                p.save()
+            
+            return JsonResponse({'status': 'success'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
     
-    except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    # Handle GET request as appropriate for your app
+    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
     
+
 @login_required
 def prompt_list(request, project_id):
     project = get_object_or_404(Project, id=project_id, user=request.user)
