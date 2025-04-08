@@ -20,6 +20,7 @@
                 hx-target="#prompt-list-container"
                 hx-swap="innerHTML"
                 hx-indicator="#loading-indicator"
+                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
                 class="bg-[#9810fa]/10 text-[#9810fa] font-semibold hover:bg-[#9810fa]/15 text-sm sm:text-base rounded-lg w-full sm:w-auto h-8 sm:h-10 inline-flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
