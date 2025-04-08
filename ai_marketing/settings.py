@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'projects',
     'content_templates',
     'prompts',
+    'assets',
    
 ]
 

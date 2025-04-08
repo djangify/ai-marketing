@@ -11,6 +11,7 @@ urlpatterns = [
     path('prompts/', include('prompts.urls', namespace='prompts')),
     path('templates/', include('content_templates.urls', namespace='content_templates')),
     path('', include('core.urls', namespace='core')),
+    path('assets/', include('assets.urls', namespace='assets')),
     path('subscriptions/', include('subscriptions.urls', namespace='subscriptions')),
 ]
 

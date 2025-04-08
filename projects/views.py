@@ -37,7 +37,7 @@ def project_detail(request, project_id):
     }
     
     if tab == 'upload':
-        assets = project.assets.all().order_by('-updated_at')
+        assets = project.client_assets.all().order_by('-updated_at')
         context['assets'] = assets
     elif tab == 'prompts':
         prompts = project.prompts.all().order_by('order')
