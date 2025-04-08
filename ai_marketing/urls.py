@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls', namespace='accounts')),
     path('projects/', include('projects.urls', namespace='projects')),
+    path('prompts/', include('prompts.urls', namespace='prompts')),
     path('templates/', include('content_templates.urls', namespace='content_templates')),
     path('', include('core.urls', namespace='core')),
     path('subscriptions/', include('subscriptions.urls', namespace='subscriptions')),

@@ -1,0 +1,80 @@
+<!-- prompts/templates/prompts/template_selection.html -->
+<div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center" id="template-selection-modal">
+  <div class="max-w-[90%] sm:max-w-[425px] bg-white rounded-xl p-6 shadow-lg">
+      <div class="flex flex-col space-y-4">
+          <h3 class="text-lg font-bold">Select a Template</h3>
+          <p class="text-sm text-gray-600">Choose a template to load prompts into your project</p>
+          
+          <div class="flex justify-center items-center">
+              {% if templates %}
+                  <select id="template-select" class="w-full max-w-[280px] bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-[#9810fa] focus:border-[#9810fa]">
+                      <option value="" disabled selected>Select a Template</option>
+                      {% for template in templates %}
+                          <option value="{{ template.id }}">{{ template.title }}</option>
+                      {% endfor %}
+                  </select>
+              {% else %}
+                  <div class="text-center">
+                      <p class="mb-4">You do not have any templates with existing prompts.</p>
+                      <a href="{% url 'content_templates:template_list' %}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-[#9810fa] text-white shadow hover:bg-[#9810fa]/90 h-9 px-4 py-2">
+                          Create Template
+                      </a>
+                  </div>
+              {% endif %}
+          </div>
+          
+          <div class="flex justify-end space-x-2 mt-4">
+              <button class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2" onclick="closeTemplateModal()">
+                  Cancel
+              </button>
+              {% if templates %}
+                  <button id="confirm-template-button" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-[#9810fa] text-white shadow-sm hover:bg-[#9810fa]/90 h-9 px-4 py-2" onclick="importSelectedTemplate()">
+                      Import
+                  </button>
+              {% endif %}
+          </div>
+      </div>
+  </div>
+</div>
+
+<script>
+  function importSelectedTemplate() {
+      const templateSelect = document.getElementById('template-select');
+      const templateId = templateSelect.value;
+      
+      if (!templateId) {
+          alert('Please select a template');
+          return;
+      }
+      
+      // Add loading state
+      const confirmButton = document.getElementById('confirm-template-button');
+      const originalText = confirmButton.innerHTML;
+      confirmButton.innerHTML = '<svg class="animate-spin h-4 w-4 mr-2 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Importing...';
+      confirmButton.disabled = true;
+      
+      // Send request to import template
+      fetch('{% url "prompts:import_template" project_id=project.id %}', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': '{{ csrf_token }}'
+          },
+          body: JSON.stringify({
+              templateId: templateId
+          })
+      })
+      .then(response => response.json())
+      .then(data => {
+          // Refresh prompt list
+          htmx.trigger('#prompt-list-container', 'htmx:refresh');
+          closeTemplateModal();
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          alert('Error importing template prompts');
+          confirmButton.innerHTML = originalText;
+          confirmButton.disabled = false;
+      });
+  }
+</script>

@@ -2,7 +2,7 @@
 <!-- projects/templates/projects/tabs/upload_tab.html -->
 
 
-<div id="upload-tab" hx-trigger="load" hx-get="{% url 'projects:asset_list' project_id=project.id %}" hx-target="#asset-list-container">
+<div id="upload-tab" hx-trigger="load" hx-get="{% url 'assets:asset_list' project_id=project.id %}" hx-target="#asset-list-container">
     <h2 class="text-xl md:text-2xl lg:text-2xl font-bold mb-8">Step 1: Upload Media</h2>
     
     <!-- Upload Box -->

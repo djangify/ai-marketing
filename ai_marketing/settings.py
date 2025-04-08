@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'accounts',
     'projects',
     'content_templates',
+    'prompts',
+   
 ]
 
 MIDDLEWARE = [
