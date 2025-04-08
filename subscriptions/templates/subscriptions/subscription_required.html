@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
+        <div class="px-4 py-5 sm:p-6 text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-12 w-12 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <h2 class="mt-4 text-xl font-medium text-gray-900">Subscription Required</h2>
+            
+            <div class="mt-4 text-gray-600">
+                {% if in_trial %}
+                    <p>You are currently in your trial period which will expire in {{ trial_days_remaining }} day{{ trial_days_remaining|pluralize }}.</p>
+                    <p class="mt-2">To ensure uninterrupted access to all features, please subscribe before your trial ends.</p>
+                {% else %}
+                    <p>This feature requires an active subscription.</p>
+                    <p class="mt-2">Please subscribe to access all premium features of our platform.</p>
+                {% endif %}
+            </div>
+            
+            <div class="mt-6">
+                <a href="{% url 'subscriptions:subscription_detail' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#9810fa] hover:bg-[#9810fa]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9810fa]">
+                    View Subscription Options
+                </a>
+                <a href="{% url 'accounts:dashboard' %}" class="ml-3 inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9810fa]">
+                    Go to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

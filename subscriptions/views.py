@@ -271,7 +271,7 @@ def subscription_management(request):
         'trial_days_remaining': user_profile.get_trial_days_remaining(),  # Changed from trial_days_remaining() to get_trial_days_remaining()
     }
     
-    return render(request, 'subscriptions/manage.html', context)
+    return render(request, 'subscriptions/subscription_manage.html', context)
 
 
 @login_required

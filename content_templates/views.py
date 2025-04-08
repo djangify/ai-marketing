@@ -71,3 +71,17 @@ def template_delete(request, template_id):
         return redirect('content_templates:template_list')
     
     return render(request, 'content_templates/template_confirm_delete.html', {'template': template})
+
+# Add to content_templates/views.py
+@login_required
+def template_prompt_list(request, template_id):
+    template = get_object_or_404(Template, id=template_id, user=request.user)
+    prompts = template.prompts.all().order_by('order')
+    return render(request, 'content_templates/template_prompt_list.html', {'prompts': prompts})
+
+@login_required
+def template_prompt_edit(request, template_id):
+    template = get_object_or_404(Template, id=template_id, user=request.user)
+    prompt_id = request.GET.get('prompt_id')
+    prompt = get_object_or_404(TemplatePrompt, id=prompt_id, template=template)
+    return render(request, 'content_templates/template_prompt_edit.html', {'prompt': prompt, 'template': template})

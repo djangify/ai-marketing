@@ -114,7 +114,7 @@
     function confirmDelete() {
         if (!promptToDelete) return;
         
-        htmx.ajax('DELETE', '{% url "templates:template_prompt_list" template_id=template.id %}?id=' + promptToDelete, {
+        htmx.ajax('DELETE', '{% url "content_templates:template_prompt_list" template_id=template.id %}?id=' + promptToDelete, {
             target: '#prompt-list-container',
             swap: 'innerHTML'
         });
@@ -123,7 +123,7 @@
     }
     
     function openPromptEditor(promptId) {
-        htmx.ajax('GET', '{% url "templates:template_prompt_edit" template_id=template.id %}?prompt_id=' + promptId, {
+        htmx.ajax('GET', '{% url "content_templates:template_prompt_edit" template_id=template.id %}?prompt_id=' + promptId, {
             target: '#modal-container',
             swap: 'innerHTML'
         });

@@ -12,8 +12,11 @@ urlpatterns = [
     path('<uuid:template_id>/update/', views.template_update, name='template_update'),
     path('<uuid:template_id>/delete/', views.template_delete, name='template_delete'),
     
+    
     # AJAX endpoints
     path('api/prompt-update/', ajax_views.template_prompt_update, name='template_prompt_update'),
     path('api/<uuid:template_id>/prompt-create/', ajax_views.template_prompt_create, name='template_prompt_create'),
     path('api/<uuid:template_id>/prompt-delete/<uuid:prompt_id>/', ajax_views.template_prompt_delete, name='template_prompt_delete'),
+    path('api/<uuid:template_id>/prompts/', views.template_prompt_list, name='template_prompt_list'),
+    path('api/<uuid:template_id>/prompt-edit/', views.template_prompt_edit, name='template_prompt_edit'),
 ]
