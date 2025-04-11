@@ -6,10 +6,14 @@ from functools import wraps
 
 def has_access(user):
     """
-    Check if a user has access based on trial period or active subscription
+    Check if a user has access based on trial period, active subscription, or superuser status
     """
     if not user.is_authenticated:
         return False
+    
+    # Superusers always have access
+    if user.is_superuser:
+        return True
     
     # Check if user is in trial period
     try:

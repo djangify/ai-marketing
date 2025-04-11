@@ -1,7 +1,6 @@
 {% load static %}
 <!-- projects/templates/projects/tabs/prompts_tab.html -->
-<!-- This template is for the prompts tab in the project management interface. It includes a button to load templates, a button to add a new prompt, and a list of existing prompts. -->
-<!-- The prompts are loaded dynamically using HTMX. -->
+
 <div id="prompts-tab" hx-trigger="load" hx-get="{% url 'prompts:prompt_list' project_id=project.id %}" hx-target="#prompt-list-container" hx-swap="innerHTML">
     <!-- Add CSRF token here -->
     {% csrf_token %}
@@ -19,18 +18,13 @@
                 </svg>
                 Load Template
             </button>
-            <button 
-                hx-post="{% url 'prompts:prompt_create' project_id=project.id %}"
-                hx-target="#prompt-list-container"
-                hx-swap="innerHTML"
-                hx-indicator="#loading-indicator"
-                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                class="bg-[#9810fa]/10  font-semibold text-sm sm:text-base rounded-lg w-full sm:w-auto h-8 sm:h-10 inline-flex items-center justify-center">
+            <a href="{% url 'prompts:prompt_add_page' project_id=project.id %}"
+                class="bg-[#9810fa]/10 font-semibold hover:bg-[#9810fa]/15 text-sm sm:text-base rounded-lg w-full sm:w-auto h-8 sm:h-10 inline-flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
                 Add Prompt
-            </button>
+            </a>
         </div>
     </div>
     <!-- Loading indicator -->
@@ -53,7 +47,7 @@
         </div>
     </div>
 
-    <!-- Modal container for prompt editor and template selection -->
+    <!-- Container for template selection  -->
     <div id="modal-container"></div>
 </div>
 
@@ -141,13 +135,6 @@
         xhr.send();
     }
     
-    function openPromptEditor(promptId) {
-        htmx.ajax('GET', `{% url 'prompts:prompt_edit' project_id=project.id %}?prompt_id=${promptId}`, {
-            target: '#modal-container',
-            swap: 'innerHTML'
-        });
-    }
-    
     // Handle click outside of modals to close them
     document.addEventListener('click', function(event) {
         // Check for delete confirmation modal
@@ -156,25 +143,12 @@
             closeDeleteConfirmation();
         }
         
-        // Check for prompt editor modal
-        const promptEditor = document.getElementById('prompt-editor-modal');
-        if (promptEditor && !event.target.closest('.max-w-[90%]') && event.target.closest('#prompt-editor-modal')) {
-            closePromptEditor();
-        }
-        
         // Check for template selection modal
         const templateModal = document.getElementById('template-selection-modal');
         if (templateModal && !event.target.closest('.max-w-[90%]') && event.target.closest('#template-selection-modal')) {
             closeTemplateModal();
         }
     });
-    
-    function closePromptEditor() {
-        const modal = document.getElementById('prompt-editor-modal');
-        if (modal) {
-            modal.remove();
-        }
-    }
     
     function closeTemplateModal() {
         const modal = document.getElementById('template-selection-modal');

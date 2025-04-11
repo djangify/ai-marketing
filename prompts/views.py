@@ -176,3 +176,62 @@ def import_template(request, project_id):
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
 
+@login_required
+def prompt_add_page(request, project_id):
+    """Display and handle the prompt creation page."""
+    project = get_object_or_404(Project, id=project_id, user=request.user)
+    
+    if request.method == 'POST':
+        # Handle form submission
+        name = request.POST.get('name', 'New Prompt')
+        prompt_text = request.POST.get('prompt', '')
+        
+        # Get the highest order value
+        highest_order = Prompt.objects.filter(project=project).order_by('-order').values_list('order', flat=True).first() or -1
+        next_order = highest_order + 1
+        
+        # Calculate token count
+        from utils.token_helper import getPromptTokenCount
+        token_count = getPromptTokenCount(prompt_text)
+        
+        # Create a new prompt
+        prompt = Prompt.objects.create(
+            project=project,
+            name=name,
+            prompt=prompt_text,
+            order=next_order,
+            token_count=token_count
+        )
+        
+        messages.success(request, "Prompt created successfully!")
+        return redirect('projects:project_detail', project_id=project.id, tab='prompts')
+    
+    # Display the form
+    return render(request, 'prompts/prompt_form.html', {'project': project})
+
+@login_required
+def prompt_edit_page(request, project_id, prompt_id):
+    """Display and handle the prompt editing page."""
+    project = get_object_or_404(Project, id=project_id, user=request.user)
+    prompt = get_object_or_404(Prompt, id=prompt_id, project=project)
+    
+    if request.method == 'POST':
+        # Handle form submission
+        name = request.POST.get('name', prompt.name)
+        prompt_text = request.POST.get('prompt', prompt.prompt)
+        
+        # Calculate token count
+        from utils.token_helper import getPromptTokenCount
+        token_count = getPromptTokenCount(prompt_text)
+        
+        # Update the prompt
+        prompt.name = name
+        prompt.prompt = prompt_text
+        prompt.token_count = token_count
+        prompt.save()
+        
+        messages.success(request, "Prompt updated successfully!")
+        return redirect('projects:project_detail', project_id=project.id, tab='prompts')
+    
+    # Display the form
+    return render(request, 'prompts/prompt_form.html', {'project': project, 'prompt': prompt})

@@ -12,6 +12,13 @@ def subscription_status(request):
     }
     
     if request.user.is_authenticated:
+        # Superusers are treated as having full access
+        if request.user.is_superuser:
+            context['has_access'] = True
+            # Set as if they have an active subscription to hide trial messages
+            context['subscription'] = {'is_active': True}
+            return context
+        
         # Add trial info if user has a profile
         if hasattr(request.user, 'subscription_profile'):  
             context['in_trial'] = request.user.subscription_profile.is_in_trial_period()

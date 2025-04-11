@@ -4,7 +4,7 @@
 {% if prompts %}
     <div class="space-y-4">
         {% for prompt in prompts %}
-            <div class="border border-gray-200 bg-gray-50 rounded-2xl shadow-sm hover:border-[#9810fa] hover:shadow-md hover:scale-[1.01] transition-all duration-300 cursor-pointer" onclick="openPromptEditor('{{ prompt.id }}')">
+            <a href="{% url 'prompts:prompt_edit_page'  project_id=project.id prompt_id=prompt.id %}" class="border border-gray-200 bg-gray-50 rounded-2xl shadow-sm hover:border-[#9810fa] hover:shadow-md hover:scale-[1.01] transition-all duration-300 cursor-pointer block">
                 <div class="p-4 sm:p-6 flex justify-between items-center">
                     <div class="flex items-center flex-grow min-w-0 space-x-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-6 sm:w-6 text-[#9810fa] flex-shrink-0" strokeWidth="3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -45,7 +45,7 @@
                         </div>
                     </div>
                 {% endif %}
-            </div>
+            </a>
         {% endfor %}
     </div>
 {% else %}
