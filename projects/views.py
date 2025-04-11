@@ -6,6 +6,8 @@ from django.http import JsonResponse
 from .models import Project, Asset, AssetProcessingJob, Prompt, GeneratedContent
 from .forms import ProjectForm, PromptForm
 
+from .models import Project
+
 @login_required
 def project_list(request):
     projects = request.user.projects.all().order_by('-updated_at')
@@ -37,14 +39,10 @@ def project_detail(request, project_id):
     }
     
     if tab == 'upload':
-        assets = project.client_assets.all().order_by('-updated_at')
+        assets = project.assets.all().order_by('-updated_at')
         context['assets'] = assets
     elif tab == 'prompts':
-        prompts = project.prompts.all().order_by('order')
-        prompt_id = request.GET.get('promptId')
-        if prompt_id:
-            selected_prompt = get_object_or_404(Prompt, id=prompt_id, project=project)
-            context['selected_prompt'] = selected_prompt
+        prompts = project.project_prompts.all().order_by('order')
         context['prompts'] = prompts
     elif tab == 'generate':
         generated_contents = project.generated_contents.all().order_by('order')
@@ -77,3 +75,11 @@ def project_delete(request, project_id):
         return redirect('projects:project_list')
     
     return render(request, 'projects/project_confirm_delete.html', {'project': project})
+
+@login_required
+def project_upload(request, project_id):
+    project = get_object_or_404(Project, id=project_id, user=request.user)
+    return render(request, 'assets/upload_tab.html', {
+        'project': project,
+        'project_id': project_id,
+    })

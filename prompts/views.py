@@ -91,23 +91,17 @@ def prompt_delete(request, project_id, prompt_id):
     project = get_object_or_404(Project, id=project_id, user=request.user)
     prompt = get_object_or_404(Prompt, id=prompt_id, project=project)
     
-    if request.method == 'DELETE':
-        try:
-            # Delete the prompt
-            prompt.delete()
-            
-            # Reorder remaining prompts
-            remaining_prompts = Prompt.objects.filter(project=project).order_by('order')
-            for i, p in enumerate(remaining_prompts):
-                p.order = i
-                p.save()
-            
-            return JsonResponse({'status': 'success'})
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    # Delete the prompt
+    prompt.delete()
     
-    # Handle GET request as appropriate for your app
-    return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
+    # Reorder remaining prompts
+    remaining_prompts = Prompt.objects.filter(project=project).order_by('order')
+    for i, p in enumerate(remaining_prompts):
+        p.order = i
+        p.save()
+    
+    messages.success(request, "Prompt deleted successfully!")
+    return redirect('projects:project_detail', project_id=project.id, tab='prompts')
     
 
 @login_required

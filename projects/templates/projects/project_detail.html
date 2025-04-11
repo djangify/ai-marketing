@@ -105,7 +105,7 @@
         {% if tab == 'upload' %}
             {% include 'projects/tabs/upload_tab.html' with project=project %}
         {% elif tab == 'prompts' %}
-            {% include 'projects/tabs/prompts_tab.html' with project=project %}
+            {% include 'projects/tabs/prompts_tab.html' with project=project prompts=prompts %}
         {% elif tab == 'generate' %}
             {% include 'projects/tabs/generate_tab.html' with project=project %}
         {% endif %}
