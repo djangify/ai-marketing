@@ -1,13 +1,12 @@
 {% load static %}
 <!-- projects/templates/projects/tabs/upload_tab.html -->
 
-
 <div id="upload-tab" hx-trigger="load" hx-get="{% url 'assets:asset_list' project_id=project.id %}" hx-target="#asset-list-container">
     <h2 class="text-xl md:text-2xl lg:text-2xl font-bold mb-8">Step 1: Upload Media</h2>
     
     <!-- Upload Box -->
     <div id="upload-box" 
-         class="p-10 border-2 border-dashed border-main bg-white rounded-3xl text-center cursor-pointer mb-10"
+         class="p-10 border-2 border-dashed border-[#9810fa] bg-white rounded-3xl text-center cursor-pointer mb-10"
          onclick="document.getElementById('file-input').click();"
          ondragover="event.preventDefault();"
          ondrop="handleDrop(event)">
@@ -20,10 +19,10 @@
         </form>
         
         <div id="upload-placeholder">
-            <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-8 w-8 sm:h-10 sm:w-10 text-main" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-8 w-8 sm:h-10 sm:w-10 text-[#9810fa]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
             </svg>
-            <p class="mt-2 text-xs sm:text-sm text-main font-semibold">
+            <p class="mt-2 text-xs sm:text-sm text-[#9810fa] font-semibold">
                 Drag and drop files here, or click to select files
             </p>
         </div>
@@ -32,7 +31,7 @@
             <h3 class="font-bold mb-2">Selected Files:</h3>
             <ul id="file-list" class="text-sm"></ul>
             <button type="button" id="upload-button" 
-                    class="mt-4 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">
+                    class="mt-4 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-[#9810fa] text-white shadow hover:bg-[#9810fa]/90 h-9 px-4 py-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                 </svg>
@@ -51,7 +50,7 @@
         <div id="asset-list-container">
             <!-- Asset list will be loaded by HTMX -->
             <div class="flex justify-center p-8">
-                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-[#9810fa]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
@@ -128,7 +127,8 @@
             method: 'POST',
             body: formData,
             headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                'X-Requested-With': 'XMLHttpRequest'
             }
         })
         .then(response => response.json())
@@ -182,7 +182,8 @@
             method: 'DELETE',
             headers: {
                 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
             }
         })
         .then(response => response.json())
@@ -205,7 +206,7 @@
     }
     
     function showNotification(message, type = 'success') {
-        // You can implement a proper notification system here
+        // Simple notification - replace with your preferred notification system
         alert(message);
     }
     
@@ -224,12 +225,25 @@
                 ${isExceeded ? 'Content Limit Exceeded. Please delete assets' : `${Math.round(percentage)}% of ${maxTokens.toLocaleString()} tokens used`}
             </p>
             <div class="w-full bg-gray-200 rounded-full h-2.5 mb-1">
-                <div class="${isExceeded ? 'bg-red-500' : 'bg-main'} h-2.5 rounded-full" style="width: ${percentage}%"></div>
+                <div class="${isExceeded ? 'bg-red-500' : 'bg-[#9810fa]'} h-2.5 rounded-full" style="width: ${percentage}%"></div>
             </div>
         `;
     }
     
-    // HTMX event listeners
+    // HTMX event listeners - combining both approaches for robustness
+    document.addEventListener('htmx:afterSwap', function(event) {
+        if (event.detail.target.id === 'asset-list-container') {
+            const statsData = event.detail.xhr.getResponseHeader('X-Usage-Stats');
+            if (statsData) {
+                try {
+                    updateUsageStats(JSON.parse(statsData));
+                } catch (e) {
+                    console.error('Error parsing usage stats:', e);
+                }
+            }
+        }
+    });
+    
     document.addEventListener('htmx:load', function(event) {
         if (event.detail.elt.id === 'asset-list-container') {
             const statsData = event.detail.xhr.getResponseHeader('X-Usage-Stats');

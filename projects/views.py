@@ -75,13 +75,3 @@ def project_delete(request, project_id):
         return redirect('projects:project_list')
     
     return render(request, 'projects/project_confirm_delete.html', {'project': project})
-
-@login_required
-def project_upload(request, project_id):
-    project = get_object_or_404(Project, id=project_id, user=request.user)
-    assets = project.assets.all().order_by('-updated_at')
-    return render(request, 'projects/project_detail.html', {
-        'project': project,
-        'tab': 'upload',
-        'assets': assets,
-    })
