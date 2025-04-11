@@ -5,7 +5,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from assets.views import AssetViewSet, AssetProcessingJobViewSet
+from api.views.asset_views import AssetViewSet, AssetProcessingJobViewSet
+
+
 
 router = DefaultRouter()
 router.register(r'assets', AssetViewSet, basename='asset')
@@ -14,7 +16,7 @@ router.register(r'asset-processing-jobs', AssetProcessingJobViewSet, basename='a
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    
+    path('api/', include('api.urls')),
     path('accounts/', include('accounts.urls', namespace='accounts')),
     path('projects/', include('projects.urls', namespace='projects')),
     path('prompts/', include('prompts.urls', namespace='prompts')),

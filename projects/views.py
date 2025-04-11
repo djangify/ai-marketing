@@ -79,7 +79,9 @@ def project_delete(request, project_id):
 @login_required
 def project_upload(request, project_id):
     project = get_object_or_404(Project, id=project_id, user=request.user)
-    return render(request, 'assets/upload_tab.html', {
+    assets = project.assets.all().order_by('-updated_at')
+    return render(request, 'projects/project_detail.html', {
         'project': project,
-        'project_id': project_id,
+        'tab': 'upload',
+        'assets': assets,
     })

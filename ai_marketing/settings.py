@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'content_templates',
     'prompts',
     'assets',
+    'api',
     'blog',
    
 ]
@@ -168,3 +169,19 @@ STRIPE_WEBHOOK_SECRET = 'your_webhook_signing_secret'
 STRIPE_PRICE_ID_MONTHLY = 'price_1RBA24BSytWSX0dbNigRddaw'
 STRIPE_PRICE_ID_QUARTERLY = 'price_1RBA5nBSytWSX0db0aRqPViR'
 STRIPE_PRICE_ID_YEARLY = 'price_1RBA7sBSytWSX0dbLcfpVxKw'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+}

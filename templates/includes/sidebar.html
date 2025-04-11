@@ -16,13 +16,16 @@
         </span>
         <span>Dashboard</span>
       </a>
-
-      <a href="{% url 'assets:project_upload' project.id %}" class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-lg font-medium py-2 px-4 rounded-lg {% if request.resolver_match.url_name == 'project_upload' %}active{% endif %}">
-        <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-        </svg>
-        <span>Upload Media</span>
+      
+      {% if project and project.id %}
+      <a href="{% url 'projects:project_upload' project_id=project.id %}" 
+         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-lg font-medium py-2 px-4 rounded-lg {% if request.resolver_match.url_name == 'project_upload' %}bg-gray-200 text-[#9810fa]{% endif %}">
+        <span class="mr-3">
+          <i class="fas fa-file-upload h-[22px] w-[22px]"></i>
+        </span>
+        <span>Project Assets</span>
       </a>
+      {% endif %}
       
       <a href="{% url 'projects:project_list' %}" 
          class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-lg font-medium py-2 px-4 rounded-lg {% if '/projects/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}">
