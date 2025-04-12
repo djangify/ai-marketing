@@ -77,9 +77,6 @@ ADMIN_URL = 'admin/'
 MAX_TOKENS_ASSETS = 100000
 MAX_TOKENS_PROMPT = 20000
 
-# Node.js processing service settings
-PROCESSING_SERVICE_URL = 'http://processing-api.yourdomain.com'
-PROCESSING_SERVICE_API_KEY = 'your_api_key'
 
 ROOT_URLCONF = 'ai_marketing.urls'
 
@@ -188,8 +185,8 @@ REST_FRAMEWORK = {
 }
 
 # Node.js processing service settings
-PROCESSING_SERVICE_URL = 'http://processing-api.yourdomain.com'
-PROCESSING_SERVICE_API_KEY = 'your_api_key'
+PROCESSING_SERVICE_URL = os.environ.get('PROCESSING_SERVICE_URL')
+PROCESSING_SERVICE_API_KEY = os.environ.get('PROCESSING_SERVICE_API_KEY')
 
 # OpenAI API settings
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
