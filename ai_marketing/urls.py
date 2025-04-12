@@ -23,6 +23,8 @@ urlpatterns = [
     path('templates/', include('content_templates.urls', namespace='content_templates')),
     path('blog/', include('blog.urls', namespace='blog')),
     path('', include('core.urls', namespace='core')),
+    path('content_generation/', include('content_generation.urls', namespace='content_generation')),
+    path('tinymce/', include('tinymce.urls')),
     path('assets/', include('assets.urls', namespace='assets')),
     path('subscriptions/', include('subscriptions.urls', namespace='subscriptions')),
     path('api/', include(router.urls)),

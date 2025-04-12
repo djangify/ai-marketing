@@ -1,0 +1,67 @@
+{% extends 'dashboard_layout.html' %}
+{% load static %}
+<!-- content_generation/templates/content_generation/generate.html -->
+
+{% block title %}Generate Content - {{ project.title }} - AI Marketing Platform{% endblock %}
+
+{% block dashboard_content %}
+<div class="max-w-screen-xl mx-auto p-4 sm:p-6 lg:p-8 bg-white space-y-12">
+    <!-- Project Header -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between md:justify-start md:space-x-2 w-full">
+        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 truncate py-1">
+            {{ project.title }}
+        </h1>
+        <div class="flex items-center space-x-2">
+            <a href="{% url 'projects:project_detail' project_id=project.id %}" 
+               class="rounded-full p-0 bg-gray-100 text-gray-500 flex items-center justify-center h-8 w-8 sm:h-10 sm:w-10 hover:text-main hover:bg-main/20">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- Content Generation Section -->
+    <div id="generate-tab" hx-trigger="load" hx-get="{% url 'content_generation:generation_status' project_id=project.id %}" hx-target="#content-status-container" hx-swap="innerHTML">
+        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-4 lg:mb-6">
+            <h2 class="text-xl md:text-2xl lg:text-2xl font-bold text-gray-800 mb-3 lg:mb-0">
+                Generate Content
+            </h2>
+            <button 
+                id="generate-content-button"
+                hx-post="{% url 'content_generation:start_generation' project_id=project.id %}"
+                hx-target="#content-status-container"
+                hx-swap="innerHTML"
+                hx-indicator="#loading-indicator"
+                class="bg-main/10 text-main font-semibold hover:bg-main/15 text-sm lg:text-md rounded-lg w-full lg:w-auto inline-flex items-center justify-center h-10 px-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Generate Content
+            </button>
+        </div>
+
+        <!-- Loading indicator -->
+        <div id="loading-indicator" class="htmx-indicator flex justify-center my-4">
+            <svg class="animate-spin h-5 w-5 text-main" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+        </div>
+
+        <!-- Content status and generated content will be loaded here -->
+        <div id="content-status-container">
+            <!-- Content will be loaded by HTMX -->
+            <div class="text-center py-10">
+                <svg class="animate-spin h-8 w-8 text-main mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <p>Loading content status...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/content_generation.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'dashboard_layout.html' %}
+{% load static %}
+<!-- content_generation/templates/content_generation/edit_content.html -->
+
+{% block title %}Edit Content - {{ project.title }} - AI Marketing Platform{% endblock %}
+
+{% block dashboard_content %}
+<div class="max-w-screen-xl mx-auto p-4 sm:p-6 lg:p-8 bg-white space-y-12">
+    <!-- Project Header -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between md:justify-start md:space-x-2 w-full">
+        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 truncate py-1">
+            Edit Content
+        </h1>
+        <div class="flex items-center space-x-2">
+            <a href="{% url 'projects:project_detail' project_id=project.id %}?tab=generate" 
+               class="rounded-full p-0 bg-gray-100 text-gray-500 flex items-center justify-center h-8 w-8 sm:h-10 sm:w-10 hover:text-main hover:bg-main/20">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- Edit Form -->
+    <div class="bg-gray-50 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-sm">
+        <h2 class="text-xl font-bold text-main mb-4">{{ content.name }}</h2>
+        
+        <form method="post" action="{% url 'content_generation:update_content' content_id=content.id %}" class="space-y-4">
+            {% csrf_token %}
+            
+            <div class="space-y-2">
+                <label for="result" class="block text-sm font-medium text-gray-700">Content</label>
+                <textarea 
+                    id="result" 
+                    name="result" 
+                    rows="15" 
+                    class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-main focus:border-main">{{ content.result }}</textarea>
+            </div>
+            
+            <div class="flex justify-end space-x-2 pt-4">
+                <a href="{% url 'projects:project_detail' project_id=project.id %}?tab=generate" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200">
+                    Cancel
+                </a>
+                <button type="submit" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-main hover:bg-main/90">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

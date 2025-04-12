@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from api.views import asset_views, content_views, prompt_views, subscription_views
+from api.views import asset_views, content_views, prompt_views, subscription_views, content_generation_views
 
 router = DefaultRouter()
 router.register(r'assets', asset_views.AssetViewSet)
@@ -9,6 +9,7 @@ router.register(r'prompts', prompt_views.PromptViewSet)
 router.register(r'generated-content', content_views.GeneratedContentViewSet)
 router.register(r'templates', prompt_views.TemplateViewSet)
 router.register(r'template-prompts', prompt_views.TemplatePromptViewSet)
+router.register(r'generation-jobs', content_generation_views.ContentGenerationJobViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -19,7 +20,9 @@ urlpatterns = [
     
     
     # Content generation endpoints
-    path('projects/<uuid:project_id>/generated-content/', content_views.project_generated_content, name='project_generated_content'),
+    path('projects/<uuid:project_id>/generation/', content_generation_views.project_generation, name='project_generation'),
+    path('projects/<uuid:project_id>/generated-content/', content_generation_views.project_generated_content, name='project_generated_content'),
+    path('generated-content/<uuid:content_id>/', content_generation_views.update_generated_content, name='update_generated_content'),
     
     
     # Prompt endpoints

@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'assets',
     'api',
     'blog',
+    'content_generation',
    
 ]
 
@@ -185,3 +186,12 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
 }
+
+# Node.js processing service settings
+PROCESSING_SERVICE_URL = 'http://processing-api.yourdomain.com'
+PROCESSING_SERVICE_API_KEY = 'your_api_key'
+
+# OpenAI API settings
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
+OPENAI_DEFAULT_MODEL = 'gpt-4o'
+OPENAI_FALLBACK_MODEL = 'gpt-4o-mini'
