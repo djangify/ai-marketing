@@ -15,7 +15,8 @@ class Asset(models.Model):
         ('markdown', 'Markdown'),
         ('audio', 'Audio'),
         ('video', 'Video'),
-        ('other', 'Other')
+        ('other', 'Other'),
+        ('pdf', 'PDF'),
     ])
     mime_type = models.CharField(max_length=100)
     size = models.BigIntegerField()
