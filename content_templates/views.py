@@ -6,6 +6,7 @@ from django.contrib import messages
 from .models import Template, TemplatePrompt
 from .forms import TemplateForm, TemplatePromptForm
 
+
 @login_required
 def template_list(request):
     templates = request.user.templates.all().order_by('-updated_at')
@@ -108,3 +109,89 @@ def template_prompt_edit(request, template_id):
     prompt_id = request.GET.get('prompt_id')
     prompt = get_object_or_404(TemplatePrompt, id=prompt_id, template=template)
     return render(request, 'content_templates/template_prompt_edit.html', {'prompt': prompt, 'template': template})
+
+@login_required
+def template_prompt_add(request, template_id):
+    """Display and handle the template prompt creation page."""
+    template = get_object_or_404(Template, id=template_id, user=request.user)
+    
+    if request.method == 'POST':
+        # Handle form submission
+        name = request.POST.get('name', 'New Prompt')
+        prompt_text = request.POST.get('prompt', '')
+        
+        # Get the highest order value
+        highest_order = TemplatePrompt.objects.filter(template=template).order_by('-order').values_list('order', flat=True).first() or -1
+        next_order = highest_order + 1
+        
+        # Calculate token count
+        from prompts.utils.token_helper import getPromptTokenCount
+        token_count = getPromptTokenCount(prompt_text)
+        
+        # Create a new prompt
+        template_prompt = TemplatePrompt.objects.create(
+            template=template,
+            name=name,
+            prompt=prompt_text,
+            order=next_order,
+            token_count=token_count
+        )
+        
+        messages.success(request, "Template prompt created successfully!")
+        return redirect('content_templates:template_detail', template_id=template.id)
+    
+    # Display the form
+    return render(request, 'content_templates/template_prompt_form.html', {'template': template})
+
+@login_required
+def template_prompt_edit_page(request, template_id, prompt_id):
+    """Display and handle the template prompt editing page."""
+    template = get_object_or_404(Template, id=template_id, user=request.user)
+    template_prompt = get_object_or_404(TemplatePrompt, id=prompt_id, template=template)
+    
+    if request.method == 'POST':
+        # Handle form submission
+        name = request.POST.get('name', template_prompt.name)
+        prompt_text = request.POST.get('prompt', template_prompt.prompt)
+        
+        # Calculate token count
+        from prompts.utils.token_helper import getPromptTokenCount
+        token_count = getPromptTokenCount(prompt_text)
+        
+        # Update the prompt
+        template_prompt.name = name
+        template_prompt.prompt = prompt_text
+        template_prompt.token_count = token_count
+        template_prompt.save()
+        
+        messages.success(request, "Template prompt updated successfully!")
+        return redirect('content_templates:template_detail', template_id=template.id)
+    
+    # Display the form
+    return render(request, 'content_templates/template_prompt_form.html', {'template': template, 'template_prompt': template_prompt})
+
+@login_required
+def template_prompt_delete_page(request, template_id, prompt_id):
+    """Delete a template prompt."""
+    template = get_object_or_404(Template, id=template_id, user=request.user)
+    try:
+        template_prompt = get_object_or_404(TemplatePrompt, id=prompt_id, template=template)
+        
+        if request.method == 'POST':
+            # Delete the prompt
+            template_prompt.delete()
+            
+            # Reorder remaining prompts
+            remaining_prompts = TemplatePrompt.objects.filter(template=template).order_by('order')
+            for i, p in enumerate(remaining_prompts):
+                p.order = i
+                p.save()
+            
+            messages.success(request, "Template prompt deleted successfully!")
+            return redirect('content_templates:template_detail', template_id=template.id)
+        
+        # Display the confirmation page
+        return render(request, 'content_templates/template_prompt_confirm_delete.html', {'template_prompt': template_prompt, 'template': template})
+    except Exception as e:
+        messages.error(request, f"Error deleting template prompt: {str(e)}")
+        return redirect('content_templates:template_detail', template_id=template.id)

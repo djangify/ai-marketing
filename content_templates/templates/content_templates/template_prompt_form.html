@@ -1,15 +1,15 @@
 {% extends 'dashboard_layout.html' %}
 {% load static %}
 
-{% block title %}{% if prompt %}Edit{% else %}Add{% endif %} Prompt - AI Marketing Platform{% endblock %}
+{% block title %}{% if template_prompt %}Edit{% else %}Add{% endif %} Template Prompt - AI Marketing Platform{% endblock %}
 
 {% block dashboard_content %}
 <div class="max-w-screen-xl mx-auto p-4 sm:p-6 lg:p-8 bg-white">
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
-            {% if prompt %}Edit{% else %}Create{% endif %} Prompt
+            {% if template_prompt %}Edit{% else %}Create{% endif %} Template Prompt
         </h1>
-        <a href="{% url 'projects:project_detail' project_id=project.id %}?tab=prompts" 
+        <a href="{% url 'content_templates:template_detail' template_id=template.id %}" 
            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-secondary/10 text-secondary font-semibold hover:bg-secondary/20 h-9 px-4 py-2">
             Cancel
         </a>
@@ -21,19 +21,19 @@
             
             <div class="space-y-2">
                 <label for="id_name" class="text-sm font-medium text-gray-700">Prompt Name</label>
-                <input type="text" name="name" id="id_name" value="{{ prompt.name|default:'' }}" 
+                <input type="text" name="name" id="id_name" value="{{ template_prompt.name|default:'' }}" 
                        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9810fa] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
             </div>
             
             <div class="space-y-2">
                 <label for="id_prompt" class="text-sm font-medium text-gray-700">Prompt Content</label>
                 <textarea name="prompt" id="id_prompt" rows="10" 
-                          class="w-full border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#9810fa] focus:border-[#9810fa] resize-none min-h-[50vh] sm:min-h-[60vh] text-base sm:text-lg p-3">{{ prompt.prompt|default:'' }}</textarea>
+                          class="w-full border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#9810fa] focus:border-[#9810fa] resize-none min-h-[50vh] sm:min-h-[60vh] text-base sm:text-lg p-3">{{ template_prompt.prompt|default:'' }}</textarea>
             </div>
             
             <div class="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
                 <span id="token-counter" class="flex justify-center text-sm sm:text-base font-medium rounded-lg py-2 px-3 w-full sm:w-auto bg-gray-100 text-gray-500">
-                    Tokens: {{ prompt.token_count|default:"0" }}/20000
+                    Tokens: {{ template_prompt.token_count|default:"0" }}/20000
                 </span>
                 <button type="submit" class="w-full text-sm sm:text-base sm:w-auto bg-[#9810fa] text-white hover:bg-[#9810fa]/90 rounded-lg px-4 py-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">

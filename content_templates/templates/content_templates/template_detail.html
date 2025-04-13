@@ -34,171 +34,87 @@
     <div class="bg-gray-50 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-sm">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 lg:mb-6">
             <h2 class="text-xl lg:text-2xl font-bold mb-3 sm:mb-0">Prompts</h2>
-            <button 
-                hx-post="{% url 'content_templates:template_prompt_create' template_id=template.id %}"
-                hx-target="#prompt-list-container"
-                hx-swap="innerHTML"
-                hx-indicator="#loading-indicator"
-                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                class=" font-semibold text-sm sm:text-base rounded-lg w-full sm:w-auto h-8 sm:h-10 inline-flex items-center justify-center">
+            <a href="{% url 'content_templates:template_prompt_add' template_id=template.id %}"
+               class="bg-[#9810fa]/10 font-semibold hover:bg-[#9810fa]/15 text-sm sm:text-base px-4 py-2 rounded-lg w-full sm:w-auto h-8 sm:h-10 inline-flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" strokeWidth="3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
                 Add Prompt
-            </button>
+            </a>
         </div>
-
-        <!-- Loading indicator -->
-        <div id="loading-indicator" class="htmx-indicator flex justify-center my-4">
-            <svg class="animate-spin h-5 w-5 text-[#9810fa]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-        </div>
-
         <!-- Prompt list container -->
-        <div id="prompt-list-container" class="space-y-6" hx-trigger="load" hx-get="{% url 'content_templates:template_prompt_list' template_id=template.id %}" hx-target="#prompt-list-container" hx-swap="innerHTML">
-            <div class="text-center py-10">
-                <svg class="animate-spin h-8 w-8 text-[#9810fa] mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <p>Loading prompts...</p>
-            </div>
-        </div>
-    </div>
+        <div id="prompt-list-container" class="space-y-6">
+            {% if prompts %}
+                <div class="space-y-4">
+                    {% for prompt in prompts %}
+                        <div class="bg-gray-50 border border-gray-200 rounded-xl shadow-sm hover:border-[#9810fa] hover:shadow-md hover:scale-[1.01] transition-all duration-300">
+                            <div class="p-4 sm:p-6 flex justify-between items-center">
+                                <div class="flex items-center flex-grow min-w-0 space-x-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-6 sm:w-6 text-[#9810fa] flex-shrink-0" strokeWidth="3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                    </svg>
+                                    <h3 class="font-semibold text-base sm:text-lg text-[#9810fa] truncate">
+                                        {{ prompt.name }}
+                                    </h3>
 
-    <!-- Modal container for prompt editor -->
-    <div id="modal-container"></div>
-</div>
+                                    {% if not prompt.prompt %}
+                                        <div class="bg-yellow-100 text-yellow-700 text-xs rounded-md px-1 py-0.5 sm:px-2 sm:py-1">
+                                            <span class="hidden sm:inline">Prompt empty</span>
+                                            <span class="sm:hidden">Empty</span>
+                                        </div>
+                                    {% endif %}
 
-<!-- Confirmation dialog template -->
-<template id="delete-confirmation-template">
-    <div class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center" id="delete-confirmation-modal">
-        <div class="max-w-md w-full bg-white rounded-xl p-6 shadow-lg">
-            <div class="flex flex-col space-y-4">
-                <h3 class="text-lg font-bold">Delete Prompt</h3>
-                <p>Are you sure you want to delete this prompt? This action cannot be undone.</p>
-                <div class="flex justify-end space-x-2 mt-4">
-                    <button class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2" onclick="closeDeleteConfirmation()">
-                        Cancel
-                    </button>
-                    <button id="confirm-delete-button" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 h-9 px-4 py-2">
-                        Delete
-                    </button>
+                                    {% if prompt.token_count > 20000 %}
+                                        <div class="bg-red-100 text-red-500 text-xs rounded-md px-1 py-0.5 sm:px-2 sm:py-1">
+                                            <span class="hidden sm:inline">Token Count Exceeded</span>
+                                            <span class="sm:hidden">Exceeded</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="flex space-x-1 flex-shrink-0 ml-2">
+                                    <a href="{% url 'content_templates:template_prompt_edit_page' template_id=template.id prompt_id=prompt.id %}" 
+                                    class="text-[#9810fa] hover:text-[#9810fa]/70 hover:bg-[#9810fa]/10 rounded-full w-6 h-6 sm:w-8 sm:h-8 p-0 flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </a>
+                                    <a href="{% url 'content_templates:template_prompt_delete_page' template_id=template.id prompt_id=prompt.id %}"
+                                    class="text-[#9810fa] hover:text-red-600 hover:bg-red-50 rounded-full w-6 h-6 sm:w-8 sm:h-8 p-0 flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-4 sm:w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                            {% if prompt.prompt %}
+                                <div class="px-4 sm:px-6 pb-4 sm:pb-6 pt-0">
+                                    <div class="bg-white p-3 rounded-lg text-gray-700 text-sm max-h-16 overflow-hidden">
+                                        {{ prompt.prompt|truncatechars:150 }}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
                 </div>
-            </div>
+            {% else %}
+                <div class="text-center py-12 bg-gray-50 rounded-xl shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <h3 class="text-lg font-medium text-gray-900">No prompts yet</h3>
+                    <p class="mt-2 text-sm text-gray-500">
+                        Add your first prompt to get started with this template
+                    </p>
+                </div>
+            {% endif %}
         </div>
     </div>
-</template>
 
+{% endblock %}
 <script>
-    let promptToDelete = null;
-    
-    function showDeleteConfirmation(promptId) {
-        promptToDelete = promptId;
-        
-        // Clone the template and append to body
-        const template = document.getElementById('delete-confirmation-template');
-        const modal = template.content.cloneNode(true);
-        document.body.appendChild(modal);
-        
-        // Add event listener to delete button
-        document.getElementById('confirm-delete-button').addEventListener('click', confirmDelete);
-    }
-    
-    function closeDeleteConfirmation() {
-        const modal = document.getElementById('delete-confirmation-modal');
-        if (modal) {
-            modal.remove();
-        }
-        promptToDelete = null;
-    }
-    
-    function confirmDelete() {
-        if (!promptToDelete) return;
-        
-        // Modified to use XMLHttpRequest for better compatibility
-        const xhr = new XMLHttpRequest();
-        const url = '{% url "content_templates:template_prompt_list" template_id=template.id %}?id=' + promptToDelete;
-        
-        xhr.open('DELETE', url, true);
-        xhr.setRequestHeader('X-CSRFToken', document.querySelector('[name=csrfmiddlewaretoken]').value);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4) {
-                closeDeleteConfirmation();
-                
-                if (xhr.status === 200) {
-                    try {
-                        const response = JSON.parse(xhr.responseText);
-                        if (response.status === 'success') {
-                            // Manually reload the prompt list container
-                            const promptListContainer = document.getElementById('prompt-list-container');
-                            htmx.ajax('GET', '{% url "content_templates:template_prompt_list" template_id=template.id %}', {
-                                target: promptListContainer,
-                                swap: 'innerHTML'
-                            });
-                            showNotification('Prompt deleted successfully');
-                        } else {
-                            showNotification('Error: ' + (response.message || 'Unknown error'), 'error');
-                        }
-                    } catch (e) {
-                        showNotification('Error parsing response', 'error');
-                    }
-                } else {
-                    showNotification('Error: HTTP status ' + xhr.status, 'error');
-                }
-            }
-        };
-        
-        xhr.send();
-    }
-    
-    function openPromptEditor(promptId) {
-        htmx.ajax('GET', '{% url "content_templates:template_prompt_edit" template_id=template.id %}?prompt_id=' + promptId, {
-            target: '#modal-container',
-            swap: 'innerHTML'
-        });
-    }
-    
-    // Handle click outside of modals to close them
-    document.addEventListener('click', function(event) {
-        // Check for delete confirmation modal
-        const deleteModal = document.getElementById('delete-confirmation-modal');
-        if (deleteModal && !event.target.closest('.max-w-md') && event.target.closest('#delete-confirmation-modal')) {
-            closeDeleteConfirmation();
-        }
-        
-        // Check for prompt editor modal
-        const promptEditor = document.getElementById('prompt-editor-modal');
-        if (promptEditor && !event.target.closest('.max-w-[90%]') && event.target.closest('#prompt-editor-modal')) {
-            closePromptEditor();
-        }
-    });
-    
-    function closePromptEditor() {
-        const modal = document.getElementById('prompt-editor-modal');
-        if (modal) {
-            modal.remove();
-        }
-    }
-    
     // Helper function to show notifications
     function showNotification(message, type = 'success') {
         // Simple alert for now, can be replaced with a more sophisticated notification system later
         alert(message);
     }
-
-    // Add to the script section at the bottom of the template
-    document.addEventListener('DOMContentLoaded', function() {
-        const addPromptBtn = document.querySelector('button[hx-post*="template_prompt_create"]');
-        if (addPromptBtn) {
-            addPromptBtn.addEventListener('click', function() {
-                console.log('Add Prompt button clicked');
-            });
-        }
-    });
 </script>
-{% endblock %}
