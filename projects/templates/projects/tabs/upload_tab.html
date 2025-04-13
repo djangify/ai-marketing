@@ -2,7 +2,7 @@
 <!-- projects/templates/projects/tabs/upload_tab.html -->
 
 <div id="upload-tab" hx-trigger="load" hx-get="{% url 'assets:asset_list' project_id=project.id %}" hx-target="#asset-list-container">
-    <h2 class="text-xl md:text-2xl lg:text-2xl font-bold mb-8">Step 1: Upload Media</h2>
+    <h2 class="text-xl md:text-2xl lg:text-2xl font-bold mb-8">Project Files Upload</h2>
     
     <!-- Upload Box -->
     <div id="upload-box" 
@@ -14,8 +14,8 @@
         <form id="upload-form" method="post" enctype="multipart/form-data" action="{% url 'assets:asset_upload' project_id=project.id %}" class="hidden">
             {% csrf_token %}
             <input type="file" id="file-input" name="files" multiple 
-                   accept=".mp4,.txt,.md,video/*,audio/*,text/plain,text/markdown"
-                   onchange="handleFileSelect(event)">
+                accept=".mp4,.txt,.md,.pdf,video/*,audio/*,text/plain,text/markdown,application/pdf"
+                onchange="handleFileSelect(event)">
         </form>
         
         <div id="upload-placeholder">
@@ -140,7 +140,7 @@
                 updateFileList();
                 
                 // Refresh assets list
-                htmx.trigger('#asset-list-container', 'hx-trigger:reload');
+                htmx.trigger('#asset-list-container', 'htmx:load');
                 
                 // Show success message
                 showNotification('Files uploaded successfully');
@@ -190,7 +190,7 @@
         .then(data => {
             if (data.success) {
                 // Refresh assets list
-                htmx.trigger('#asset-list-container', 'hx-trigger:reload');
+                htmx.trigger('#asset-list-container', 'htmx:load');
                 showNotification('Asset deleted successfully');
             } else {
                 showNotification('Error deleting asset: ' + data.error, 'error');

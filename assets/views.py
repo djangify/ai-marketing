@@ -1,17 +1,17 @@
 # assets/views.py
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import json
 import os
 import uuid
-import mimetypes
 from .models import Asset, AssetProcessingJob
 from projects.models import Project
-from .utils import create_asset_processing_job, get_token_count, process_text_file
+from .utils import create_asset_processing_job, determine_process_function
+
 
 @login_required
 def asset_list(request, project_id):
@@ -37,6 +37,7 @@ def asset_list(request, project_id):
     response['X-Usage-Stats'] = json.dumps(usage_stats)
     return response
 
+
 @login_required
 @require_POST
 def asset_upload(request, project_id):
@@ -46,6 +47,8 @@ def asset_upload(request, project_id):
         try:
             uploaded_files = request.FILES.getlist('files')
             results = []
+            
+            print(f"Received {len(uploaded_files)} files for upload")
             
             for file in uploaded_files:
                 # Generate a unique filename to avoid collisions
@@ -69,12 +72,16 @@ def asset_upload(request, project_id):
                 content = ""
                 token_count = 0
                 
-                # Process text files immediately for content
-                if file_type in ['text', 'markdown']:
-                    try:
-                        content, token_count = process_text_file(file_path)
-                    except Exception as e:
-                        print(f"Error processing text file: {e}")
+                # Process files immediately for content when possible
+                try:
+                    process_func = determine_process_function(file_type, file.content_type)
+                    content, token_count = process_func(file_path)
+                except Exception as e:
+                    print(f"Error processing file: {e}")
+                    content = ""
+                    token_count = 0
+                
+                print(f"About to create asset with title: {file.name}")
                 
                 # Create asset in database
                 asset = Asset.objects.create(
@@ -92,6 +99,7 @@ def asset_upload(request, project_id):
                 # Create processing job for audio and video files
                 if file_type in ['audio', 'video']:
                     create_asset_processing_job(asset, project)
+                    print(f"Created processing job for asset: {asset.id}")
                 else:
                     # For text files, mark as completed
                     AssetProcessingJob.objects.create(
@@ -100,6 +108,7 @@ def asset_upload(request, project_id):
                         status='completed',
                         attempts=0,
                     )
+                    print(f"Created completed processing job for asset: {asset.id}")
                 
                 results.append({
                     'id': str(asset.id),
@@ -110,10 +119,12 @@ def asset_upload(request, project_id):
             return JsonResponse({'success': True, 'files': results})
         
         except Exception as e:
+            print(f"Exception during file upload: {str(e)}")
             return JsonResponse({'success': False, 'error': str(e)})
     
     # Handle non-AJAX requests
     return redirect('projects:project_detail', project_id=project_id, tab='upload')
+
 
 @login_required
 @csrf_exempt
@@ -195,6 +206,8 @@ def determine_file_type(filename, mime_type):
         return 'text'
     elif mime_type == 'text/markdown':
         return 'markdown'
+    elif mime_type == 'application/pdf':
+        return 'pdf'
     else:
         # Try to determine based on file extension
         ext = os.path.splitext(filename)[1].lower()
@@ -206,5 +219,6 @@ def determine_file_type(filename, mime_type):
             return 'markdown'
         elif ext == '.txt':
             return 'text'
+        elif ext == '.pdf':
+            return 'pdf'
         return 'other'
-    

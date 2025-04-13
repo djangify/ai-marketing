@@ -174,7 +174,7 @@ function startContentPolling() {
                 } else {
                     // Generation finished, refresh the content display
                     clearInterval(contentGenerationInterval);
-                    htmx.trigger('#content-status-container', 'hx-trigger:reload');
+                    htmx.trigger('#content-status-container', 'htmx:load');
                     
                     // Re-enable the generate button
                     const generateButton = document.getElementById('generate-content-button');

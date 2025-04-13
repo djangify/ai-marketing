@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from .models import Prompt
-from .forms import PromptForm
+from django.urls import reverse
 from content_templates.models import Template, TemplatePrompt
 from projects.models import Project
 import json
@@ -24,7 +24,7 @@ def prompt_add_page(request, project_id):
         next_order = highest_order + 1
         
         # Calculate token count
-        from utils.token_helper import getPromptTokenCount
+        from prompts.utils.token_helper import getPromptTokenCount
         token_count = getPromptTokenCount(prompt_text)
         
         # Create a new prompt
@@ -37,7 +37,7 @@ def prompt_add_page(request, project_id):
         )
         
         messages.success(request, "Prompt created successfully!")
-        return redirect('projects:project_detail', project_id=project.id, tab='prompts')
+        return redirect(reverse('projects:project_detail', kwargs={'project_id': project.id}) + '?tab=prompts')
     
     # Display the form
     return render(request, 'prompts/prompt_create.html', {'project': project})  
