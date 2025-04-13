@@ -87,13 +87,15 @@ def prompt_delete(request, project_id, prompt_id):
                 p.save()
             
             messages.success(request, "Prompt deleted successfully!")
-            return redirect('projects:project_detail', project_id=project.id, tab='prompts')
+            base_url = reverse('projects:project_detail', kwargs={'project_id': project.id})
+            return redirect(f"{base_url}?tab=prompts")
         
         # Display the confirmation page
         return render(request, 'prompts/prompt_confirm_delete.html', {'prompt': prompt, 'project': project})
     except Exception as e:
         messages.error(request, f"Error deleting prompt: {str(e)}")
-        return redirect('projects:project_detail', project_id=project.id, tab='prompts')
+        base_url = reverse('projects:project_detail', kwargs={'project_id': project.id})
+        return redirect(f"{base_url}?tab=prompts")
     
 
 @login_required
