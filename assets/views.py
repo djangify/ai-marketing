@@ -222,3 +222,31 @@ def determine_file_type(filename, mime_type):
         elif ext == '.pdf':
             return 'pdf'
         return 'other'
+    
+@login_required
+def all_assets(request):
+    # Get all projects for the user
+    projects = Project.objects.filter(user=request.user)
+    
+    # Get all assets across all projects
+    assets = Asset.objects.filter(project__user=request.user).order_by('-updated_at')
+    
+    # Calculate total token count for usage stats
+    total_token_count = sum(asset.token_count or 0 for asset in assets)
+    max_tokens = settings.MAX_TOKENS_ASSETS
+    
+    # Add usage stats to response headers
+    usage_stats = {
+        'totalTokenCount': total_token_count,
+        'maxTokens': max_tokens,
+    }
+    
+    context = {
+        'assets': assets,
+        'project': None,  # No specific project
+        'all_projects': True,
+    }
+    
+    response = render(request, 'assets/all_assets.html', context)
+    response['X-Usage-Stats'] = json.dumps(usage_stats)
+    return response

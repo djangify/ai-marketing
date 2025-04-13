@@ -10,4 +10,5 @@ urlpatterns = [
     path('<uuid:project_id>/assets/delete/', views.asset_delete, name='asset_delete'),
     path('<uuid:project_id>/assets/<uuid:asset_id>/', views.asset_detail, name='asset_detail'),
     path('<uuid:project_id>/asset-processing-jobs/', views.asset_processing_jobs, name='asset_processing_jobs'),
+    path('all/', views.all_assets, name='all_assets'),
 ]
