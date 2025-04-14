@@ -11,6 +11,7 @@ import uuid
 from .models import Asset, AssetProcessingJob
 from projects.models import Project
 from .utils import create_asset_processing_job, determine_process_function
+from django.contrib import messages
 
 
 @login_required
@@ -53,6 +54,28 @@ def asset_upload(request, project_id):
             for file in uploaded_files:
                 # Generate a unique filename to avoid collisions
                 filename = f"{project_id}/{uuid.uuid4()}_{file.name}"
+                
+                # Check for duplicate file names
+                existing_assets = Asset.objects.filter(project=project, title=file.name)
+                
+                # If this is a duplicate, let the client know
+                if existing_assets.exists() and not request.POST.get('overwrite'):
+                    return JsonResponse({
+                        'success': False, 
+                        'error': 'duplicate', 
+                        'duplicate': True,
+                        'filename': file.name,
+                        'message': f"File '{file.name}' already exists. Do you want to overwrite it?"
+                    })
+                
+                # If overwrite is confirmed, delete the existing assets
+                if existing_assets.exists() and request.POST.get('overwrite') == 'true':
+                    for asset in existing_assets:
+                        # Delete file from storage
+                        old_path = os.path.join(settings.MEDIA_ROOT, asset.file_name)
+                        if os.path.exists(old_path):
+                            os.remove(old_path)
+                        asset.delete()
                 
                 # Determine file type
                 file_type = determine_file_type(file.name, file.content_type)
@@ -116,6 +139,9 @@ def asset_upload(request, project_id):
                     'url': asset.file_url,
                 })
             
+            # Add success message for the request object
+            messages.success(request, "Files uploaded successfully")
+            
             return JsonResponse({'success': True, 'files': results})
         
         except Exception as e:
@@ -123,6 +149,7 @@ def asset_upload(request, project_id):
             return JsonResponse({'success': False, 'error': str(e)})
     
     # Handle non-AJAX requests
+    messages.error(request, "Direct form submission not supported. Please use the upload interface.")
     return redirect('projects:project_detail', project_id=project_id, tab='upload')
 
 
@@ -146,12 +173,24 @@ def asset_delete(request, project_id):
             # Delete the asset record (cascade will delete the processing job)
             asset.delete()
             
-            return JsonResponse({'success': True, 'message': 'Asset deleted successfully'})
+            # Add success message
+            messages.success(request, "Asset deleted successfully")
+            
+            # For AJAX requests, still return JSON response
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': True, 'message': 'Asset deleted successfully'})
+            
+            # For regular requests, redirect to project detail page
+            return redirect('projects:project_detail', project_id=project.id, tab='upload')
         
         except Exception as e:
-            return JsonResponse({'success': False, 'error': str(e)}, status=500)
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'success': False, 'error': str(e)}, status=500)
+            messages.error(request, f"Error deleting asset: {str(e)}")
+            return redirect('projects:project_detail', project_id=project.id, tab='upload')
     
     return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
+
 
 @login_required
 def asset_detail(request, project_id, asset_id):
