@@ -50,6 +50,7 @@
         }
     }
   
+    // Update the importSelectedTemplate function in template_selection.html
     function importSelectedTemplate() {
         const templateSelect = document.getElementById('template-select');
         if (!templateSelect) {
@@ -60,7 +61,7 @@
         const templateId = templateSelect.value;
         
         if (!templateId) {
-            // Redirect to show message
+            // Navigate to the full page template selection with error instead of showing modal error
             window.location.href = "{% url 'prompts:template_selection' project_id=project.id %}?error=Please select a template";
             return;
         }

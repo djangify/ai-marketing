@@ -111,35 +111,54 @@ def prompt_edit(request, project_id):
     prompt = get_object_or_404(Prompt, id=prompt_id, project=project)
     return render(request, 'prompts/prompt_edit.html', {'prompt': prompt, 'project': project})
 
+
 @login_required
 def template_selection(request, project_id):
     project = get_object_or_404(Project, id=project_id, user=request.user)
     templates = Template.objects.filter(user=request.user)
     
-    # Check for error or message parameters
+    # Check if this is an error page or a modal
     error = request.GET.get('error')
+    
+    # If error parameter exists, serve a full page rather than modal
     if error:
-        messages.error(request, error)
-    
-    message = request.GET.get('message')
-    if message:
-        messages.success(request, message)
-    
-    return render(request, 'prompts/template_selection.html', {'templates': templates, 'project': project})
-
+        context = {
+            'templates': templates,
+            'project': project,
+            'error': error,
+            'is_error_page': True
+        }
+        return render(request, 'prompts/template_selection_page.html', context)
+        
+    # Otherwise, serve the modal as normal
+    context = {
+        'templates': templates,
+        'project': project
+    }
+    return render(request, 'prompts/template_selection.html', context)
 
 @login_required
 def import_template(request, project_id):
+    project = get_object_or_404(Project, id=project_id, user=request.user)
+    
     if request.method != 'POST':
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=400)
     
     try:
-        data = json.loads(request.body)
-        template_id = data.get('templateId')
+        # Handle both AJAX JSON and form submissions
+        if request.headers.get('Content-Type') == 'application/json':
+            data = json.loads(request.body)
+            template_id = data.get('templateId')
+        else:
+            template_id = request.POST.get('templateId')
+            
         if not template_id:
-            return JsonResponse({'status': 'error', 'message': 'Template ID is required'}, status=400)
+            error_message = "Please select a template"
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'error', 'message': error_message}, status=400)
+            else:
+                return redirect(reverse('prompts:template_selection', kwargs={'project_id': project.id}) + f"?error={error_message}")
         
-        project = get_object_or_404(Project, id=project_id, user=request.user)
         template = get_object_or_404(Template, id=template_id, user=request.user)
         
         # Fetch template prompts
@@ -150,10 +169,11 @@ def import_template(request, project_id):
         existing_prompts = Prompt.objects.filter(project=project, name__in=template_prompt_names)
         
         if existing_prompts.exists():
-            return JsonResponse({
-                'status': 'error', 
-                'message': f'This template appears to be already imported into this project',
-            }, status=400)
+            error_message = "This template appears to be already imported into this project"
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({'status': 'error', 'message': error_message}, status=400)
+            else:
+                return redirect(reverse('prompts:template_selection', kwargs={'project_id': project.id}) + f"?error={error_message}")
         
         # Fetch all existing project prompts
         existing_prompts = Prompt.objects.filter(project=project)
@@ -176,15 +196,23 @@ def import_template(request, project_id):
         # Store success message in session
         request.session['import_success'] = f"Successfully imported {len(new_prompts)} prompts from template: {template.title}"
         
-        # Return the newly created prompts as JSON
-        return JsonResponse([{
-            'id': str(p.id),
-            'name': p.name,
-            'prompt': p.prompt,
-            'order': p.order,
-            'token_count': p.token_count
-        } for p in new_prompts], safe=False)
+        # Return based on request type
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            # Return the newly created prompts as JSON for AJAX
+            return JsonResponse([{
+                'id': str(p.id),
+                'name': p.name,
+                'prompt': p.prompt,
+                'order': p.order,
+                'token_count': p.token_count
+            } for p in new_prompts], safe=False)
+        else:
+            # Redirect for form submission
+            return redirect('projects:project_detail', project_id=project.id, tab='prompts')
         
     except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-    
+        error_message = str(e)
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'status': 'error', 'message': error_message}, status=500)
+        else:
+            return redirect(reverse('prompts:template_selection', kwargs={'project_id': project.id}) + f"?error={error_message}")
