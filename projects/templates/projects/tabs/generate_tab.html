@@ -1,208 +1,43 @@
-/**
- * content_generation.js
- * Handles client-side functionality for content generation
- */
+{% load static %}
+<!-- projects/templates/projects/tabs/generate_tab.html -->
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialize content generation functionality
-    initializeContentGeneration();
-});
+<div id="generate-tab" hx-trigger="load" hx-get="{% url 'content_generation:generation_status' project_id=project.id %}" hx-target="#content-status-container" hx-swap="innerHTML">
+    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-4 lg:mb-6">
+        <h2 class="text-xl md:text-2xl lg:text-2xl font-bold text-gray-800 mb-3 lg:mb-0">
+            Step 3: Generate Content
+        </h2>
+        <button 
+            id="generate-content-button"
+            hx-post="{% url 'content_generation:start_generation' project_id=project.id %}"
+            hx-target="#content-status-container"
+            hx-swap="innerHTML"
+            hx-indicator="#loading-indicator"
+            class="bg-main/10 text-main font-semibold hover:bg-main/15 text-sm lg:text-md rounded-lg w-full lg:w-auto inline-flex items-center justify-center h-10 px-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            Generate Content
+        </button>
+    </div>
 
-// Initialize after HTMX swaps
-document.addEventListener('htmx:afterSwap', function(event) {
-    if (event.detail.target.id === 'content-status-container') {
-        initializeContentCards();
-        
-        // If currently generating, start the polling
-        if (document.querySelector('.generating-content') || 
-            document.querySelector('.progress-bar')) {
-            startContentPolling();
-        }
-    }
-});
+    <!-- Loading indicator -->
+    <div id="loading-indicator" class="htmx-indicator flex justify-center my-4">
+        <svg class="animate-spin h-5 w-5 text-main" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+    </div>
 
-// Content generation polling interval
-let contentGenerationInterval;
-
-function initializeContentGeneration() {
-    // Add event listener to generation button
-    const generateButton = document.getElementById('generate-content-button');
-    if (generateButton) {
-        generateButton.addEventListener('click', function() {
-            // Disable button to prevent multiple clicks
-            generateButton.disabled = true;
-            generateButton.classList.add('opacity-50');
-        });
-    }
-}
-
-function initializeContentCards() {
-    document.querySelectorAll('.content-card').forEach(card => {
-        const contentId = card.dataset.contentId;
-        
-        // Set up edit button
-        const editButton = card.querySelector('.edit-button');
-        if (editButton) {
-            editButton.addEventListener('click', () => {
-                toggleEditMode(card, true);
-            });
-        }
-        
-        // Set up copy button
-        const copyButton = card.querySelector('.copy-button');
-        if (copyButton) {
-            copyButton.addEventListener('click', () => {
-                const content = card.querySelector('.content-display').textContent;
-                copyToClipboard(content);
-            });
-        }
-        
-        // Set up cancel button
-        const cancelButton = card.querySelector('.cancel-edit-button');
-        if (cancelButton) {
-            cancelButton.addEventListener('click', () => {
-                toggleEditMode(card, false);
-            });
-        }
-        
-        // Set up save button
-        const saveButton = card.querySelector('.save-edit-button');
-        if (saveButton) {
-            saveButton.addEventListener('click', () => {
-                saveContent(card);
-            });
-        }
-    });
-}
-
-function toggleEditMode(card, isEditing) {
-    const displayDiv = card.querySelector('.content-display');
-    const editForm = card.querySelector('.content-edit-form');
-    const textarea = editForm.querySelector('textarea');
-    
-    if (isEditing) {
-        textarea.value = displayDiv.textContent;
-        displayDiv.classList.add('hidden');
-        editForm.classList.remove('hidden');
-        textarea.focus();
-    } else {
-        displayDiv.classList.remove('hidden');
-        editForm.classList.add('hidden');
-    }
-}
-
-function copyToClipboard(text) {
-    navigator.clipboard.writeText(text).then(() => {
-        showNotification('Copied to clipboard');
-    }).catch(err => {
-        console.error('Could not copy text: ', err);
-        showNotification('Failed to copy to clipboard', 'error');
-    });
-}
-
-function saveContent(card) {
-    const contentId = card.dataset.contentId;
-    const newContent = card.querySelector('textarea').value;
-    const saveButton = card.querySelector('.save-edit-button');
-    const originalText = saveButton.innerHTML;
-    
-    // Show loading state
-    saveButton.innerHTML = '<svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Saving...';
-    saveButton.disabled = true;
-    
-    // Get the CSRF token from the meta tag
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') ||
-                      document.querySelector('input[name="csrfmiddlewaretoken"]')?.value;
-    
-    // Send request to save content
-    fetch(`/content_generation/api/${contentId}/edit/`, {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken
-        },
-        body: JSON.stringify({
-            result: newContent
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.id) {
-            // Update the display
-            card.querySelector('.content-display').textContent = newContent;
-            toggleEditMode(card, false);
-            showNotification('Changes saved successfully');
-        } else {
-            showNotification('Failed to save changes: ' + (data.error || 'Unknown error'), 'error');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showNotification('Failed to save changes', 'error');
-    })
-    .finally(() => {
-        // Reset button
-        saveButton.innerHTML = originalText;
-        saveButton.disabled = false;
-    });
-}
-
-function startContentPolling() {
-    // Clear any existing polling interval
-    if (contentGenerationInterval) {
-        clearInterval(contentGenerationInterval);
-    }
-    
-    // Get the project ID from the URL
-    const urlParts = window.location.pathname.split('/');
-    const projectIdIndex = urlParts.indexOf('projects') + 1;
-    const projectId = urlParts[projectIdIndex];
-    
-    if (!projectId) {
-        console.error('Could not determine project ID from URL');
-        return;
-    }
-    
-    // Set up polling interval
-    contentGenerationInterval = setInterval(() => {
-        fetch(`/content_generation/${projectId}/status/?format=json`)
-            .then(response => response.json())
-            .then(data => {
-                // Update progress if still generating
-                if (data.isGenerating) {
-                    updateProgressBar(data.generatedCount, data.totalPrompts);
-                } else {
-                    // Generation finished, refresh the content display
-                    clearInterval(contentGenerationInterval);
-                    htmx.trigger('#content-status-container', 'htmx:load');
-                    
-                    // Re-enable the generate button
-                    const generateButton = document.getElementById('generate-content-button');
-                    if (generateButton) {
-                        generateButton.disabled = false;
-                        generateButton.classList.remove('opacity-50');
-                    }
-                }
-            })
-            .catch(error => {
-                console.error('Error polling content status:', error);
-            });
-    }, 2000); // Poll every 2 seconds
-}
-
-function updateProgressBar(generatedCount, totalPrompts) {
-    const progressBar = document.querySelector('.progress-bar');
-    const progressText = document.querySelector('.progress-text');
-    
-    if (progressBar && progressText && totalPrompts > 0) {
-        const percentage = (generatedCount / totalPrompts) * 100;
-        progressBar.style.width = `${percentage}%`;
-        progressText.textContent = `Generated ${generatedCount} of ${totalPrompts} prompts`;
-    }
-}
-
-function showNotification(message, type = 'success') {
-    // Simple notification implementation
-    // Replace with your preferred notification system
-    alert(message);
-}
+    <!-- Content status and generated content will be loaded here -->
+    <div id="content-status-container">
+        <!-- Content will be loaded by HTMX -->
+        <div class="text-center py-10">
+            <svg class="animate-spin h-8 w-8 text-main mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <p>Loading content status...</p>
+        </div>
+    </div>
+    <script src="{% static 'js/projects_upload_tab.js' %}"></script>
+</div>
