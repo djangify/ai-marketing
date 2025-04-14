@@ -1,5 +1,6 @@
 {% extends 'dashboard_layout.html' %}
 {% load static %}
+
 <!-- templates/accounts/dashboard.html -->
 
 {% block title %}Dashboard - AI Marketing Platform{% endblock %}
@@ -9,19 +10,42 @@
     <div class="p-6">
         <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
         
-        <div class="bg-blue-50 p-6 rounded-lg mb-6">
-            <h2 class="text-xl font-semibold mb-4">Welcome, {{ user.username }}!</h2>
-            <p class="text-gray-700">This is your AI Marketing Platform dashboard. Here's a summary of your activity:</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            <div class="bg-white p-4 rounded-lg shadow text-center">
+                <div class="text-4xl font-bold text-main">{{ projects.count }}</div>
+                <div class="text-gray-500">Projects</div>
+            </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
-                <div class="bg-white p-4 rounded-lg shadow text-center">
-                    <div class="text-4xl font-bold text-main">{{ projects.count }}</div>
-                    <div class="text-gray-500">Projects</div>
+            <div class="bg-white p-4 rounded-lg shadow">
+                <div class="flex justify-between items-center mb-1">
+                    <div class="text-gray-500">Prompt Tokens</div>
+                    <div class="text-sm text-gray-500">{{ prompt_data.formatted_token_count }} / {{ prompt_data.max_tokens }}</div>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                    <div class="bg-[#9810fa] h-2.5 rounded-full" style="width: {{ prompt_data.percentage }}%"></div>
+                </div>
+                <div class="flex justify-between items-center">
+                    <div class="text-xs text-gray-500">{{ prompt_data.percentage }}% used</div>
+                    <div class="text-xs text-gray-500">{{ prompt_data.prompts_count }} prompts</div>
+                </div>
+            </div>
+            
+            <div class="bg-white p-4 rounded-lg shadow">
+                <div class="flex justify-between items-center mb-1">
+                    <div class="text-gray-500">Asset Tokens</div>
+                    <div class="text-sm text-gray-500">{{ asset_data.formatted_token_count }} / {{ asset_data.max_tokens }}</div>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+                    <div class="bg-[#9810fa] h-2.5 rounded-full" style="width: {{ asset_data.percentage }}%"></div>
+                </div>
+                <div class="flex justify-between items-center">
+                    <div class="text-xs text-gray-500">{{ asset_data.percentage }}% used</div>
+                    <div class="text-xs text-gray-500">{{ asset_data.assets_count }} assets</div>
                 </div>
             </div>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 mt-8 gap-6">
             <div>
                 <h3 class="text-lg font-semibold mb-4">Recent Projects</h3>
                 {% if projects %}

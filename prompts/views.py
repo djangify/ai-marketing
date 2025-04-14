@@ -115,7 +115,18 @@ def prompt_edit(request, project_id):
 def template_selection(request, project_id):
     project = get_object_or_404(Project, id=project_id, user=request.user)
     templates = Template.objects.filter(user=request.user)
+    
+    # Check for error or message parameters
+    error = request.GET.get('error')
+    if error:
+        messages.error(request, error)
+    
+    message = request.GET.get('message')
+    if message:
+        messages.success(request, message)
+    
     return render(request, 'prompts/template_selection.html', {'templates': templates, 'project': project})
+
 
 @login_required
 def import_template(request, project_id):
@@ -133,6 +144,16 @@ def import_template(request, project_id):
         
         # Fetch template prompts
         template_prompts = TemplatePrompt.objects.filter(template=template).order_by('order')
+        
+        # Check if this template is already imported
+        template_prompt_names = [tp.name for tp in template_prompts]
+        existing_prompts = Prompt.objects.filter(project=project, name__in=template_prompt_names)
+        
+        if existing_prompts.exists():
+            return JsonResponse({
+                'status': 'error', 
+                'message': f'This template appears to be already imported into this project',
+            }, status=400)
         
         # Fetch all existing project prompts
         existing_prompts = Prompt.objects.filter(project=project)
@@ -152,6 +173,9 @@ def import_template(request, project_id):
             )
             new_prompts.append(prompt)
         
+        # Store success message in session
+        request.session['import_success'] = f"Successfully imported {len(new_prompts)} prompts from template: {template.title}"
+        
         # Return the newly created prompts as JSON
         return JsonResponse([{
             'id': str(p.id),
@@ -163,3 +187,4 @@ def import_template(request, project_id):
         
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    

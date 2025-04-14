@@ -31,6 +31,11 @@ def project_create(request):
 @login_required
 def project_detail(request, project_id):
     project = get_object_or_404(Project, id=project_id, user=request.user)
+     # Check for success message from template import
+    if 'import_success' in request.session:
+        messages.success(request, request.session['import_success'])
+        del request.session['import_success']  # Clear the message from session
+        
     tab = request.GET.get('tab', 'upload')
     
     context = {
