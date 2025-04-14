@@ -1,13 +1,13 @@
 {% load static %}
 <!-- projects/templates/projects/tabs/upload_tab.html -->
 
-<div id="upload-tab" hx-trigger="load" hx-get="{% url 'assets:asset_list' project_id=project.id %}" hx-target="#asset-list-container">
+<div id="upload-tab" data-project-id="{{ project.id }}" hx-trigger="load" hx-get="{% url 'assets:asset_list' project_id=project.id %}" hx-target="#asset-list-container">
     <h2 class="text-xl md:text-2xl lg:text-2xl font-bold mb-8">Project Files Upload</h2>
     
     <!-- Upload Box -->
     <div id="upload-box" 
          class="p-10 border-2 border-dashed border-[#9810fa] bg-white rounded-3xl text-center cursor-pointer mb-10"
-         onclick="document.getElementById('file-input').click();"
+         onclick="handleBoxClick(event);"
          ondragover="event.preventDefault();"
          ondrop="handleDrop(event)">
         
@@ -47,7 +47,7 @@
             <div id="usage-stats" class="w-full sm:max-w-xs space-y-2"></div>
         </div>
         
-        <div id="asset-list-container">
+        <div id="asset-list-container" hx-get="{% url 'assets:asset_list' project_id=project.id %}" hx-trigger="load">
             <!-- Asset list will be loaded by HTMX -->
             <div class="flex justify-center p-8">
                 <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-[#9810fa]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -58,6 +58,7 @@
             </div>
         </div>
     </div>
+    <script src="{% static 'js/projects_upload_tab.js' %}"></script>
 </div>
 
 <!-- Modal Template -->
@@ -71,189 +72,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    let selectedFiles = [];
-    let assetToDelete = null;
-    
-    function handleFileSelect(event) {
-        selectedFiles = Array.from(event.target.files);
-        updateFileList();
-    }
-    
-    function handleDrop(event) {
-        event.preventDefault();
-        if (event.dataTransfer.files) {
-            selectedFiles = Array.from(event.dataTransfer.files);
-            updateFileList();
-        }
-    }
-    
-    function updateFileList() {
-        const fileList = document.getElementById('file-list');
-        const placeholder = document.getElementById('upload-placeholder');
-        const selectedFilesDiv = document.getElementById('selected-files');
-        
-        if (selectedFiles.length > 0) {
-            fileList.innerHTML = '';
-            selectedFiles.forEach(file => {
-                const li = document.createElement('li');
-                li.textContent = file.name;
-                fileList.appendChild(li);
-            });
-            
-            placeholder.classList.add('hidden');
-            selectedFilesDiv.classList.remove('hidden');
-        } else {
-            placeholder.classList.remove('hidden');
-            selectedFilesDiv.classList.add('hidden');
-        }
-    }
-    
-    document.getElementById('upload-button').addEventListener('click', function() {
-        const formData = new FormData();
-        
-        selectedFiles.forEach(file => {
-            formData.append('files', file);
-        });
-        
-        // Show loading state
-        const uploadButton = document.getElementById('upload-button');
-        const originalText = uploadButton.innerHTML;
-        uploadButton.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Uploading...';
-        uploadButton.disabled = true;
-        
-        fetch('{% url "assets:asset_upload" project_id=project.id %}', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Reset form
-                selectedFiles = [];
-                document.getElementById('file-input').value = '';
-                updateFileList();
-                
-                // Refresh assets list
-                htmx.trigger('#asset-list-container', 'htmx:load');
-                
-                // Show success message
-                showNotification('Files uploaded successfully');
-            } else {
-                showNotification('Error uploading files: ' + data.error, 'error');
-            }
-        })
-        .catch(error => {
-            showNotification('Error uploading files', 'error');
-            console.error('Error:', error);
-        })
-        .finally(() => {
-            // Reset button
-            uploadButton.innerHTML = originalText;
-            uploadButton.disabled = false;
-        });
-    });
-    
-    function showDeleteModal(assetId) {
-        assetToDelete = assetId;
-        const modal = document.getElementById('delete-modal');
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        document.getElementById('confirm-delete-btn').addEventListener('click', confirmDelete);
-    }
-    
-    function closeDeleteModal() {
-        const modal = document.getElementById('delete-modal');
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        document.getElementById('confirm-delete-btn').removeEventListener('click', confirmDelete);
-        assetToDelete = null;
-    }
-    
-    function confirmDelete() {
-        if (!assetToDelete) return;
-        
-        fetch(`{% url 'assets:asset_delete' project_id=project.id %}?asset_id=${assetToDelete}`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Refresh assets list
-                htmx.trigger('#asset-list-container', 'htmx:load');
-                showNotification('Asset deleted successfully');
-            } else {
-                showNotification('Error deleting asset: ' + data.error, 'error');
-            }
-        })
-        .catch(error => {
-            showNotification('Error deleting asset', 'error');
-            console.error('Error:', error);
-        })
-        .finally(() => {
-            closeDeleteModal();
-        });
-    }
-    
-    function showNotification(message, type = 'success') {
-        // Simple notification - replace with your preferred notification system
-        alert(message);
-    }
-    
-    // Update usage stats
-    function updateUsageStats(data) {
-        const statsContainer = document.getElementById('usage-stats');
-        if (!statsContainer || !data) return;
-        
-        const totalTokens = data.totalTokenCount || 0;
-        const maxTokens = data.maxTokens || 100000;
-        const percentage = Math.min((totalTokens / maxTokens) * 100, 100);
-        const isExceeded = totalTokens > maxTokens;
-        
-        statsContainer.innerHTML = `
-            <p class="text-sm text-center sm:text-right truncate ${isExceeded ? 'text-red-500 font-medium' : 'text-gray-600'}">
-                ${isExceeded ? 'Content Limit Exceeded. Please delete assets' : `${Math.round(percentage)}% of ${maxTokens.toLocaleString()} tokens used`}
-            </p>
-            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-1">
-                <div class="${isExceeded ? 'bg-red-500' : 'bg-[#9810fa]'} h-2.5 rounded-full" style="width: ${percentage}%"></div>
-            </div>
-        `;
-    }
-    
-    // HTMX event listeners - combining both approaches for robustness
-    document.addEventListener('htmx:afterSwap', function(event) {
-        if (event.detail.target.id === 'asset-list-container') {
-            const statsData = event.detail.xhr.getResponseHeader('X-Usage-Stats');
-            if (statsData) {
-                try {
-                    updateUsageStats(JSON.parse(statsData));
-                } catch (e) {
-                    console.error('Error parsing usage stats:', e);
-                }
-            }
-        }
-    });
-    
-    document.addEventListener('htmx:load', function(event) {
-        if (event.detail.elt.id === 'asset-list-container') {
-            const statsData = event.detail.xhr.getResponseHeader('X-Usage-Stats');
-            if (statsData) {
-                try {
-                    updateUsageStats(JSON.parse(statsData));
-                } catch (e) {
-                    console.error('Error parsing usage stats:', e);
-                }
-            }
-        }
-    });
-</script>
