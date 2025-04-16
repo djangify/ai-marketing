@@ -2,8 +2,10 @@ from pathlib import Path
 import os
 from django.urls import reverse_lazy
 import environ
+import pymysql 
 
 
+pymysql.install_as_MySQLdb()
 # Initialize environment variables
 env = environ.Env()
 environ.Env.read_env() 
@@ -96,12 +98,20 @@ WSGI_APPLICATION = 'ai_marketing.wsgi.application'
 # Database
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
+        "ENGINE": "django.db.backends.mysql",
         "NAME": env("DATABASE_NAME"),
         "USER": env("DATABASE_USER"),
         "PASSWORD": env("DATABASE_PASSWORD"),
         "HOST": env("DATABASE_HOST", default="127.0.0.1"),
-        "PORT": env("DATABASE_PORT", default="5432"),
+        "PORT": env("DATABASE_PORT", default="3306"),
+        "CONN_MAX_AGE": 600,
+        "OPTIONS": {
+            "charset": "utf8mb4",
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+            "use_unicode": True,
+            "connect_timeout": 10,
+            "autocommit": True,
+        },
     },
 }
 
@@ -142,6 +152,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Configure default storage for file uploads
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -178,3 +189,10 @@ PROCESSING_SERVICE_API_KEY = os.environ.get('PROCESSING_SERVICE_API_KEY')
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 OPENAI_DEFAULT_MODEL = 'gpt-4o'
 OPENAI_FALLBACK_MODEL = 'gpt-4o-mini'
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}

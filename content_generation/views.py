@@ -1,17 +1,18 @@
-from django.shortcuts import render
-
-# Create your views here.
-from django.shortcuts import render, get_object_or_404, redirect
+from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.views.decorators.http import require_POST, require_http_methods
 from django.views.decorators.csrf import csrf_exempt
+
+import openai
 import threading
 import json
 
 from projects.models import Project, GeneratedContent
-from .models import ContentGenerationJob
+from .models import ContentGenerationJob, AIConfig
 from .services import GenerationManager
 
 generation_manager = GenerationManager()
@@ -103,7 +104,6 @@ def update_generated_content(request, content_id):
     
     return render(request, 'content_generation/edit_content.html', context)
 
-# AJAX endpoints
 @login_required
 @require_POST
 def start_generation(request, project_id):
@@ -117,9 +117,28 @@ def start_generation(request, project_id):
     ).first()
     
     if existing_job:
+        messages.error(request, 'A content generation job is already in progress')
         return JsonResponse({
             'success': False,
             'error': 'A generation job is already in progress'
+        }, status=400)
+    
+    # Check if project has prompts
+    prompts = project.project_prompts.all()
+    if not prompts.exists():
+        messages.error(request, 'No prompts found. Please add prompts before generating content.')
+        return JsonResponse({
+            'success': False,
+            'error': 'No prompts found in this project'
+        }, status=400)
+    
+    # Check if project has assets with content
+    assets = project.client_assets.filter(content__isnull=False).exclude(content='')
+    if not assets.exists():
+        messages.error(request, 'No content assets found. Please upload text files before generating content.')
+        return JsonResponse({
+            'success': False,
+            'error': 'No assets with content found in this project'
         }, status=400)
     
     try:
@@ -128,10 +147,21 @@ def start_generation(request, project_id):
         
         # Run generation in background thread
         def run_generation():
-            generation_manager.process_generation_job(job.id)
+            try:
+                generation_manager.process_generation_job(job.id)
+            except Exception as e:
+                # Update job with error if generation fails
+                job.status = 'failed'
+                job.error_message = str(e)
+                job.completed_at = timezone.now()
+                job.save()
+                print(f"Error in generation thread: {str(e)}")
         
-        threading.Thread(target=run_generation).start()
+        thread = threading.Thread(target=run_generation)
+        thread.daemon = True  # Make thread a daemon so it doesn't block server shutdown
+        thread.start()
         
+        messages.info(request, 'Content generation started. This may take a few minutes.')
         return JsonResponse({
             'success': True,
             'job_id': str(job.id),
@@ -139,15 +169,19 @@ def start_generation(request, project_id):
         })
         
     except ValueError as e:
+        error_message = str(e)
+        messages.error(request, error_message)
         return JsonResponse({
             'success': False,
-            'error': str(e)
+            'error': error_message
         }, status=400)
     
     except Exception as e:
+        error_message = f"Unexpected error: {str(e)}"
+        messages.error(request, error_message)
         return JsonResponse({
             'success': False,
-            'error': 'An unexpected error occurred'
+            'error': error_message
         }, status=500)
 
 @login_required
@@ -235,8 +269,15 @@ def edit_generated_content(request, content_id):
         if not result:
             return JsonResponse({'error': 'Content cannot be empty'}, status=400)
         
+        # Save previous content for logging
+        previous_content = content.result
+        
+        # Update content
         content.result = result
         content.save()
+        
+        # Log success message
+        print(f"Content {content_id} updated successfully by user {request.user.username}")
         
         return JsonResponse({
             'id': str(content.id),
@@ -245,5 +286,9 @@ def edit_generated_content(request, content_id):
             'order': content.order
         })
         
+    except json.JSONDecodeError:
+        return JsonResponse({'error': 'Invalid JSON data'}, status=400)
     except Exception as e:
+        print(f"Error updating content {content_id}: {str(e)}")
         return JsonResponse({'error': str(e)}, status=400)
+    

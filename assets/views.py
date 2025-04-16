@@ -96,9 +96,20 @@ def asset_upload(request, project_id):
                 token_count = 0
                 
                 # Process files immediately for content when possible
+                # Process files immediately for content when possible
                 try:
                     process_func = determine_process_function(file_type, file.content_type)
                     content, token_count = process_func(file_path)
+                    
+                    # Sanitize content to handle special characters
+                    if content:
+                        # Replace problematic characters with their safe equivalents
+                        content = sanitize_content(content)
+                        
+                except UnicodeDecodeError as e:
+                    print(f"Unicode decoding error processing file: {e}")
+                    content = f"[File content contains special characters that couldn't be processed. The file is still accessible.]"
+                    token_count = len(content.split())
                 except Exception as e:
                     print(f"Error processing file: {e}")
                     content = ""
@@ -106,18 +117,47 @@ def asset_upload(request, project_id):
                 
                 print(f"About to create asset with title: {file.name}")
                 
-                # Create asset in database
-                asset = Asset.objects.create(
-                    project=project,
-                    title=file.name,
-                    file_name=filename,
-                    file_url=file_url,
-                    file_type=file_type,
-                    mime_type=file.content_type,
-                    size=file.size,
-                    content=content,
-                    token_count=token_count,
-                )
+                # Create asset in database - with content sanitized
+                try:
+                    asset = Asset.objects.create(
+                        project=project,
+                        title=file.name,
+                        file_name=filename,
+                        file_url=file_url,
+                        file_type=file_type,
+                        mime_type=file.content_type,
+                        size=file.size,
+                        content=content,
+                        token_count=token_count,
+                    )
+                except Exception as db_error:
+                    print(f"Database error creating asset: {db_error}")
+                    # Fallback - try creating with empty content if there was a database error
+                    asset = Asset.objects.create(
+                        project=project,
+                        title=file.name,
+                        file_name=filename,
+                        file_url=file_url,
+                        file_type=file_type,
+                        mime_type=file.content_type,
+                        size=file.size,
+                        content="[Content not available due to encoding issues]",
+                        token_count=0,
+                    )
+                except Exception as db_error:
+                    print(f"Database error creating asset: {db_error}")
+                    # Fallback - try creating with empty content if there was a database error
+                    asset = Asset.objects.create(
+                        project=project,
+                        title=file.name,
+                        file_name=filename,
+                        file_url=file_url,
+                        file_type=file_type,
+                        mime_type=file.content_type,
+                        size=file.size,
+                        content="[Content not available due to encoding issues]",
+                        token_count=0,
+                    )
                 
                 # Create processing job for audio and video files
                 if file_type in ['audio', 'video']:
@@ -151,6 +191,46 @@ def asset_upload(request, project_id):
     # Handle non-AJAX requests
     messages.error(request, "Direct form submission not supported. Please use the upload interface.")
     return redirect('projects:project_detail', project_id=project_id, tab='upload')
+
+
+def sanitize_content(content):
+    """Sanitize content to handle special characters and encoding issues"""
+    if not content:
+        return ""
+        
+    # Replace problematic characters or character sequences
+    replacements = {
+        '\xE2\x80\x94': '-',  # em dash
+        '\xE2\x80\x93': '-',  # en dash
+        '\xE2\x80\x99': "'",  # right single quotation mark
+        '\xE2\x80\x98': "'",  # left single quotation mark
+        '\xE2\x80\x9C': '"',  # left double quotation mark
+        '\xE2\x80\x9D': '"',  # right double quotation mark
+        '\xC2\xA0': ' ',      # non-breaking space
+    }
+    
+    # First try to normalize Unicode
+    try:
+        import unicodedata
+        content = unicodedata.normalize('NFKD', content)
+    except:
+        pass
+        
+    # Handle any remaining problematic sequences
+    for bad_char, good_char in replacements.items():
+        try:
+            content = content.replace(bad_char, good_char)
+        except:
+            pass
+            
+    # As a last resort, encode and decode with error handling
+    try:
+        if isinstance(content, str):
+            content = content.encode('utf-8', errors='ignore').decode('utf-8', errors='ignore')
+    except:
+        pass
+        
+    return content
 
 
 @login_required

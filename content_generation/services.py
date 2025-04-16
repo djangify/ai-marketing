@@ -123,20 +123,65 @@ class GenerationManager:
         
         try:
             # Get assets content
-            assets = project.assets.filter(content__isnull=False).exclude(content='')
+            assets = project.client_assets.filter(content__isnull=False).exclude(content='')
             content_from_assets = "\n\n".join([asset.content for asset in assets if asset.content])
+            
+            # If content is too long, truncate it to a reasonable size
+            max_content_length = 24000  # Approximately 6000 tokens
+            if len(content_from_assets) > max_content_length:
+                content_from_assets = content_from_assets[:max_content_length] + "\n[Content truncated due to length...]"
             
             # Get prompts
             prompts = project.project_prompts.all().order_by('order')
             
+            # Get active AI config or use default
+            try:
+                ai_config = AIConfig.objects.filter(is_active=True).first()
+                if not ai_config:
+                    ai_config = AIConfig.objects.create(
+                        name="Default Config",
+                        model_name=settings.OPENAI_DEFAULT_MODEL,
+                        fallback_model=settings.OPENAI_FALLBACK_MODEL,
+                        temperature=0.7,
+                        max_tokens=4000,
+                        is_active=True
+                    )
+            except Exception as e:
+                print(f"Error getting AI config: {e}")
+                ai_config = None
+            
+            # Set up OpenAI client
+            openai_client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
+            
             # Generate content for each prompt
             for i, prompt in enumerate(prompts):
                 try:
-                    # Generate content
-                    generated_text = self.openai_service.generate_content(
-                        prompt.prompt, 
-                        content_from_assets
+                    # Configure model settings
+                    model = ai_config.model_name if ai_config else settings.OPENAI_DEFAULT_MODEL
+                    temperature = ai_config.temperature if ai_config else 0.7
+                    max_tokens = ai_config.max_tokens if ai_config else 4000
+                    
+                    # Make API call to OpenAI
+                    response = openai_client.chat.completions.create(
+                        model=model,
+                        messages=[
+                            {"role": "system", "content": "You are a content generation assistant."},
+                            {"role": "user", "content": f"""
+                            Use the following prompt and summary to generate new content:
+                            
+                            ** PROMPT:
+                            {prompt.prompt}
+                            
+                            ** SOURCE CONTENT:
+                            {content_from_assets}
+                            """}
+                        ],
+                        temperature=temperature,
+                        max_tokens=max_tokens
                     )
+                    
+                    # Extract generated text
+                    generated_text = response.choices[0].message.content.strip()
                     
                     # Save generated content
                     GeneratedContent.objects.create(
@@ -150,8 +195,11 @@ class GenerationManager:
                     job.prompts_completed += 1
                     job.save()
                     
+                    # Small delay to prevent rate limiting
+                    time.sleep(1)
+                    
                 except Exception as e:
-                    logger.error(f"Error generating content for prompt {prompt.id}: {e}")
+                    print(f"Error generating content for prompt {prompt.id}: {e}")
                     # Continue to next prompt on error
             
             # Mark job as completed
@@ -165,4 +213,5 @@ class GenerationManager:
             job.error_message = str(e)
             job.completed_at = timezone.now()
             job.save()
-            logger.error(f"Error processing generation job {job_id}: {e}")
+            print(f"Error processing generation job {job_id}: {e}")
+            raise
