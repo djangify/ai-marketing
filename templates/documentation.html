@@ -1,0 +1,183 @@
+<!-- templates/documentation.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Documentation - AI Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="bg-white py-12">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h1 class="text-4xl font-bold text-gray-900 mb-8"> AI Marketing Platform Documentation</h1> 
+
+    <p class="text-gray-600 mb-4">Welcome to the AI Marketing Platform    help center. Here you'll find comprehensive guides and documentation to help you get the most out of our platform.
+    </p>
+
+    <h2 class="text-2xl font-bold text-gray-900 mb-4"> Getting Started</h2> 
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
+      <div class="bg-white rounded-xl border border-gray-200 p-6 transition-all duration-300 hover:shadow-md hover:border-[#9810fa]">
+        <i class="fas fa-home" class="w-12 h-12 mb-4"></i>
+      
+        <h3 class="font-bold text-lg text-[#9810fa] mb-2"><a href="/docs/what-is-ai-marketing-platform">What Is AI Marketing Platform?</a></h3>
+        <p class="text-gray-600">Learn about our platform's core capabilities and how it can transform your content creation process.</p>
+      </div>
+      
+      <div class="bg-white rounded-xl border border-gray-200 p-6 transition-all duration-300 hover:shadow-md hover:border-[#9810fa]">
+        <i class="fa-solid fa-hourglass-start" class="w-12 h-12 mb-4"></i>
+        <h3 class="font-bold text-lg text-[#9810fa] mb-2"><a href="/docs/getting-started">Getting Started Guide</a></h3>
+        <p class="text-gray-600">Set up your account, understand the dashboard, and create your first project.</p>
+      </div>
+    </div>
+
+    <h2 class="text-2xl font-bold text-gray-900 mb-4"> Core Features</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 my-8">
+      <div class="bg-white rounded-xl border border-gray-200 p-6 transition-all duration-300 hover:shadow-md hover:border-[#9810fa]">
+        <i class="fas fa-project-diagram" class="w-12 h-12 mb-4"></i>
+        <h3 class="font-bold text-lg text-[#9810fa] mb-2"><a href="/docs/creating-projects">Creating and Managing Projects</a></h3>
+        <p class="text-gray-600">Learn how to organize your work with projects and follow the ideal workflow.</p>
+      </div>
+      
+      <div class="bg-white rounded-xl border border-gray-200 p-6 transition-all duration-300 hover:shadow-md hover:border-[#9810fa]">
+        <i class="fas fa-file-upload" class="w-12 h-12 mb-4"></i>
+        <h3 class="font-bold text-lg text-[#9810fa] mb-2"><a href="/docs/uploading-content">Uploading Content</a></h3>
+        <p class="text-gray-600">Discover how to upload and manage your source materials including text, audio, and video files.</p>
+      </div>
+      
+      <div class="bg-white rounded-xl border border-gray-200 p-6 transition-all duration-300 hover:shadow-md hover:border-[#9810fa]">
+        <i class="fas fa-cog" class="w-12 h-12 mb-4"></i>
+        <h3 class="font-bold text-lg text-[#9810fa] mb-2"><a href="/docs/creating-prompts">Creating Effective Prompts</a></h3>
+        <p class="text-gray-600">Master the art of writing prompts that generate high-quality, relevant content.</p>
+      </div>
+      
+      <div class="bg-white rounded-xl border border-gray-200 p-6 transition-all duration-300 hover:shadow-md hover:border-[#9810fa]">
+        
+        <i class="fa-solid fa-download" class="w-12 h-12 mb-4"></i>
+        <h3 class="font-bold text-lg text-[#9810fa] mb-2"><a href="/docs/exporting-content">Exporting and Using Content</a></h3>
+        <p class="text-gray-600">Learn how to export, edit, and effectively use your AI-generated content.</p>
+      </div>
+    </div>
+
+    <h2 class="text-2xl font-bold text-gray-900 mb-4"> Video Tutorials </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
+      <div class="bg-white rounded-xl border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md">
+        <div class="relative">
+          <img src="../images/thumbnails/platform-overview.jpg" alt="Platform overview thumbnail" class="w-full h-auto">
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="bg-[#9810fa]/80 rounded-full w-14 h-14 flex items-center justify-center text-white text-2xl">
+              ▶
+            </div>
+          </div>
+        </div>
+        <div class="p-4">
+          <h3 class="font-bold text-lg">Platform Overview</h3>
+          <p class="text-gray-600 text-sm">5:23 • A quick tour of the AI Marketing Platform features</p>
+        </div>
+      </div>
+      
+      <div class="bg-white rounded-xl border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md">
+        <div class="relative">
+          <i class="fa-solid fa-list-check"></i>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="bg-[#9810fa]/80 rounded-full w-14 h-14 flex items-center justify-center text-white text-2xl">
+              ▶
+            </div>
+          </div>
+        </div>
+        <div class="p-4">
+          <h3 class="font-bold text-lg">Creating Your First Project</h3>
+          <p class="text-gray-600 text-sm">8:47 • Step-by-step guide to creating your first project</p>
+        </div>
+      </div>
+      
+      <div class="bg-white rounded-xl border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md">
+        <div class="relative">
+          <img src="../images/thumbnails/writing-prompts.jpg" alt="Writing prompts thumbnail" class="w-full h-auto">
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div class="bg-[#9810fa]/80 rounded-full w-14 h-14 flex items-center justify-center text-white text-2xl">
+              ▶
+            </div>
+          </div>
+        </div>
+        <div class="p-4">
+          <h3 class="font-bold text-lg">Writing Effective Prompts</h3>
+          <p class="text-gray-600 text-sm">12:31 • Learn the art of crafting prompts for better results</p>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="text-2xl font-bold text-gray-900 mb-4">FAQ</h2>
+
+    <div class="max-w-3xl my-8">
+      <details class="border border-gray-200 rounded-lg p-4 mb-4">
+        <summary class="font-semibold cursor-pointer">What file types can I upload?</summary>
+        <p class="mt-4 pl-6 text-gray-600">AI Marketing Platform supports text (.txt, .md), document (.pdf), audio (.mp3, .wav, .m4a, .ogg), and video (.mp4, .mov, .avi, .wmv) files.</p>
+      </details>
+      
+      <details class="border text-gray-600 border-gray-200 rounded-lg p-4 mb-4">
+        <summary class="font-semibold cursor-pointer">What are tokens and how are they calculated?</summary>
+        <p class="mt-4 pl-6 text-gray-600">Tokens are units of text that the AI processes. A token is roughly 4 characters or 3/4 of a word. Your subscription includes a specific token allowance for both assets and prompts.</p>
+      </details>
+      
+      <details class="border border-gray-200 rounded-lg p-4 mb-4">
+        <summary class="font-semibold cursor-pointer">Can I export content in different formats?</summary>
+        <p class="mt-4 pl-6 text-gray-600">Yes! You can export generated content as plain text (.txt), Markdown (.md), or Microsoft Word (.docx) documents.</p>
+      </details>
+      
+      <details class="border border-gray-200 rounded-lg p-4 mb-4">
+        <summary class="font-semibold cursor-pointer">How do I increase my token allowance?</summary>
+        <p class="mt-4 pl-6 text-gray-600">You can upgrade your subscription plan from your account settings to increase your token allowance.</p>
+      </details>
+      
+      <details class="border border-gray-200 rounded-lg p-4 mb-4">
+        <summary class="font-semibold cursor-pointer">Is my content secure?</summary>
+        <p class="mt-4 pl-6 text-gray-600">Yes. All your uploads and generated content are securely stored and only accessible to your account. We do not use your content to train our AI models.</p>
+      </details>
+    </div>
+
+    <h2 class="text-2xl font-bold text-gray-900 mb-4"> Need More Help? </h2>
+
+    Our support team is ready to assist you with any questions that aren't covered in our documentation.
+
+    <div class="flex flex-wrap text-gray-600 gap-4 my-8">
+      <a href="mailto:support@aimarketingplatform.app" class="flex items-center px-6 py-3 bg-gray-100 rounded-lg text-gray-800 font-medium hover:bg-gray-200 transition-colors">
+        <i class="fa-solid fa-envelope" class="w-6 h-6 ml-3"></i> 
+        Email Support
+      </a>
+      
+      <a href="#" class="flex items-center px-6 py-3 bg-gray-100 rounded-lg text-gray-800 font-medium hover:bg-gray-200 transition-colors">
+        <i class="fa-solid fa-headset" class="w-6 h-6 ml-3"></i>
+        Live Chat
+      </a>
+      
+      <a href="/support/ticket" class="flex items-center px-6 py-3 bg-gray-100 rounded-lg text-gray-800 font-medium hover:bg-gray-200 transition-colors">
+        <i class="fa-solid fa-ticket"></i>
+        Submit Ticket
+      </a>
+    </div>
+
+    <h2 class="text-2xl font-bold text-gray-900 mb-4"> Latest Updates</h2>
+
+    <div class=" text-gray-600 my-8">
+      <div class="border-l-4 border-[#9810fa] pl-4 mb-6">
+        <span class="text-sm text-gray-500">April 10, 2025</span>
+        <h4 class="font-semibold my-1">New Audio Processing Engine</h4>
+        <p class="text-gray-600">We've improved our audio transcription technology for better accuracy.</p>
+      </div>
+      
+      <div class="border-l-4 border-[#9810fa] pl-4 mb-6">
+        <span class="text-sm text-gray-500">March 28, 2025</span>
+        <h4 class="font-semibold my-1">Batch Export Feature</h4>
+        <p class="text-gray-600">You can now export multiple content pieces at once.</p>
+      </div>
+      
+      <div class="border-l-4 border-[#9810fa] pl-4 mb-6">
+        <span class="text-sm text-gray-500">March 15, 2025</span>
+        <h4 class="font-semibold my-1">Template Sharing</h4>
+        <p class="text-gray-600">Share your prompt templates with team members for better collaboration.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

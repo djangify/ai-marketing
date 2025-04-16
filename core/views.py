@@ -7,6 +7,12 @@ def index(request):
         return redirect('accounts:dashboard')
     return render(request, 'index.html')
 
+def documentation(request): 
+    """
+    View for the index of all documentation 
+    """
+    return render(request, 'documentation.html')
+
 def policies_index(request):
     """
     View for the index of policies page
