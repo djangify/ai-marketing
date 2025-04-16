@@ -1,0 +1,20 @@
+{% if breadcrumbs %}
+<nav class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 mb-6">
+    <ol class="flex items-center text-sm text-gray-600">
+        <li>
+            <a href="{% url 'core:policies_index' %}" class="text-blue-600 hover:text-blue-800">Home</a>
+            <span class="mx-2 text-gray-400">→</span>
+        </li>
+        {% for breadcrumb in breadcrumbs %}
+            {% if not forloop.last %}
+                <li>
+                    <a href="{{ breadcrumb.url }}" class="text-blue-600 hover:text-blue-800">{{ breadcrumb.title }}</a>
+                    <span class="mx-2 text-gray-400">→</span>
+                </li>
+            {% else %}
+                <li class="text-gray-700 font-medium">{{ breadcrumb.title }}</li>
+            {% endif %}
+        {% endfor %}
+    </ol>
+</nav>
+{% endif %}

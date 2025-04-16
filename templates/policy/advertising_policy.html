@@ -1,0 +1,166 @@
+<!-- templates/core/advertising_policy.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Advertising Policy - AI Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="bg-white py-12">
+    {% include "includes/breadcrumb.html" %}
+   
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Table of Contents -->
+        <div class="mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-8">Advertising Policy</h1>
+            <p class="text-gray-600 mb-6">Last updated: April 2025</p>
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h2 class="text-lg font-semibold mb-4">Contents:</h2>
+                <nav class="space-y-2">
+                    <a href="#introduction" class="block text-blue-600 hover:text-blue-800">1. Introduction</a>
+                    <a href="#content-guidelines" class="block text-blue-600 hover:text-blue-800">2. Content Generation Guidelines</a>
+                    <a href="#prohibited-content" class="block text-blue-600 hover:text-blue-800">3. Prohibited Content</a>
+                    <a href="#ai-generated-content" class="block text-blue-600 hover:text-blue-800">4. AI-Generated Content Considerations</a>
+                    <a href="#compliance" class="block text-blue-600 hover:text-blue-800">5. Regulatory Compliance</a>
+                    <a href="#best-practices" class="block text-blue-600 hover:text-blue-800">6. Best Practices</a>
+                    <a href="#changes" class="block text-blue-600 hover:text-blue-800">7. Changes to This Policy</a>
+                    <a href="#contact" class="block text-blue-600 hover:text-blue-800">8. Contact Us</a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Advertising Policy Content -->
+        <div class="prose prose-blue max-w-none">
+            <section id="introduction" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
+                <p class="mb-4">This Advertising Policy outlines the guidelines and standards for content generated using the AI Marketing Platform. Our platform is designed to help users create effective marketing content while adhering to ethical advertising practices and applicable regulations.</p>
+                <p class="mb-4">While our AI tools can help you generate creative and compelling marketing content, users are ultimately responsible for ensuring that all content they create and publish complies with relevant laws, regulations, and platform-specific advertising policies.</p>
+            </section>
+
+            <section id="content-guidelines" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">2. Content Generation Guidelines</h2>
+                <p class="mb-4">When using our platform to generate marketing content, we encourage users to follow these guidelines:</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">2.1 Accuracy and Truthfulness</h3>
+                <p class="mb-4">All claims in your marketing content should be accurate, truthful, and substantiated. Avoid generating content that makes false or misleading claims about products, services, or competitive offerings. Remember that AI-generated content may need to be fact-checked before publication.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">2.2 Transparency</h3>
+                <p class="mb-4">Be transparent about the nature of your products or services. Do not use AI-generated content to obscure or misrepresent material information that consumers need to make informed decisions.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">2.3 Clarity</h3>
+                <p class="mb-4">Content should clearly communicate the offer, including any conditions, limitations, or qualifications. Avoid generating content with ambiguous or confusing messaging that could mislead consumers.</p>
+            </section>
+
+            <section id="prohibited-content" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">3. Prohibited Content</h2>
+                <p class="mb-4">Our platform should not be used to generate content that:</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">3.1 Illegal or Harmful Content</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Promotes illegal products, services, or activities</li>
+                    <li>Encourages harmful or dangerous behavior</li>
+                    <li>Contains hate speech, harassment, or discriminatory content</li>
+                    <li>Infringes on others' intellectual property rights</li>
+                    <li>Violates privacy or confidentiality regulations</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">3.2 Deceptive Practices</h3>
+                <ul class="list-disc pl-6 mb-4">
+              
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">3.2 Deceptive Practices</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Makes false promises or guarantees</li>
+                    <li>Creates fake testimonials or reviews</li>
+                    <li>Misrepresents the effectiveness of a product or service</li>
+                    <li>Uses bait-and-switch tactics</li>
+                    <li>Mimics news articles or government communications without appropriate disclaimers</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">3.3 Restricted Categories</h3>
+                <p class="mb-4">Our platform should not be used to generate marketing content for:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Tobacco, vaping, or related products</li>
+                    <li>Weapons, ammunition, or explosives</li>
+                    <li>Adult/sexually explicit content</li>
+                    <li>Gambling or betting services (unless explicitly permitted in your jurisdiction with proper licensing)</li>
+                    <li>Counterfeit goods</li>
+                    <li>Unauthorized pharmaceutical promotion</li>
+                </ul>
+            </section>
+
+            <section id="ai-generated-content" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">4. AI-Generated Content Considerations</h2>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">4.1 Human Review</h3>
+                <p class="mb-4">All AI-generated content should be reviewed and edited by a human before publication. Our AI systems are designed to assist content creation, not to replace human judgment, especially for factual verification and compliance checks.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">4.2 Disclosure of AI Use</h3>
+                <p class="mb-4">In some contexts, it may be appropriate or required to disclose that content was created with AI assistance. Be aware of evolving industry standards and regulations regarding AI content disclosure.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">4.3 Limitations of AI</h3>
+                <p class="mb-4">Understand that AI systems have limitations and may:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Generate content based on outdated information</li>
+                    <li>Create factually incorrect statements</li>
+                    <li>Produce content that inadvertently violates copyright or intellectual property rights</li>
+                    <li>Miss nuances related to cultural sensitivity or context</li>
+                </ul>
+                <p class="mb-4">Users must independently verify the accuracy and appropriateness of all AI-generated content.</p>
+            </section>
+
+            <section id="compliance" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">5. Regulatory Compliance</h2>
+                <p class="mb-4">Users are responsible for ensuring their marketing content complies with all applicable laws and regulations, including but not limited to:</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">5.1 Advertising Regulations</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Truth in advertising laws</li>
+                    <li>Industry-specific advertising regulations (e.g., financial services, healthcare)</li>
+                    <li>Environmental claims and sustainability marketing guidelines</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">5.2 Data Privacy</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>GDPR, CCPA, and other privacy regulations</li>
+                    <li>Marketing consent requirements</li>
+                    <li>Data collection and use disclosures</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">5.3 Platform-Specific Policies</h3>
+                <p class="mb-4">When creating content for specific platforms (e.g., social media networks, search engines), users must also comply with each platform's advertising policies, which may be more restrictive than general regulations.</p>
+            </section>
+
+            <section id="best-practices" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">6. Best Practices</h2>
+                <p class="mb-4">To maximize the effectiveness and compliance of AI-generated marketing content, we recommend the following best practices:</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">6.1 Prompt Engineering</h3>
+                <p class="mb-4">Create clear, specific prompts that include any necessary compliance requirements, target audience information, and brand guidelines. Better prompts generally lead to more accurate and compliant content generation.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">6.2 Content Verification</h3>
+                <p class="mb-4">Implement a verification process for all AI-generated content, including:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Fact-checking all claims and statistics</li>
+                    <li>Reviewing for compliance with relevant regulations</li>
+                    <li>Checking for brand consistency</li>
+                    <li>Verifying that all statements align with product or service capabilities</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">6.3 Continuous Improvement</h3>
+                <p class="mb-4">Keep a record of successful content and effective prompts. Review and refine your approach to AI-generated marketing content based on performance and compliance considerations.</p>
+            </section>
+
+            <section id="changes" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">7. Changes to This Policy</h2>
+                <p class="mb-4">We may update this Advertising Policy from time to time to reflect changes in our services, legal requirements, or best practices in AI-generated content. Any changes will be posted on this page with an updated "Last updated" date.</p>
+                <p class="mb-4">Significant changes will be communicated to users through email or platform notifications.</p>
+            </section>
+
+            <section id="contact" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">8. Contact Us</h2>
+                <p class="mb-4">If you have any questions about this Advertising Policy or need guidance on creating compliant marketing content, please contact us at:</p>
+                <p class="mb-4">Email: <span class="text-blue-600">support@aimarketingplatform.app</span></p>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

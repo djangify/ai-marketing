@@ -15,6 +15,13 @@ class AuthRequiredMiddleware:
             '/accounts/signup/',
             '/pricing/',
             '/blog/',
+            '/policy/privacy-policy/',
+            '/policy/cookies-policy/',
+            '/policy/terms-policy/',
+            '/policy/refund-policy/',
+            '/policy/support-policy/',
+            '/policy/advertising-policy/',
+            '/policy/policies/',
         ]
         # Admin paths will be handled separately
     

@@ -1,0 +1,138 @@
+<!-- templates/core/refund_policy.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Refund & Cancellation Policy - AI Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="bg-white py-12">
+    <!-- Include the breadcrumb here -->
+    {% include "includes/breadcrumb.html" %}
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Table of Contents -->
+        <div class="mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-8">Refund & Cancellation Policy</h1>
+            <p class="text-gray-600 mb-6">Last updated: April 2025</p>
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h2 class="text-lg font-semibold mb-4">Contents:</h2>
+                <nav class="space-y-2">
+                    <a href="#introduction" class="block text-blue-600 hover:text-blue-800">1. Introduction</a>
+                    <a href="#subscription-plans" class="block text-blue-600 hover:text-blue-800">2. Subscription Plans</a>
+                    <a href="#cancellation" class="block text-blue-600 hover:text-blue-800">3. Cancellation Policy</a>
+                    <a href="#refund-policy" class="block text-blue-600 hover:text-blue-800">4. Refund Policy</a>
+                    <a href="#payment-disputes" class="block text-blue-600 hover:text-blue-800">5. Payment Disputes</a>
+                    <a href="#changes" class="block text-blue-600 hover:text-blue-800">6. Changes to This Policy</a>
+                    <a href="#contact" class="block text-blue-600 hover:text-blue-800">7. Contact Us</a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Refund Policy Content -->
+        <div class="prose prose-blue max-w-none">
+            <section id="introduction" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
+                <p class="mb-4">This Refund & Cancellation Policy outlines the terms and conditions for subscription cancellations and refunds for AI Marketing Platform services. By subscribing to our services, you agree to the terms outlined in this policy.</p>
+                <p class="mb-4">This policy should be read in conjunction with our <a href="{% url 'core:terms_policy' %}" class="text-blue-600 hover:text-blue-800">Terms & Conditions</a>.</p>
+            </section>
+
+            <section id="subscription-plans" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">2. Subscription Plans</h2>
+                <p class="mb-4">AI Marketing Platform offers various subscription plans with different features, limitations, and pricing. The details of each plan are described on our website at the time of purchase.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">2.1 Billing Cycle</h3>
+                <p class="mb-4">Subscriptions are billed on a recurring basis (monthly, quarterly, or yearly) depending on the plan selected. The billing cycle begins on the date of the initial subscription purchase and continues until the subscription is canceled.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">2.2 Automatic Renewal</h3>
+                <p class="mb-4">All subscriptions automatically renew at the end of the billing period unless canceled prior to the renewal date. By subscribing to our services, you authorize us to charge your payment method for the subscription fee at the beginning of each billing period.</p>
+            </section>
+
+            <section id="cancellation" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">3. Cancellation Policy</h2>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">3.1 How to Cancel</h3>
+                <p class="mb-4">You can cancel your subscription at any time through:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Your account dashboard under "Subscription Settings"</li>
+                    <li>Contacting our customer support team at support@aimarketingplatform.app</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">3.2 Cancellation Effects</h3>
+                <p class="mb-4">When you cancel your subscription:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><strong>Your subscription will remain active until the end of your current billing period.</strong> For example, if you are on a monthly plan and cancel on the 15th day of the month, your subscription will remain active until the end of that monthly period.</li>
+                    <li>You will continue to have full access to all subscription features until the end of the current billing period.</li>
+                    <li>Your subscription will not renew for the next billing period.</li>
+                    <li>No partial refunds will be issued for the unused portion of your current billing period.</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">3.3 Data Retention After Cancellation</h3>
+                <p class="mb-4">After your subscription ends:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>You will no longer have access to create new content or use our AI services.</li>
+                    <li>Your account data and previously generated content will be retained for 30 days after the end of your subscription period.</li>
+                    <li>To permanently delete your account and all associated data, please contact our support team.</li>
+                </ul>
+            </section>
+
+            <section id="refund-policy" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">4. Refund Policy</h2>
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-yellow-700">
+                                <strong>Important:</strong> AI Marketing Platform does not offer refunds for subscription payments. All subscription purchases are final.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">4.1 No-Refund Policy</h3>
+                <p class="mb-4">We do not provide refunds for subscription fees under any circumstances, including but not limited to:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Accidental purchases</li>
+                    <li>Dissatisfaction with the service</li>
+                    <li>Unused subscription time</li>
+                    <li>Technical issues that are resolved during the subscription period</li>
+                    <li>Changes in pricing or features</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">4.2 Exception for Service Unavailability</h3>
+                <p class="mb-4">In the rare event of extended service unavailability (more than 72 consecutive hours) due to our technical issues, we may, at our sole discretion, offer compensation in the form of:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Extended subscription time</li>
+                    <li>Credit towards future subscription periods</li>
+                </ul>
+                <p class="mb-4">Such compensation is not guaranteed and will be evaluated on a case-by-case basis.</p>
+            </section>
+
+            <section id="payment-disputes" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">5. Payment Disputes</h2>
+                <p class="mb-4">If you believe you have been incorrectly charged, please contact our support team before initiating a chargeback or payment dispute with your payment provider. Most billing issues can be quickly resolved by contacting us directly.</p>
+                <p class="mb-4">Initiating a chargeback or payment dispute without first attempting to resolve the issue with us may result in:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Immediate termination of your subscription</li>
+                    <li>Suspension of your account</li>
+                    <li>Ineligibility for future subscriptions</li>
+                </ul>
+            </section>
+
+            <section id="changes" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">6. Changes to This Policy</h2>
+                <p class="mb-4">We reserve the right to modify this Refund & Cancellation Policy at any time. Any changes will be effective immediately upon posting the updated policy on our website. Your continued use of our services after such changes constitutes your acceptance of the new policy.</p>
+                <p class="mb-4">We will notify users of any material changes to this policy via email or through a notification on our website.</p>
+            </section>
+
+            <section id="contact" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">7. Contact Us</h2>
+                <p class="mb-4">If you have any questions about this Refund & Cancellation Policy, please contact us at:</p>
+                <p class="mb-4">Email: <span class="text-blue-600">support@aimarketingplatform.app</span></p>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

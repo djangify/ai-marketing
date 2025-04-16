@@ -1,0 +1,123 @@
+<!-- templates/core/policies_index.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Policies - AI Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="bg-white py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Breadcrumb -->
+        {% if breadcrumbs %}
+            {% include "includes/breadcrumb.html" %}
+        {% endif %}
+        
+        <h1 class="text-4xl font-bold text-gray-900 mb-8">Policies</h1>
+        <p class="text-gray-600">These policies explain how we operate the AI Marketing Platform, protect your privacy, and maintain our services.</p>
+        <br>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Privacy Policy -->
+            <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+                <div class="flex items-center mb-4">
+                    <div class="p-3 rounded-full">
+                        <i class="fas fa-shield-alt mx-4 text-lg"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-900">Privacy Policy</h2>
+                </div>
+                <p class="text-gray-600 mb-4">Learn how we collect, use, and protect your personal information.</p>
+                <a href="{% url 'core:privacy_policy' %}" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
+                    Read Policy
+                    <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </a>
+            </div>
+            
+            <!-- Cookies Policy -->
+            <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+                <div class="flex items-center mb-4">
+                    <div class="p-3 rounded-full mr-4">
+                        <i class="fas fa-cookie-bite text-yellow-600 mx-4 text-lg"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-900">Cookies Policy</h2>
+                </div>
+                <p class="text-gray-600 mb-4">Information about how we use cookies and similar technologies on our website.</p>
+                <a href="{% url 'core:cookies_policy' %}" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
+                    Read Policy
+                    <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </a>
+            </div>
+            
+            <!-- Terms & Conditions -->
+            <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+                <div class="flex items-center mb-4">
+                    <div class="p-3 rounded-full mr-4">
+                        <i class="fas fa-file-contract text-purple-600 mx-4 text-lg"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-900">Terms & Conditions</h2>
+                </div>
+                <p class="text-gray-600 mb-4">The rules and guidelines for using our services.</p>
+                <a href="{% url 'core:terms_policy' %}" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
+                    Read Policy
+                    <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Refund Policy -->
+            <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+                <div class="flex items-center mb-4">
+                    <div class="p-3 rounded-full mr-4">
+                        <i class="fas fa-credit-card text-green-600 mx-4 text-lg"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-900">Refund & Cancellation Policy</h2>
+                </div>
+                <p class="text-gray-600 mb-4">Information about our refund policy and subscription cancellations.</p>
+                <a href="{% url 'core:refund_policy' %}" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
+                    Read Policy
+                    <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Support Policy -->
+            <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+                <div class="flex items-center mb-4">
+                    <div class="p-3 rounded-full mr-4">
+                        <i class="fas fa-hands-helping text-blue-600 mx-4 text-lg"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-900">Help & Support Policy</h2>
+                </div>
+                <p class="text-gray-600 mb-4">Details about how we provide help and support for our platform.</p>
+                <a href="{% url 'core:support_policy' %}" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
+                    Read Policy
+                    <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </a>
+            </div>
+            
+            <!-- Advertising Policy -->
+            <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-shadow">
+                <div class="flex items-center mb-4">
+                    <div class="p-3 rounded-full">
+                        <i class="fas fa-ad mx-4 text-primary text-lg"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-900">Advertising Policy</h2>
+                </div>
+                <p class="text-gray-600 mb-4">Details about our advertising practices and content generation guidelines.</p>
+                <a href="{% url 'core:advertising_policy' %}" class="text-blue-600 hover:text-blue-800 inline-flex items-center">
+                    Read Policy
+                    <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

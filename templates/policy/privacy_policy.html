@@ -1,0 +1,191 @@
+<!-- templates/core/privacy_policy.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Privacy Policy - AI Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="bg-white py-12">
+    <!-- Include the breadcrumb here -->
+    {% include "includes/breadcrumb.html" %}
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Table of Contents -->
+        <div class="mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-8">Privacy Policy</h1>
+            <p class="text-gray-600 mb-6">Last updated: April 2025</p>
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h2 class="text-lg font-semibold mb-4">Contents:</h2>
+                <nav class="space-y-2">
+                    <a href="#introduction" class="block text-blue-600 hover:text-blue-800">1. Introduction</a>
+                    <a href="#information-we-collect" class="block text-blue-600 hover:text-blue-800">2. Information We Collect</a>
+                    <a href="#how-we-use" class="block text-blue-600 hover:text-blue-800">3. How We Use Your Information</a>
+                    <a href="#information-sharing" class="block text-blue-600 hover:text-blue-800">4. Information Sharing</a>
+                    <a href="#your-rights" class="block text-blue-600 hover:text-blue-800">5. Your Privacy Rights</a>
+                    <a href="#data-security" class="block text-blue-600 hover:text-blue-800">6. Data Security</a>
+                    <a href="#children" class="block text-blue-600 hover:text-blue-800">7. Children's Privacy</a>
+                    <a href="#changes" class="block text-blue-600 hover:text-blue-800">8. Changes to This Policy</a>
+                    <a href="#contact" class="block text-blue-600 hover:text-blue-800">9. Contact Us</a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Privacy Policy Content -->
+        <div class="prose prose-blue max-w-none">
+            <section id="introduction" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
+                <p class="mb-4">This Privacy Policy describes how AI Marketing Platform ("we," "us," or "our") collects, uses, stores, and shares your personal information when you visit our website at <span class="text-blue-600">aimarketingplatform.app</span> (the "Website") or use our AI-powered marketing content generation services (the "Services"). By using our Website or Services, you agree to the collection and use of information in accordance with this policy.</p>
+                <p class="mb-4">We are committed to protecting your privacy and maintaining the security of any personal information received from you. We strictly adhere to data protection laws and will only use your information as outlined in this Privacy Policy.</p>
+            </section>
+
+            <section id="information-we-collect" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">2. Information We Collect</h2>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">2.1 Information You Provide to Us</h3>
+                <p class="mb-4">We collect information that you voluntarily provide to us when you:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Register for an account</li>
+                    <li>Subscribe to our services</li>
+                    <li>Upload content to our platform</li>
+                    <li>Create projects and prompts</li>
+                    <li>Request customer support</li>
+                    <li>Fill out forms or surveys</li>
+                </ul>
+                <p class="mb-4">This information may include:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Your name and email address</li>
+                    <li>Account login credentials</li>
+                    <li>Billing information and payment details</li>
+                    <li>Content you upload (text, documents, etc.)</li>
+                    <li>Marketing preferences</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">2.2 Information We Collect Automatically</h3>
+                <p class="mb-4">When you visit our Website or use our Services, we may automatically collect certain information about your device and usage. This includes:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>IP addresses</li>
+                    <li>Device information (browser type, operating system)</li>
+                    <li>Usage data (pages visited, time spent)</li>
+                    <li>Cookies and similar tracking technologies (as described in our <a href="{% url 'core:cookies_policy' %}" class="text-blue-600 hover:text-blue-800">Cookies Policy</a>)</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">2.3 Information From Third Parties</h3>
+                <p class="mb-4">We may receive information about you from third parties, such as:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Payment processors who facilitate your subscription payments</li>
+                    <li>Analytics providers</li>
+                </ul>
+            </section>
+
+            <section id="how-we-use" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">3. How We Use Your Information</h2>
+                <p class="mb-4">We use the information we collect for various purposes, including:</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">3.1 Providing and Improving Our Services</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>To create and manage your account</li>
+                    <li>To process your subscription payments</li>
+                    <li>To provide the AI marketing content generation services</li>
+                    <li>To analyze and improve the performance and functionality of our platform</li>
+                    <li>To develop new features and services</li>
+                    <li>To personalize your experience</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">3.2 Communications</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>To respond to your inquiries and support requests</li>
+                    <li>To send administrative messages about your account or subscription</li>
+                    <li>To provide updates about our services</li>
+                    <li>To send marketing communications (with your consent)</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">3.3 Security and Legal Compliance</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>To protect the security of our platform</li>
+                    <li>To detect and prevent fraud or abuse</li>
+                    <li>To comply with legal obligations</li>
+                    <li>To enforce our Terms and Conditions</li>
+                </ul>
+            </section>
+
+            <section id="information-sharing" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">4. Information Sharing</h2>
+                <p class="mb-4">We may share your information with:</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">4.1 Service Providers</h3>
+                <p class="mb-4">We work with third-party service providers who help us operate, provide, and improve our Services. These providers have access to your information to perform tasks on our behalf and are obligated to maintain the confidentiality and security of your data. Our service providers include:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Cloud hosting and infrastructure providers</li>
+                    <li>Payment processors</li>
+                    <li>Analytics services</li>
+                    <li>Customer support tools</li>
+                    <li>AI technology providers</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">4.2 Legal Requirements</h3>
+                <p class="mb-4">We may disclose your information if required to do so by law or in response to valid requests by public authorities (e.g., court or government agency). We may also disclose your information to:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Enforce our terms and agreements</li>
+                    <li>Protect and defend our rights or property</li>
+                    <li>Prevent or investigate possible wrongdoing</li>
+                    <li>Protect the personal safety of users or the public</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">4.3 Business Transfers</h3>
+                <p class="mb-4">If we are involved in a merger, acquisition, or sale of all or a portion of our assets, your information may be transferred as part of that transaction. We will notify you via email and/or a prominent notice on our Website of any such change in ownership and any choices you may have regarding your information.</p>
+            </section>
+
+            <section id="your-rights" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">5. Your Privacy Rights</h2>
+                <p class="mb-4">Depending on your location, you may have certain rights regarding your personal information, including:</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">5.1 Access and Updating Your Information</h3>
+                <p class="mb-4">You can access and update certain information about your account through your account settings. If you need help accessing or updating your information, please contact us using the details in the "Contact Us" section below.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">5.2 Data Protection Rights</h3>
+                <p class="mb-4">Depending on your jurisdiction, you may have the following rights:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>The right to access information we hold about you</li>
+                    <li>The right to request correction of inaccurate or incomplete information</li>
+                    <li>The right to request deletion of your personal information</li>
+                    <li>The right to restrict or object to processing of your information</li>
+                    <li>The right to data portability</li>
+                    <li>The right to withdraw consent</li>
+                </ul>
+                <p class="mb-4">To exercise these rights, please contact us using the details in the "Contact Us" section. We will respond to your request within the timeframe required by applicable law.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">5.3 Marketing Communications</h3>
+                <p class="mb-4">You can opt out of receiving marketing communications from us by clicking the "unsubscribe" link in our emails or by contacting us directly. Please note that even if you opt out of marketing communications, you will still receive administrative messages related to your account and subscription.</p>
+            </section>
+
+            <section id="data-security" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">6. Data Security</h2>
+                <p class="mb-4">We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, accidental loss, alteration, or destruction. However, no method of transmission over the Internet or electronic storage is 100% secure, and we cannot guarantee absolute security.</p>
+                <p class="mb-4">Some of the security measures we employ include:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Encryption of sensitive data</li>
+                    <li>Secure hosting environments</li>
+                    <li>Regular security assessments</li>
+                    <li>Access controls and authentication procedures</li>
+                </ul>
+            </section>
+
+            <section id="children" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">7. Children's Privacy</h2>
+                <p class="mb-4">Our Services are not intended for children under the age of 16. We do not knowingly collect personal information from children under 16. If you are a parent or guardian and believe that your child has provided us with personal information, please contact us, and we will take steps to delete that information.</p>
+            </section>
+
+            <section id="changes" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">8. Changes to This Policy</h2>
+                <p class="mb-4">We may update this Privacy Policy from time to time to reflect changes in our practices or for other operational, legal, or regulatory reasons. We will post the updated policy on this page with a "Last updated" date. We encourage you to review this policy periodically to stay informed about how we collect, use, and protect your information.</p>
+                <p class="mb-4">If we make material changes to this policy, we will notify you by email or through a notice on our Website before the changes take effect.</p>
+            </section>
+
+            <section id="contact" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">9. Contact Us</h2>
+                <p class="mb-4">If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us at:</p>
+                <p class="mb-4">Email: <span class="text-blue-600">support@aimarketingplatform.app</span></p>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

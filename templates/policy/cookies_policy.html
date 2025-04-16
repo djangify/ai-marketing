@@ -1,0 +1,197 @@
+<!-- templates/core/cookies_policy.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Cookies Policy - AI Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="bg-white py-12">
+    <!-- Include the breadcrumb here -->
+    {% include "includes/breadcrumb.html" %}
+    
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Table of Contents -->
+        <div class="mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-8">Cookies Policy</h1>
+            <p class="text-gray-600 mb-6">Last updated: April 2025</p>
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h2 class="text-lg font-semibold mb-4">Contents:</h2>
+                <nav class="space-y-2">
+                    <a href="#introduction" class="block text-blue-600 hover:text-blue-800">1. Introduction</a>
+                    <a href="#what-are-cookies" class="block text-blue-600 hover:text-blue-800">2. What Are Cookies</a>
+                    <a href="#cookies-we-use" class="block text-blue-600 hover:text-blue-800">3. Cookies We Use</a>
+                    <a href="#third-party-cookies" class="block text-blue-600 hover:text-blue-800">4. Third-Party Cookies</a>
+                    <a href="#managing-cookies" class="block text-blue-600 hover:text-blue-800">5. Managing Cookies</a>
+                    <a href="#changes" class="block text-blue-600 hover:text-blue-800">6. Changes to This Policy</a>
+                    <a href="#contact" class="block text-blue-600 hover:text-blue-800">7. Contact Us</a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Cookies Policy Content -->
+        <div class="prose prose-blue max-w-none">
+            <section id="introduction" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
+                <p class="mb-4">This Cookies Policy explains how AI Marketing Platform ("we", "us", or "our") uses cookies and similar technologies to recognize you when you visit our website at <span class="text-blue-600">aimarketingplatform.app</span> ("Website"). It explains what these technologies are and why we use them, as well as your rights to control our use of them.</p>
+                <p class="mb-4">This Cookies Policy should be read together with our <a href="{% url 'core:privacy_policy' %}" class="text-blue-600 hover:text-blue-800">Privacy Policy</a> and our <a href="{% url 'core:terms_policy' %}" class="text-blue-600 hover:text-blue-800">Terms and Conditions</a>.</p>
+            </section>
+
+            <section id="what-are-cookies" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">2. What Are Cookies</h2>
+                <p class="mb-4">Cookies are small data files that are placed on your computer or mobile device when you visit a website. Cookies are widely used by website owners to make their websites work, or to work more efficiently, as well as to provide reporting information.</p>
+                <p class="mb-4">Cookies set by the website owner (in this case, AI Marketing Platform) are called "first-party cookies". Cookies set by parties other than the website owner are called "third-party cookies". Third-party cookies enable third-party features or functionality to be provided on or through the website (e.g., advertising, interactive content, and analytics). The parties that set these third-party cookies can recognize your computer both when it visits the website in question and also when it visits certain other websites.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">2.1 Types of Cookies</h3>
+                <p class="mb-4">Based on their duration, cookies can be classified as:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><strong>Session Cookies:</strong> These are temporary cookies that expire when you close your browser. They enable websites to recognize you as you navigate between pages.</li>
+                    <li><strong>Persistent Cookies:</strong> These cookies remain on your device for a specified period or until you delete them manually. They help websites remember you as a returning visitor.</li>
+                </ul>
+                
+                <p class="mb-4">Based on their function, cookies can be classified as:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><strong>Essential Cookies:</strong> Necessary for the website to function properly.</li>
+                    <li><strong>Preference Cookies:</strong> Enable a website to remember information that changes the way the website behaves or looks.</li>
+                    <li><strong>Statistics Cookies:</strong> Help website owners understand how visitors interact with their website.</li>
+                    <li><strong>Marketing Cookies:</strong> Used to track visitors across websites to display relevant advertisements.</li>
+                </ul>
+            </section>
+
+            <section id="cookies-we-use" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">3. Cookies We Use</h2>
+                <p class="mb-4">We use the following types of cookies for the purposes set out below:</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">3.1 Essential Cookies</h3>
+                <p class="mb-4">These cookies are essential to provide you with services available through our Website and to enable you to use some of its features. Without these cookies, the services that you have asked for cannot be provided, and we only use these cookies to provide you with those services.</p>
+                <table class="min-w-full border border-gray-300 mb-4">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="py-2 px-4 border-b">Cookie Name</th>
+                            <th class="py-2 px-4 border-b">Purpose</th>
+                            <th class="py-2 px-4 border-b">Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="py-2 px-4 border-b">session_id</td>
+                            <td class="py-2 px-4 border-b">Manages user session</td>
+                            <td class="py-2 px-4 border-b">Session</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-4 border-b">csrf_token</td>
+                            <td class="py-2 px-4 border-b">Prevents cross-site request forgery</td>
+                            <td class="py-2 px-4 border-b">Session</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">3.2 Functionality Cookies</h3>
+                <p class="mb-4">These cookies allow our Website to remember choices you make when you use our Website, such as remembering your login details or language preference. The purpose of these cookies is to provide you with a more personal experience and to avoid you having to re-enter your preferences every time you visit our Website.</p>
+                <table class="min-w-full border border-gray-300 mb-4">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="py-2 px-4 border-b">Cookie Name</th>
+                            <th class="py-2 px-4 border-b">Purpose</th>
+                            <th class="py-2 px-4 border-b">Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="py-2 px-4 border-b">user_preferences</td>
+                            <td class="py-2 px-4 border-b">Remembers user preferences</td>
+                            <td class="py-2 px-4 border-b">1 year</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-4 border-b">language_selection</td>
+                            <td class="py-2 px-4 border-b">Remembers language preferences</td>
+                            <td class="py-2 px-4 border-b">1 year</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">3.3 Analytics and Performance Cookies</h3>
+                <p class="mb-4">These cookies are used to collect information about traffic to our Website and how users use our Website. The information gathered does not identify any individual visitor. It includes the number of visitors to our Website, the websites that referred them to our Website, the pages they visited on our Website, what time of day they visited our Website, whether they have visited our Website before, and other similar information.</p>
+                <p class="mb-4">We use this information to help operate our Website more efficiently, to gather broad demographic information, and to monitor the level of activity on our Website.</p>
+                <p class="mb-4">We use Google Analytics for this purpose. Google Analytics uses its own cookies. You can find out more information about Google Analytics cookies <a href="https://developers.google.com/analytics/resources/concepts/gaConceptsCookies" class="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">here</a> and about how Google protects your data <a href="https://www.google.com/analytics/learn/privacy.html" class="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">here</a>.</p>
+                <table class="min-w-full border border-gray-300 mb-4">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="py-2 px-4 border-b">Cookie Name</th>
+                            <th class="py-2 px-4 border-b">Purpose</th>
+                            <th class="py-2 px-4 border-b">Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="py-2 px-4 border-b">_ga</td>
+                            <td class="py-2 px-4 border-b">Used to distinguish users</td>
+                            <td class="py-2 px-4 border-b">2 years</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-4 border-b">_gid</td>
+                            <td class="py-2 px-4 border-b">Used to distinguish users</td>
+                            <td class="py-2 px-4 border-b">24 hours</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 px-4 border-b">_gat</td>
+                            <td class="py-2 px-4 border-b">Used to throttle request rate</td>
+                            <td class="py-2 px-4 border-b">1 minute</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section id="third-party-cookies" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">4. Third-Party Cookies</h2>
+                <p class="mb-4">In addition to our own cookies, we may also use various third-party cookies to report usage statistics of the Website, deliver advertisements on and through the Website, and so on.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">4.1 Payment Processing</h3>
+                <p class="mb-4">We use third-party payment processors to handle subscription payments. These processors may place cookies on your device to facilitate and remember your payment preferences.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">4.2 Analytics Providers</h3>
+                <p class="mb-4">We partner with the following analytics providers, who may set cookies on our Website:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Google Analytics</li>
+                </ul>
+            </section>
+
+            <section id="managing-cookies" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">5. Managing Cookies</h2>
+                <p class="mb-4">You can set your browser to refuse all or some browser cookies, or to alert you when websites set or access cookies. If you disable or refuse cookies, please note that some parts of this Website may become inaccessible or not function properly.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">5.1 Cookie Preference Center</h3>
+                <p class="mb-4">When you first visit our Website, you will be shown a cookie banner which allows you to accept or decline non-essential cookies. You can change your preferences at any time by clicking on the "Cookie Settings" link in the footer of our Website.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">5.2 Browser Settings</h3>
+                <p class="mb-4">Most web browsers allow some control of most cookies through the browser settings. To find out more about cookies, including how to see what cookies have been set, visit <a href="https://www.allaboutcookies.org" class="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">www.allaboutcookies.org</a>.</p>
+                <p class="mb-4">Find out how to manage cookies on popular browsers:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><a href="https://support.google.com/accounts/answer/61416" class="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">Google Chrome</a></li>
+                    <li><a href="https://support.mozilla.org/en-US/kb/enhanced-tracking-protection-firefox-desktop" class="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">Mozilla Firefox</a></li>
+                
+                    <li><a href="https://support.mozilla.org/en-US/kb/enhanced-tracking-protection-firefox-desktop" class="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">Mozilla Firefox</a></li>
+                    <li><a href="https://support.microsoft.com/en-us/windows/microsoft-edge-browsing-data-and-privacy-bb8174ba-9d73-dcf2-9b4a-c582b4e640dd" class="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">Microsoft Edge</a></li>
+                    <li><a href="https://support.apple.com/guide/safari/manage-cookies-and-website-data-sfri11471/mac" class="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">Safari</a></li>
+                </ul>
+                <p class="mb-4">To find information relating to other browsers, visit the browser developer's website.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">5.3 Opting Out of Specific Cookies</h3>
+                <p class="mb-4">For Google Analytics, you can opt out by installing the <a href="https://tools.google.com/dlpage/gaoptout" class="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener noreferrer">Google Analytics opt-out browser add-on</a>.</p>
+            </section>
+
+            <section id="changes" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">6. Changes to This Policy</h2>
+                <p class="mb-4">We may update this Cookies Policy from time to time in order to reflect, for example, changes to the cookies we use or for other operational, legal, or regulatory reasons. We will notify you of any changes by posting the new Cookies Policy on this page with a new "Last updated" date.</p>
+                <p class="mb-4">You are advised to review this Cookies Policy periodically for any changes.</p>
+            </section>
+
+            <section id="contact" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">7. Contact Us</h2>
+                <p class="mb-4">If you have any questions about our use of cookies or this Cookies Policy, please contact us at:</p>
+                <p class="mb-4">Email: <span class="text-blue-600">support@aimarketingplatform.app</span></p>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,146 @@
+<!-- templates/core/support_policy.html -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Support Policy - AI Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="bg-white py-12">
+    <!-- Include the breadcrumb here -->
+    {% include "includes/breadcrumb.html" %}
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Table of Contents -->
+        <div class="mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-8">Help & Support Policy</h1>
+            <p class="text-gray-600 mb-6">Last updated: April 2025</p>
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h2 class="text-lg font-semibold mb-4">Contents:</h2>
+                <nav class="space-y-2">
+                    <a href="#introduction" class="block text-blue-600 hover:text-blue-800">1. Introduction</a>
+                    <a href="#support-channels" class="block text-blue-600 hover:text-blue-800">2. Support Channels</a>
+                    <a href="#response-times" class="block text-blue-600 hover:text-blue-800">3. Response Times</a>
+                    <a href="#scope" class="block text-blue-600 hover:text-blue-800">4. Scope of Support</a>
+                    <a href="#documentation" class="block text-blue-600 hover:text-blue-800">5. Self-Help Documentation</a>
+                    <a href="#feedback" class="block text-blue-600 hover:text-blue-800">6. Feedback and Feature Requests</a>
+                    <a href="#changes" class="block text-blue-600 hover:text-blue-800">7. Changes to This Policy</a>
+                    <a href="#contact" class="block text-blue-600 hover:text-blue-800">8. Contact Us</a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Support Policy Content -->
+        <div class="prose prose-blue max-w-none">
+            <section id="introduction" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
+                <p class="mb-4">This Help & Support Policy outlines how AI Marketing Platform provides technical support and assistance to our users. We are committed to helping you maximize the benefits of our AI-powered marketing content generation platform and ensuring you have a positive experience with our services.</p>
+                <p class="mb-4">This policy applies to all users of AI Marketing Platform, though certain levels of support may vary based on your subscription plan.</p>
+            </section>
+
+            <section id="support-channels" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">2. Support Channels</h2>
+                <p class="mb-4">We offer several channels through which you can access support:</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">2.1 Email Support</h3>
+                <p class="mb-4">Our primary support channel is email. You can contact our support team at support@aimarketingplatform.app for assistance with any issues or questions. Email support is available to all users.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">2.2 Help Center</h3>
+                <p class="mb-4">Our online Help Center contains articles, tutorials, and FAQs designed to help you understand and use our platform effectively. The Help Center is accessible to all users 24/7.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">2.3 In-App Support</h3>
+                <p class="mb-4">Users can access support directly from within the platform through the "Help" button available in the dashboard navigation. This provides quick access to our knowledge base and support request form.</p>
+            </section>
+
+            <section id="response-times" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">3. Response Times</h2>
+                <p class="mb-4">We strive to respond to all support requests as quickly as possible. Expected response times vary based on the urgency of the issue and your subscription plan:</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">3.1 Standard Support Hours</h3>
+                <p class="mb-4">Our standard support hours are Monday through Friday, 9:00 AM to 5:00 PM Eastern Time (ET), excluding major holidays.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">3.2 Response Time Targets</h3>
+                <p class="mb-4">We aim to respond to support requests within the following timeframes during standard support hours:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li><strong>Critical Issues</strong> (service unavailable or severely impaired): Within 4 hours</li>
+                    <li><strong>High Priority</strong> (significant functionality issues): Within 8 hours</li>
+                    <li><strong>Medium Priority</strong> (minor functionality issues): Within 1 business day</li>
+                    <li><strong>Low Priority</strong> (general questions, feature requests): Within 2 business days</li>
+                </ul>
+                <p class="mb-4">Please note that these are target response times, not resolution times. Complex issues may take longer to resolve.</p>
+            </section>
+
+            <section id="scope" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">4. Scope of Support</h2>
+                <p class="mb-4">Our support team can assist with a wide range of issues related to our platform, including:</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">4.1 What We Support</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Account and subscription management</li>
+                    <li>Platform functionality and feature questions</li>
+                    <li>Technical issues related to our website and services</li>
+                    <li>Guidance on using AI features and interpreting results</li>
+                    <li>Basic content generation questions and prompting assistance</li>
+                    <li>Billing and payment inquiries</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">4.2 What We Don't Support</h3>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Custom marketing strategy development or consulting</li>
+                    <li>Extensive content editing or writing services</li>
+                    <li>Training on general marketing concepts unrelated to our platform</li>
+                    <li>Issues with third-party services or applications not directly integrated with our platform</li>
+                    <li>Custom development or integration work</li>
+                </ul>
+            </section>
+
+            <section id="documentation" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">5. Self-Help Documentation</h2>
+                <p class="mb-4">We provide comprehensive documentation to help you get the most out of our platform:</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">5.1 Knowledge Base</h3>
+                <p class="mb-4">Our knowledge base contains articles explaining all features of the platform, common issues, and best practices. We regularly update this documentation to reflect new features and improvements.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">5.2 Video Tutorials</h3>
+                <p class="mb-4">We offer a collection of video tutorials demonstrating how to use various aspects of the platform, from basic navigation to advanced prompt engineering techniques.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">5.3 AI Marketing Guide</h3>
+                <p class="mb-4">Our AI Marketing Guide provides insights into effective marketing content creation strategies using AI tools. This resource helps you understand how to get the best results from our platform.</p>
+            </section>
+
+            <section id="feedback" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">6. Feedback and Feature Requests</h2>
+                <p class="mb-4">We value your feedback and suggestions for improving our platform:</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">6.1 Submitting Feedback</h3>
+                <p class="mb-4">You can submit feedback and feature requests through:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>The feedback form in your account dashboard</li>
+                    <li>Email to feedback@aimarketingplatform.app</li>
+                    <li>In-app feedback buttons available throughout the platform</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">6.2 Feature Request Process</h3>
+                <p class="mb-4">We review all feature requests and consider them for our product roadmap. While we cannot implement every suggestion, we prioritize features based on:</p>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>Alignment with our platform vision</li>
+                    <li>Number of users requesting similar functionality</li>
+                    <li>Technical feasibility and resource requirements</li>
+                    <li>Overall impact on user experience</li>
+                </ul>
+                <p class="mb-4">We do not provide specific timelines for feature implementation unless they are already on our published roadmap.</p>
+            </section>
+
+            <section id="changes" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">7. Changes to This Policy</h2>
+                <p class="mb-4">We may update this Help & Support Policy from time to time to reflect changes in our support offerings, hours, or processes. Any changes will be posted on this page with an updated "Last updated" date.</p>
+                <p class="mb-4">Significant changes to our support structure will be communicated directly to users via email or in-app notifications.</p>
+            </section>
+
+            <section id="contact" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">8. Contact Us</h2>
+                <p class="mb-4">If you have any questions about this Help & Support Policy, please contact us at:</p>
+                <p class="mb-4">Email: <span class="text-blue-600">support@aimarketingplatform.app</span></p>
+            </section>
+        </div>
+    </div>
+</div>
+{% endblock %}
