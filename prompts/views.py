@@ -2,7 +2,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from .models import Prompt
 from django.urls import reverse
 from content_templates.models import Template, TemplatePrompt
@@ -42,6 +42,7 @@ def prompt_add_page(request, project_id):
     # Display the form
     return render(request, 'prompts/prompt_create.html', {'project': project})  
 
+
 @login_required
 def prompt_edit_page(request, project_id, prompt_id):
     """Display and handle the prompt editing page."""
@@ -54,8 +55,9 @@ def prompt_edit_page(request, project_id, prompt_id):
         prompt_text = request.POST.get('prompt', prompt.prompt)
         
         # Calculate token count
-        from utils.token_helper import getPromptTokenCount
+        from prompts.utils.token_helper import getPromptTokenCount
         token_count = getPromptTokenCount(prompt_text)
+        print(f"Calculated token count for prompt: {token_count}")
         
         # Update the prompt
         prompt.name = name
@@ -67,7 +69,8 @@ def prompt_edit_page(request, project_id, prompt_id):
         return redirect('projects:project_detail', project_id=project.id, tab='prompts')
     
     # Display the form
-    return render(request, 'prompts/prompt_create.html', {'project': project, 'prompt': prompt})  # prompt_create.html is used for both create and edit
+    return render(request, 'prompts/prompt_create.html', {'project': project, 'prompt': prompt})
+
 
 @login_required
 def prompt_delete(request, project_id, prompt_id):

@@ -47,18 +47,19 @@
 </div>
 
 <script>
-  // Count tokens on input - simplified token counting method
-  document.getElementById('id_prompt').addEventListener('input', function() {
-      const text = this.value;
-      // Simplified estimation - actual implementation might want to use more accurate token counting
-      const tokens = Math.ceil(text.length / 4);
-      const tokenCounter = document.getElementById('token-counter');
-      const isExceeded = tokens > 20000;
-      
-      tokenCounter.textContent = `Tokens: ${tokens}/20000`;
-      tokenCounter.className = isExceeded 
-          ? 'flex justify-center text-sm sm:text-base font-medium rounded-lg py-2 px-3 w-full sm:w-auto bg-red-100 text-red-500'
-          : 'flex justify-center text-sm sm:text-base font-medium rounded-lg py-2 px-3 w-full sm:w-auto bg-gray-100 text-gray-500';
-  });
+ // Count tokens on input - using better token counting method
+document.getElementById('id_prompt').addEventListener('input', function() {
+    const text = this.value;
+    // Better estimation that more closely matches Python's getPromptTokenCount
+    // cl100k_base encoding (used by tiktoken) uses roughly 0.75 tokens per word
+    const estimatedTokens = Math.round(text.split(/\s+/).length * 1.33);
+    const tokenCounter = document.getElementById('token-counter');
+    const isExceeded = estimatedTokens > 20000;
+    
+    tokenCounter.textContent = `Tokens: ${estimatedTokens}/20000`;
+    tokenCounter.className = isExceeded 
+        ? 'flex justify-center text-sm sm:text-base font-medium rounded-lg py-2 px-3 w-full sm:w-auto bg-red-100 text-red-500'
+        : 'flex justify-center text-sm sm:text-base font-medium rounded-lg py-2 px-3 w-full sm:w-auto bg-gray-100 text-gray-500';
+});
 </script>
 {% endblock %}

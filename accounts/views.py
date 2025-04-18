@@ -63,15 +63,17 @@ def profile_view(request):
     
     return render(request, 'accounts/profile.html', {'form': form})
 
+
 @login_required
 def dashboard_view(request):
-
     # Get user projects
     projects = request.user.projects.all().order_by('-updated_at')
     
     # Calculate prompt token usage
     prompts = Prompt.objects.filter(project__user=request.user)
+    
     prompt_token_count = sum(prompt.token_count or 0 for prompt in prompts)
+    
     max_prompt_tokens = getattr(settings, 'MAX_TOKENS_PROMPTS', 20000)  # Default to 20,000 if not set
     prompt_token_percentage = min(round((prompt_token_count / max_prompt_tokens) * 100), 100)
     
@@ -105,3 +107,4 @@ def dashboard_view(request):
     }
     
     return render(request, 'accounts/dashboard.html', context)
+
