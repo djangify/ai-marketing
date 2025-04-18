@@ -158,12 +158,13 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesSto
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Stripe settings
-STRIPE_PUBLISHABLE_KEY = 'your_publishable_key'
-STRIPE_SECRET_KEY = 'your_secret_key'
-STRIPE_WEBHOOK_SECRET = 'your_webhook_signing_secret'
-STRIPE_PRICE_ID_MONTHLY = 'price_1RBA24BSytWSX0dbNigRddaw'
-STRIPE_PRICE_ID_QUARTERLY = 'price_1RBA5nBSytWSX0db0aRqPViR'
-STRIPE_PRICE_ID_YEARLY = 'price_1RBA7sBSytWSX0dbLcfpVxKw'
+# Stripe settings
+STRIPE_PUBLISHABLE_KEY = env('STRIPE_PUBLISHABLE_KEY', default='pk_test_placeholder')
+STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY', default='sk_test_placeholder')
+STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET', default='whsec_placeholder')
+STRIPE_PRICE_ID_MONTHLY = env('STRIPE_PRICE_ID_MONTHLY', default='price_1RBA24BSytWSX0dbNigRddaw')
+STRIPE_PRICE_ID_QUARTERLY = env('STRIPE_PRICE_ID_QUARTERLY', default='price_1RBA5nBSytWSX0db0aRqPViR')
+STRIPE_PRICE_ID_YEARLY = env('STRIPE_PRICE_ID_YEARLY', default='price_1RBA7sBSytWSX0dbLcfpVxKw')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
