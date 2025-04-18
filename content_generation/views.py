@@ -108,7 +108,11 @@ def update_generated_content(request, content_id):
 @require_POST
 def start_generation(request, project_id):
     """AJAX endpoint to start content generation"""
+    print(f"Starting generation for project {project_id}")
     project = get_object_or_404(Project, id=project_id, user=request.user)
+    
+    # Check if this is an HTMX request
+    is_htmx = request.headers.get('HX-Request') == 'true'
     
     # Check for existing generation job
     existing_job = ContentGenerationJob.objects.filter(
@@ -122,10 +126,12 @@ def start_generation(request, project_id):
             'success': False,
             'error': 'A generation job is already in progress'
         }, status=400)
-    
     # Check if project has prompts
     prompts = project.project_prompts.all()
+    prompt_count = prompts.count()
+    print(f"Project has {prompt_count} prompts")
     if not prompts.exists():
+        print("ERROR: No prompts found in this project")
         messages.error(request, 'No prompts found. Please add prompts before generating content.')
         return JsonResponse({
             'success': False,
@@ -134,27 +140,43 @@ def start_generation(request, project_id):
     
     # Check if project has assets with content
     assets = project.client_assets.filter(content__isnull=False).exclude(content='')
-    if not assets.exists():
+    asset_count = assets.count()
+    print(f"Project has {asset_count} assets with content")
+    if asset_count == 0:
+        print("Asset IDs in project:", list(project.client_assets.values_list('id', flat=True)))
+        print("Assets without content:", project.client_assets.filter(content='').count())
+        print("ERROR: No assets with content found in this project")
         messages.error(request, 'No content assets found. Please upload text files before generating content.')
         return JsonResponse({
             'success': False,
             'error': 'No assets with content found in this project'
         }, status=400)
-    
     try:
         # Create new generation job
         job = generation_manager.start_generation_job(project_id, request.user)
         
+        if not job:
+            error_message = "Failed to create generation job"
+            messages.error(request, error_message)
+            return JsonResponse({
+                'success': False,
+                'error': error_message
+            }, status=400)
+        
         # Run generation in background thread
         def run_generation():
             try:
-                generation_manager.process_generation_job(job.id)
+                if job and job.id:
+                    generation_manager.process_generation_job(job.id)
+                else:
+                    print("Error: job or job.id is None in run_generation")
             except Exception as e:
                 # Update job with error if generation fails
-                job.status = 'failed'
-                job.error_message = str(e)
-                job.completed_at = timezone.now()
-                job.save()
+                if job:
+                    job.status = 'failed'
+                    job.error_message = str(e)
+                    job.completed_at = timezone.now()
+                    job.save()
                 print(f"Error in generation thread: {str(e)}")
         
         thread = threading.Thread(target=run_generation)
@@ -162,11 +184,22 @@ def start_generation(request, project_id):
         thread.start()
         
         messages.info(request, 'Content generation started. This may take a few minutes.')
-        return JsonResponse({
-            'success': True,
-            'job_id': str(job.id),
-            'status': job.status
-        })
+        
+        # Handle HTMX requests by returning the status template instead of JSON
+        if is_htmx:
+            print("HTMX request detected, returning status template")
+            context = {
+                'project': project,
+                'job': job,
+                'generated_contents': project.generated_contents.all().order_by('order'),
+            }
+            return render(request, 'content_generation/status.html', context)
+        else:
+            return JsonResponse({
+                'success': True,
+                'job_id': str(job.id),
+                'status': job.status
+            })
         
     except ValueError as e:
         error_message = str(e)

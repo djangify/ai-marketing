@@ -12,6 +12,7 @@
             hx-target="#content-status-container"
             hx-swap="innerHTML"
             hx-indicator="#loading-indicator"
+            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
             class="bg-main/10 text-main font-semibold hover:bg-main/15 text-sm lg:text-md rounded-lg w-full lg:w-auto inline-flex items-center justify-center h-10 px-4">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -39,5 +40,36 @@
             <p>Loading content status...</p>
         </div>
     </div>
-    <script src="{% static 'js/projects_upload_tab.js' %}"></script>
+    
+    <!-- Hidden CSRF field for JavaScript use -->
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
 </div>
+
+<!-- Load content generation scripts -->
+<script src="{% static 'js/content_generation_ui.js' %}"></script>
+<script src="{% static 'js/content_generation_core.js' %}"></script>
+
+<!-- Debug script to help identify issues -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log("Debug: Generate tab loaded");
+    
+    // Check if generate button exists
+    const generateButton = document.getElementById('generate-content-button');
+    console.log("Debug: Generate button exists:", !!generateButton);
+    
+    // Add click listener for debugging
+    if (generateButton) {
+      generateButton.addEventListener('click', function() {
+        console.log("Debug: Generate button clicked");
+      });
+    }
+    
+    // Check if HTMX is loaded
+    console.log("Debug: HTMX loaded:", typeof htmx !== 'undefined');
+    
+    // Check if CSRF token is available
+    const csrfToken = "{{ csrf_token }}";
+    console.log("Debug: CSRF token available:", !!csrfToken);
+  });
+</script>

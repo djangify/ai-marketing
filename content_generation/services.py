@@ -90,41 +90,57 @@ class GenerationManager:
     
     def start_generation_job(self, project_id, user):
         """Start a content generation job for a project"""
-        project = Project.objects.get(id=project_id)
+        try:
+            project = Project.objects.get(id=project_id)
+            
+            # Clean up any existing content
+            GeneratedContent.objects.filter(project=project).delete()
+            
+            # Check if assets have content
+            assets_with_content = project.client_assets.filter(content__isnull=False).exclude(content='')
+            if not assets_with_content.exists():
+                raise ValueError("No assets with content found in this project")
+            
+            # Check if prompts exist
+            prompts = project.project_prompts.all().order_by('order')
+            if not prompts.exists():
+                raise ValueError("No prompts found in this project")
+            
+            # Create new generation job
+            job = ContentGenerationJob.objects.create(
+                project=project,
+                user=user,
+                status='in_progress',
+                prompts_total=prompts.count(),
+                prompts_completed=0
+            )
+            
+            return job
+        except Exception as e:
+            print(f"Error creating generation job: {str(e)}")
+            return None
         
-        # Clean up any existing content
-        GeneratedContent.objects.filter(project=project).delete()
-        
-        # Check if assets have content
-        assets_with_content = project.assets.filter(content__isnull=False).exclude(content='')
-        if not assets_with_content.exists():
-            raise ValueError("No assets with content found in this project")
-        
-        # Check if prompts exist
-        prompts = project.project_prompts.all().order_by('order')
-        if not prompts.exists():
-            raise ValueError("No prompts found in this project")
-        
-        # Create new generation job
-        job = ContentGenerationJob.objects.create(
-            project=project,
-            user=user,
-            status='in_progress',
-            prompts_total=prompts.count(),
-            prompts_completed=0
-        )
-        
-        return job
-    
     def process_generation_job(self, job_id):
         """Process a generation job"""
-        job = ContentGenerationJob.objects.get(id=job_id)
-        project = job.project
-        
         try:
+            job = ContentGenerationJob.objects.get(id=job_id)
+            if not job:
+                print(f"Job with ID {job_id} not found")
+                return
+            
+            project = job.project
+            print(f"Processing generation job {job_id} for project {project.id}")
+            
             # Get assets content
+            print("Getting asset content...")
             assets = project.client_assets.filter(content__isnull=False).exclude(content='')
+            print(f"Found {assets.count()} assets with content")
+            
+            if assets.count() > 0:
+                print("Asset IDs with content:", list(assets.values_list('id', flat=True)))
+            
             content_from_assets = "\n\n".join([asset.content for asset in assets if asset.content])
+            print(f"Total characters from asset content: {len(content_from_assets)}")
             
             # If content is too long, truncate it to a reasonable size
             max_content_length = 24000  # Approximately 6000 tokens
@@ -193,7 +209,9 @@ class GenerationManager:
                     
                     # Update job progress
                     job.prompts_completed += 1
-                    job.save()
+                    job.save(update_fields=['prompts_completed'])  
+                    # Use update_fields for more frequent updates
+                    print(f"Progress update: {job.prompts_completed} of {job.prompts_total} ({int((job.prompts_completed/job.prompts_total)*100)}%)")
                     
                     # Small delay to prevent rate limiting
                     time.sleep(1)
@@ -206,12 +224,24 @@ class GenerationManager:
             job.status = 'completed'
             job.completed_at = timezone.now()
             job.save()
-            
+
+            # Add a success message
+            from django.contrib import messages
+            try:
+                # Add message to the request context or session if available
+                from django.contrib.messages import constants as message_constants
+                from django.contrib.messages.storage.fallback import FallbackStorage
+                
+                print(f"Content generation completed successfully! Generated {job.prompts_completed} items.")
+            except Exception as e:
+                print(f"Could not add success message: {e}")
+                        
         except Exception as e:
             # Mark job as failed
-            job.status = 'failed'
-            job.error_message = str(e)
-            job.completed_at = timezone.now()
-            job.save()
+            if job:
+                job.status = 'failed'
+                job.error_message = str(e)
+                job.completed_at = timezone.now()
+                job.save()
             print(f"Error processing generation job {job_id}: {e}")
             raise

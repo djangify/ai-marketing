@@ -18,11 +18,11 @@
                 style="width: {% if job.prompts_total > 0 %}{{ job.prompts_completed|floatformat:0 }}{% else %}0{% endif %}%">
             </div>
         </div>
-        <div class="flex justify-between items-center text-xs text-gray-600">
-            <span class="progress-text">Generated {{ job.prompts_completed }} of {{ job.prompts_total }} prompts</span>
-            <span class="text-right">
+        <div class="flex justify-between items-center text-sm text-gray-600">
+            <span class="progress-text font-semibold">Generated {{ job.prompts_completed }} of {{ job.prompts_total }} prompts</span>
+            <span class="text-right font-semibold">
                 {% if job.prompts_total > 0 %}
-                {{ job.prompts_completed|floatformat:0 }}% complete
+                {% widthratio job.prompts_completed job.prompts_total 100 %}% complete
                 {% else %}
                 0% complete
                 {% endif %}
@@ -48,6 +48,7 @@
                         hx-target="#content-status-container"
                         hx-swap="innerHTML"
                         hx-indicator="#loading-indicator"
+                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
                         class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs leading-4 font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:border-red-300 focus:shadow-outline-red active:bg-red-200 transition ease-in-out duration-150">
                         Try Again
                     </button>
@@ -143,3 +144,6 @@
         {% endif %}
     </div>
 {% endif %}
+
+<!-- Inject a hidden CSRF token field to be used by JavaScript -->
+<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
