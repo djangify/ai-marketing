@@ -3,6 +3,9 @@
 
 <!-- templates/blog/category.html -->
 {% block content %}
+
+{% include 'includes/blog_breadcrumbs.html' with category=category %}
+
 <div class="container mx-auto px-4 py-8">
     <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ category.name }}</h1>
     <a href="{% url 'blog:list' %}" class="text-blue-600 hover:text-blue-800 mb-8 inline-block">← Back to Blog</a>

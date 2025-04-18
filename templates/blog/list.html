@@ -1,9 +1,12 @@
+<!-- templates/blog/list.html -->
 {% extends 'base.html' %}
 {% block content %}
 
 <!-- templates/blog/list.html -->
-<div class="container mx-auto px-4 py-8">
-    <h1 class="text-4xl font-bold mb-8">Blog</h1>
+{% include 'includes/blog_breadcrumbs.html' %}
+
+<div class="container mx-auto px-4 py-12">
+    <h1 class="text-4xl font-bold mb-8">Blog in blogs app</h1>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {% for post in posts %}
         <article class="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -31,10 +34,15 @@
                     <p class="text-gray-700 mb-4">
                         {{ post.content|striptags|truncatewords:30 }}
                     </p>
-                    <span>Read More →</span>
+                    <span class="text-blue-600 hover:text-blue-800">Read More →</span>
                 </div>
             </a>
         </article>
+        {% empty %}
+        <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center py-12">
+            <p class="text-gray-600 mb-4">No blog posts available yet.</p>
+            <p class="text-gray-500">Check back soon for new content!</p>
+        </div>
         {% endfor %}
     </div>
 </div>
