@@ -238,12 +238,14 @@ def dashboard_subscription_status(request):
         ]
     }
     return render(request, 'subscriptions/dashboard_status.html', context)
+
+
 @login_required
 def subscription_management(request):
-    user_profile = request.user.userprofile
+    user_profile = request.user.subscription_profile  # Change from userprofile to subscription_profile
     active_subscription = Subscription.objects.filter(
         user=request.user, 
-        status__in=['active', 'trialing']
+        payment_status__in=['active', 'trialing']  # Change status__in to payment_status__in
     ).first()
     
     subscription_data = None
@@ -283,7 +285,7 @@ def create_portal_session(request):
     
     if not active_subscription or not active_subscription.stripe_customer_id:
         messages.error(request, "No active subscription found.")
-        return redirect('subscription_management')
+        return redirect('subscriptions:subscription_management')
     
     try:
         # Create a Stripe Customer Portal session
@@ -297,12 +299,12 @@ def create_portal_session(request):
     
     except stripe.error.StripeError as e:
         messages.error(request, f"Error creating portal session: {str(e)}")
-        return redirect('subscription_management')
+        return redirect('subscriptions:subscription_management')
 
 @login_required
 def cancel_subscription(request):
     if request.method != 'POST':
-        return redirect('subscription_management')
+        return redirect('subscriptions:subscription_management')
     
     active_subscription = Subscription.objects.filter(
         user=request.user, 
@@ -311,7 +313,7 @@ def cancel_subscription(request):
     
     if not active_subscription or not active_subscription.stripe_subscription_id:
         messages.error(request, "No active subscription found.")
-        return redirect('subscription_management')
+        return redirect('subscriptions:subscription_management')
     
     try:
         # Cancel the subscription at period end
@@ -324,12 +326,12 @@ def cancel_subscription(request):
     except stripe.error.StripeError as e:
         messages.error(request, f"Error canceling subscription: {str(e)}")
     
-    return redirect('subscription_management')
+    return redirect('subscriptions:subscription_management')
 
 @login_required
 def resume_subscription(request):
     if request.method != 'POST':
-        return redirect('subscription_management')
+        return redirect('subscriptions:subscription_management')
     
     active_subscription = Subscription.objects.filter(
         user=request.user, 
@@ -338,7 +340,7 @@ def resume_subscription(request):
     
     if not active_subscription or not active_subscription.stripe_subscription_id:
         messages.error(request, "No active subscription found.")
-        return redirect('subscription_management')
+        return redirect('subscriptions:subscription_management')
     
     try:
         # Resume the subscription
@@ -351,4 +353,4 @@ def resume_subscription(request):
     except stripe.error.StripeError as e:
         messages.error(request, f"Error resuming subscription: {str(e)}")
     
-    return redirect('subscription_management')
+    return redirect('subscriptions:subscription_management')

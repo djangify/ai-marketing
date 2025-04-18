@@ -1,7 +1,9 @@
-{% extends 'base.html' %}
+{% extends 'dashboard_layout.html' %}
 {% load static %}
 
-{% block content %}
+{% block title %}{{ project.title }} - AI Marketing Platform{% endblock %}
+
+{% block dashboard_content %}
 <div class="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
     <div class="bg-white shadow-sm rounded-lg overflow-hidden p-8 text-center">
         <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
