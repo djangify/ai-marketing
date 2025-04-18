@@ -5,20 +5,32 @@ from django.utils import timezone
 
 
 def blog_list(request):
-    posts = Post.objects.filter(
-        status="published", publish_date__lte=timezone.now()
+    # All published posts first
+    all_posts = Post.objects.filter(
+        status="published", 
+        publish_date__lte=timezone.now()
     ).select_related("category")
-
-    paginator = Paginator(posts, 12)
+    
+    # Get featured posts (limit to 5)
+    featured_posts = all_posts.filter(featured=True).order_by('-publish_date')[:5]
+    
+    # Get list of featured IDs
+    featured_ids = [post.id for post in featured_posts]
+    
+    # Filter regular posts after featured have been determined
+    regular_posts = all_posts.exclude(id__in=featured_ids)
+    
+    # Paginate the regular posts
+    paginator = Paginator(regular_posts, 12)
     page = request.GET.get("page")
     posts = paginator.get_page(page)
 
     context = {
         "posts": posts,
         "categories": Category.objects.all(),
-        "title": "Blog",
-        "meta_description": "Posts and updates from Pen And I Publishing",
-        
+        "title": "Blogs, News, and Updates",
+        "meta_description": "Posts and updates from AI Marketing Platform",
+        "featured_posts": featured_posts,
     }
 
     return render(request, "blog/list.html", context)
