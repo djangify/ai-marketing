@@ -30,7 +30,7 @@
     <!-- Favicon -->
     <link
       rel="icon"
-      href="{% static 'images/favicon.ico' %}"
+      href="{% static 'img/favicon.ico' %}"
       type="image/x-icon"
     />
     <title>AI Marketing Platform</title>
@@ -45,12 +45,21 @@
   </head>
   <body>
     {% include 'includes/messages.html' %} 
-    {% include 'includes/navbar.html' %}
     
+    {% if user.is_authenticated %}
+      {% if '/blog/' in request.path or '/documentation/' in request.path %}
+        {% include 'includes/logged_in_public_header.html' %}
+      {% else %}
+        {% include 'includes/navbar.html' %}
+      {% endif %}
+    {% else %}
+      {% include 'includes/navbar.html' %}
+    {% endif %}
     
-    <main class="bg-white py-12 dark:bg-gray-900 min-h-screen">
+    <main class="bg-white dark:bg-gray-900 min-h-screen">
       {% block content %}{% endblock %}
     </main>
+    
     <!-- Footer -->
     <footer role="contentinfo">{% include 'includes/footer.html' %}</footer>
   </body>
