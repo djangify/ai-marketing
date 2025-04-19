@@ -106,9 +106,9 @@
        <!-- related posts -->
         <div class="mt-12 mb-24">
             <h2 class="text-2xl font-bold mb-8">Related Posts</h2>
-            <div class="flex flex-row justify-between space-x-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
                 {% for related in related_posts %}
-                <a href="{{ related.get_absolute_url }}" class="group w-1/2">
+                <a href="{{ related.get_absolute_url }}" class="group">
                     <div class="aspect-video w-full mb-4 overflow-hidden rounded-lg bg-gray-100">
                         {% if related.external_image_url %}
                             <img src="{{ related.external_image_url }}" 
@@ -132,8 +132,8 @@
             </div>
         </div>
         <!-- social media sharing buttons -->
-        <div class="mb-6">
-            <p class="text-sm text-gray-600 mb-2">Thanks for sharing:</p>
+        <div class="mb-6 mt-16">
+            <p class="text-sm text-gray-600 mb-4">Thanks for sharing:</p>
             {% include 'includes/social_share.html' with post=post %}
         </div>
 
