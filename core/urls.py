@@ -6,9 +6,7 @@ app_name = 'core'
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('documentation/', views.documentation, name='documentation'),
     path('policy/privacy-policy/', views.privacy_policy, name='privacy_policy'),
-    
     path('policy/cookies-policy/', views.cookies_policy, name='cookies_policy'),
     path('policy/terms-policy/', views.terms_policy, name='terms_policy'),
     path('policy/refund-policy/', views.refund_policy, name='refund_policy'),

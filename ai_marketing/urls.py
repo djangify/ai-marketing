@@ -25,6 +25,7 @@ urlpatterns = [
     path('', include('core.urls', namespace='core')),
     path('content_generation/', include('content_generation.urls', namespace='content_generation')),
     path('tinymce/', include('tinymce.urls')),
+    path('documentation/', include('docs.urls', namespace='docs')),
     path('assets/', include('assets.urls', namespace='assets')),
     path('subscriptions/', include('subscriptions.urls', namespace='subscriptions')),
     path('api/', include(router.urls)),

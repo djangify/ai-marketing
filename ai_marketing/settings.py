@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'api',
     'blog',
     'core',
+    'docs',
     'content_generation',
    
 ]
