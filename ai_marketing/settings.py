@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'assets',
     'api',
     'blog',
+    'core',
     'content_generation',
    
 ]

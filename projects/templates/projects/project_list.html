@@ -4,6 +4,21 @@
 
 {% block title %}Projects - AI Marketing Platform{% endblock %}
 
+<!-- Tag Filtering -->
+{% if current_tag %}
+<div class="flex items-center mb-4">
+    <span class="text-sm text-gray-600 mr-2">Filtered by tag:</span>
+    <div class="flex items-center bg-indigo-100 text-indigo-800 rounded-full px-3 py-1 text-sm">
+        {{ current_tag }}
+        <a href="{% url 'projects:project_list' %}" class="ml-2 text-indigo-600 hover:text-indigo-800">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </a>
+    </div>
+</div>
+{% endif %}
+
 {% block dashboard_content %}
 <div class="max-w-screen-xl mx-auto p-4 sm:p-6 lg:p-8 bg-white space-y-8 rounded-xl shadow-sm mt-16">
     <!-- Page Header - similar to dashboard style -->

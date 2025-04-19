@@ -8,7 +8,10 @@
 {% block dashboard_content %}
 <div class="max-w-screen-xl mx-auto p-4 sm:p-6 lg:p-8 bg-white space-y-12">
     <div class="flex items-center justify-between">
-        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">{{ action }} Template</h1>
+        <div>
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">{{ action }} Template</h1>
+            <p class="text-gray-600 mt-2">Templates help you save prompt structures to reuse across multiple projects.</p>
+        </div>
         {% if template %}
         <a href="{% url 'content_templates:template_detail' template_id=template.id %}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm  transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-secondary/10 text-secondary font-semibold hover:bg-secondary/20 h-9 px-4 py-2">
             Cancel
@@ -27,6 +30,9 @@
             {% for field in form %}
                 <div class="space-y-2">
                     <label for="{{ field.id_for_label }}" class="text-sm font-medium text-gray-700">{{ field.label }}</label>
+                    {% if field.name == 'title' %}
+                    <span class="text-xs text-gray-500 mb-2 ml-1">(Give your template a clear name that indicates its purpose, e.g., 'Blog Post Template')</span>
+                    {% endif %}
                     {{ field|add_class:"flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" }}
                     {% if field.errors %}
                         {% for error in field.errors %}
