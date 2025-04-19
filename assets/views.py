@@ -58,15 +58,19 @@ def asset_upload(request, project_id):
                 # Check for duplicate file names
                 existing_assets = Asset.objects.filter(project=project, title=file.name)
                 
-                # If this is a duplicate, let the client know
+                # If this is a duplicate, let the client know, but only stop if it's a single file upload
                 if existing_assets.exists() and not request.POST.get('overwrite'):
-                    return JsonResponse({
-                        'success': False, 
-                        'error': 'duplicate', 
-                        'duplicate': True,
-                        'filename': file.name,
-                        'message': f"File '{file.name}' already exists. Do you want to overwrite it?"
-                    })
+                # If we're uploading multiple files, we'll handle duplicates individually
+                    if len(uploaded_files) == 1:
+                        return JsonResponse({
+                            'success': False, 
+                            'error': 'duplicate', 
+                            'duplicate': True,
+                            'filename': file.name,
+                            'message': f"File '{file.name}' already exists. Do you want to overwrite it?"
+                        })
+                # For multiple files, just skip this one if not overwriting
+                    continue
                 
                 # If overwrite is confirmed, delete the existing assets
                 if existing_assets.exists() and request.POST.get('overwrite') == 'true':
