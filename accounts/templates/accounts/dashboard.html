@@ -82,10 +82,15 @@
                         <i class="fas fa-file-alt mr-3 text-main"></i> Create New Template
                     </a>
                 </div>
-                
+                <h3 class="text-lg font-semibold mt-6 mb-4">Quick Start</h3>
+                <div class="grid grid-cols-1 gap-2">
+                    <a href="{% url 'core:quick_start' %}" id="quick-start-button" class="flex items-center p-3 bg-white border rounded hover:bg-gray-50">
+                        <i class="fas fa-play-circle mr-3 text-main"></i> Quick Start Guide
+                    </a>
+                </div>
                 <h3 class="text-lg font-semibold mt-6 mb-4">Help & Resources</h3>
                 <div class="grid grid-cols-1 gap-2">
-                    <a href="#" class="flex items-center p-3 bg-white border rounded hover:bg-gray-50">
+                    <a href="{% url 'docs:documentation' %}" class="flex items-center p-3 bg-white border rounded hover:bg-gray-50">
                         <i class="fas fa-book mr-3 text-main"></i> Documentation
                     </a>
                     <a href="/documentation/#faq" class="flex items-center p-3 bg-white border rounded hover:bg-gray-50">

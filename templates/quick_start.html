@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Quick Start Documentation - AI Marketing Platform{% endblock %}
+
+{% block content %}
+<div class="bg-white py-12">
+    <!-- Include the breadcrumb here -->
+    {% include "includes/breadcrumb.html" %}
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Table of Contents -->
+        <div class="mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-8">Quick Start Documentation</h1>
+            <p class="text-gray-600 mb-6">Last updated: April 2025</p>
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h2 class="text-lg font-semibold mb-4">Contents:</h2>
+                <nav class="space-y-2">
+                    <a href="#getting-started" class="block text-blue-600 hover:text-blue-800">1. Getting Started</a>
+                    <a href="#projects" class="block text-blue-600 hover:text-blue-800">2. Projects</a>
+                    <a href="#assets" class="block text-blue-600 hover:text-blue-800">3. Assets</a>
+                    <a href="#prompts" class="block text-blue-600 hover:text-blue-800">4. Prompts</a>
+                    <a href="#templates" class="block text-blue-600 hover:text-blue-800">5. Templates</a>
+                    <a href="#content-generation" class="block text-blue-600 hover:text-blue-800">6. Content Generation</a>
+                    <a href="#faq" class="block text-blue-600 hover:text-blue-800">7. FAQ</a>
+                    <a href="#support" class="block text-blue-600 hover:text-blue-800">8. Support</a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Quick Start Content -->
+        <div class="prose prose-blue max-w-none">
+            <!-- Getting Started Section -->
+            <section id="getting-started" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">1. Getting Started</h2>
+                <p class="mb-4">Welcome to the AI Marketing Platform! This documentation will help you understand how to use our platform to create AI-generated marketing content.</p>
+                
+                <div class="bg-gray-50 p-4 rounded-lg mb-6">
+                    <h3 class="font-semibold text-lg mb-2">Quick Start Guide</h3>
+                    <p class="mb-2">The basic workflow consists of:</p>
+                    <ol class="list-decimal list-inside space-y-2 ml-4">
+                        <li>Create a project</li>
+                        <li>Upload assets (text, audio, or video files)</li>
+                        <li>Create prompts or use templates</li>
+                        <li>Generate content</li>
+                        <li>Edit and export your content</li>
+                    </ol>
+                </div>
+            </section>
+            
+            <!-- Projects Section -->
+            <section id="projects" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">2. Projects</h2>
+                <p class="mb-4">Projects help you organize your content assets and AI-generated marketing materials.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">2.1 Creating a Project</h3>
+                <p class="mb-4">To create a new project:</p>
+                <ol class="list-decimal list-inside space-y-2 ml-4 mb-4">
+                    <li>Go to your Dashboard</li>
+                    <li>Click on "Create New Project" under Quick Actions</li>
+                    <li>Enter a title for your project</li>
+                    <li>Add optional keywords to guide AI content generation</li>
+                    <li>Click "Create Project"</li>
+                </ol>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">2.2 Managing Projects</h3>
+                <p class="mb-4">You can view all your projects from the Projects page. From there, you can:</p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>Edit project details</li>
+                    <li>Delete projects</li>
+                    <li>Filter projects by tags</li>
+                </ul>
+            </section>
+            
+            <!-- Assets Section -->
+            <section id="assets" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">3. Assets</h2>
+                <p class="mb-4">Assets are the content files you upload to your projects. The AI analyzes these assets to generate marketing content.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">3.1 Supported File Types</h3>
+                <ul class="list-disc list-inside space-y-2 ml-4 mb-4">
+                    <li>Text files (.txt)</li>
+                    <li>Markdown files (.md)</li>
+                    <li>PDF documents (.pdf)</li>
+                    <li>Audio files (MP3, WAV, etc.)</li>
+                    <li>Video files (MP4, etc.)</li>
+                </ul>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">3.2 Uploading Assets</h3>
+                <p class="mb-4">To upload assets to a project:</p>
+                <ol class="list-decimal list-inside space-y-2 ml-4">
+                    <li>Open your project</li>
+                    <li>Click on the "Upload" tab</li>
+                    <li>Drag and drop files or click to select files</li>
+                    <li>Click "Upload Files"</li>
+                </ol>
+            </section>
+            
+            <!-- Prompts Section -->
+            <section id="prompts" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">4. Prompts</h2>
+                <p class="mb-4">Prompts guide the AI in generating content. Well-crafted prompts lead to better content generation results.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">4.1 Creating Prompts</h3>
+                <p class="mb-4">To create a prompt:</p>
+                <ol class="list-decimal list-inside space-y-2 ml-4 mb-4">
+                    <li>Open your project</li>
+                    <li>Click on the "Prompts" tab</li>
+                    <li>Click "Add Prompt"</li>
+                    <li>Enter a name and the prompt text</li>
+                    <li>Click "Save"</li>
+                </ol>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">4.2 Prompt Writing Tips</h3>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>Be specific about the type of content you want</li>
+                    <li>Include target audience information</li>
+                    <li>Specify tone (casual, professional, etc.)</li>
+                    <li>Mention desired length and format</li>
+                    <li>Include keywords you want to emphasize</li>
+                </ul>
+            </section>
+            
+            <!-- Templates Section -->
+            <section id="templates" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">5. Templates</h2>
+                <p class="mb-4">Templates are pre-configured sets of prompts for common marketing needs. They save time and provide consistent results.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">5.1 Using Templates</h3>
+                <p class="mb-4">To use a template in your project:</p>
+                <ol class="list-decimal list-inside space-y-2 ml-4 mb-4">
+                    <li>Open your project</li>
+                    <li>Click on the "Prompts" tab</li>
+                    <li>Click "Load Template"</li>
+                    <li>Select a template from the list</li>
+                    <li>Click "Import"</li>
+                </ol>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">5.2 Creating Your Own Templates</h3>
+                <p class="mb-4">To create a new template:</p>
+                <ol class="list-decimal list-inside space-y-2 ml-4">
+                    <li>Go to the Templates page</li>
+                    <li>Click "New Template"</li>
+                    <li>Enter a title and description</li>
+                    <li>Add prompts to your template</li>
+                    <li>Click "Save"</li>
+                </ol>
+            </section>
+            
+            <!-- Content Generation Section -->
+            <section id="content-generation" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">6. Content Generation</h2>
+                <p class="mb-4">Once you've added assets and prompts, you can generate content with our AI.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">6.1 Generating Content</h3>
+                <p class="mb-4">To generate content:</p>
+                <ol class="list-decimal list-inside space-y-2 ml-4 mb-4">
+                    <li>Open your project</li>
+                    <li>Click on the "Generate" tab</li>
+                    <li>Click "Generate Content"</li>
+                    <li>Wait for the generation process to complete</li>
+                </ol>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">6.2 Editing Generated Content</h3>
+                <p class="mb-4">After content is generated, you can:</p>
+                <ul class="list-disc list-inside space-y-2 ml-4">
+                    <li>Edit the content directly</li>
+                    <li>Regenerate specific sections</li>
+                    <li>Copy content to your clipboard</li>
+                    <li>Save content for later use</li>
+                </ul>
+            </section>
+            
+            <!-- FAQ Section -->
+            <section id="faq" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">7. Frequently Asked Questions</h2>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">7.1 How many projects can I create?</h3>
+                <p class="mb-4">You can create unlimited projects with your subscription.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">7.2 What happens to my assets?</h3>
+                <p class="mb-4">Your assets are securely stored and only used to generate content for your projects. We do not share or use your data for training our AI.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">7.3 Can I export the generated content?</h3>
+                <p class="mb-4">Yes, you can copy the generated content to your clipboard and use it in any way you need.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">7.4 How does the token system work?</h3>
+                <p class="mb-4">Tokens measure the amount of text processed by the AI. Your subscription includes a certain number of tokens for assets and prompts.</p>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">7.5 Can I cancel my subscription?</h3>
+                <p class="mb-4">Yes, you can cancel your subscription at any time from your account settings.</p>
+            </section>
+            
+            <!-- Support Section -->
+            <section id="support" class="mb-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4">8. Support</h2>
+                <p class="mb-4">If you need help or have questions about the platform, please reach out to our support team.</p>
+                
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-lg mb-2">Contact Support</h3>
+                    <p class="mb-4">Support hours: Monday-Friday, 9am-5pm GMT</p>
+                    <p class="mb-4">Email: admin@aimarketingplatform.com</p>
+                    <p>Response time: Usually within 24 hours</p>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+    
+{% endblock %}

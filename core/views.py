@@ -7,6 +7,12 @@ def index(request):
         return redirect('accounts:dashboard')
     return render(request, 'index.html')
 
+def quick_start(request): 
+    """
+    Quick Start documentation
+    """
+    return render(request, 'quick_start.html')
+
 def policies_index(request):
     """
     View for the index of policies page

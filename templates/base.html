@@ -30,7 +30,7 @@
     <!-- Favicon -->
     <link
       rel="icon"
-      href="{% static 'img/favicon.ico' %}"
+      href="{% static 'images/favicon.ico' %}"
       type="image/x-icon"
     />
     <title>AI Marketing Platform</title>
@@ -47,7 +47,7 @@
     {% include 'includes/messages.html' %} 
     
     {% if user.is_authenticated %}
-      {% if '/blog/' in request.path or '/documentation/' in request.path %}
+      {% if '/blog/' in request.path or '/documentation/' in request.path or '/policy/policies/' in request.path or '/quick_start/' in request.path %}
         {% include 'includes/logged_in_public_header.html' %}
       {% else %}
         {% include 'includes/navbar.html' %}
@@ -62,6 +62,12 @@
     
     <!-- Footer -->
     <footer role="contentinfo">{% include 'includes/footer.html' %}</footer>
-    <script src="{% static 'node_modules/flowbite/dist/flowbite.min.js' %}"></script>
+
+    <!-- Scripts -->
+  
+     <!-- Flowbite CSS and JS -->
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+     {% block extra_js %}{% endblock %}
   </body>
 </html>

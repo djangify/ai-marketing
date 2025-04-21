@@ -16,13 +16,13 @@ router.register(r'asset-processing-jobs', AssetProcessingJobViewSet, basename='a
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),
     path('accounts/', include('accounts.urls', namespace='accounts')),
+    path('', include('core.urls', namespace='core')),
+    path('core/', include('core.urls', namespace='core')),
     path('projects/', include('projects.urls', namespace='projects')),
     path('prompts/', include('prompts.urls', namespace='prompts')),
     path('templates/', include('content_templates.urls', namespace='content_templates')),
     path('blog/', include('blog.urls', namespace='blog')),
-    path('', include('core.urls', namespace='core')),
     path('content_generation/', include('content_generation.urls', namespace='content_generation')),
     path('tinymce/', include('tinymce.urls')),
     path('documentation/', include('docs.urls', namespace='docs')),

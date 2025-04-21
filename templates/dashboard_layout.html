@@ -23,11 +23,12 @@
           <i class="fas fa-times"></i>
         </button>
       </div>
+      
       {% include 'includes/sidebar.html' %}
     </div>
   </div>
 
-  <main class="flex-1 p-4 sm:p-6 md:p-8 lg:p-6 mt-20 lg:pt-8 overflow-auto lg:ml-64">
+  <main class="flex-1 p-4 sm:p-6 md:p-8 lg:py-6 lg:pr-6 lg:pl-3 mt-20 lg:pt-8 overflow-auto lg:ml-56">
     {% block dashboard_content %}{% endblock %}
   </main>
 </div>
