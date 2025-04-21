@@ -77,20 +77,20 @@
                     {% if subscription_data.cancel_at_period_end %}
                         <form method="post" action="{% url 'subscriptions:resume_subscription' %}">
                             {% csrf_token %}
-                            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <button type="submit" class="btn-main inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-whitefocus:outline-none focus:ring-2 focus:ring-offset-2 ">
                                 Resume Subscription
                             </button>
                         </form>
                     {% else %}
                         <form method="post" action="{% url 'subscriptions:create_portal_session' %}">
                             {% csrf_token %}
-                            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <button type="submit" class="btn-main inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 ">
                                 Manage Payment Details
                             </button>
                         </form>
                         <form method="post" action="{% url 'subscriptions:cancel_subscription' %}" class="ml-3">
                             {% csrf_token %}
-                            <button type="submit" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <button type="submit" class="btn-main inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                 Cancel Subscription
                             </button>
                         </form>

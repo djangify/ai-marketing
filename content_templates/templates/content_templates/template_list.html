@@ -16,7 +16,7 @@
         </p>
         <form action="{% url 'content_templates:template_create' %}" method="post" class="w-full sm:w-auto">
             {% csrf_token %}
-            <button type="submit" class="rounded-lg w-full sm:w-auto inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-[#9810fa] text-white shadow hover:bg-[#9810fa]/90 h-9 px-4 py-2">
+            <button type="submit" class="btn-main rounded-lg w-full sm:w-auto inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50  text-white shadowh-9 px-4 py-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" strokeWidth="3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                 </svg>
@@ -55,7 +55,7 @@
                 </p>
                 <form action="{% url 'content_templates:template_create' %}" method="post" class="mt-6">
                     {% csrf_token %}
-                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-[#9810fa] hover:bg-[#9810fa]/90">
+                    <button type="submit" class="btn-main inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white">
                         <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>

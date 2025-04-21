@@ -5,10 +5,10 @@
 {% block title %}{{ category.name }} - Documentation - AI Marketing Platform{% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-8">
+<div class="max-w-screen-xl mx-auto px-0 sm:px-0 lg:px-0">
     <div class="flex flex-col md:flex-row">
-        <!-- Sidebar with pages -->
-        <div class="w-full md:w-1/4 pr-0 md:pr-8 mb-8 md:mb-0">
+        <!-- Sidebar with pages - aligned under logo -->
+        <div class="w-full md:w-64 lg:w-72 bg-gray-50 text-center py-8 mt-12">
             <h2 class="text-xl font-bold mb-4">{{ category.name }}</h2>
             <ul class="space-y-2">
                 {% for page in pages %}
@@ -21,22 +21,22 @@
             </ul>
             
             <div class="mt-6">
-                <a href="{% url 'docs:home' %}" class="text-purple-600 hover:text-purple-800">
+                <a href="{% url 'docs:documentation' %}" class="text-purple-600 hover:text-purple-800">
                     &larr; Back to Documentation
                 </a>
             </div>
         </div>
         
-        <!-- Main content -->
-        <div class="w-full md:w-3/4">
-            <div class="bg-white rounded-lg shadow-sm p-6">
+        <!-- Main content  -->
+        <div class="flex-1 px-8 mt-12 pt-4">
+            <div class="bg-white">
                 {% if first_page %}
-                    <h1 class="text-3xl font-bold mb-4">{{ first_page.title }}</h1>
-                    <div class="prose max-w-none">
+                    <h1 class="text-3xl font-bold mb-6">{{ first_page.title }}</h1>
+                    <div class="blog-content">
                         {{ first_page.content|safe }}
                     </div>
                 {% else %}
-                    <h1 class="text-3xl font-bold mb-4">{{ category.name }}</h1>
+                    <h1 class="text-3xl font-bold mb-6">{{ category.name }}</h1>
                     <p>{{ category.description }}</p>
                     <p>No pages available in this category yet.</p>
                 {% endif %}
