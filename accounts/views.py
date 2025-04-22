@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import SignUpForm, LoginForm, ProfileUpdateForm
 from django.conf import settings
+from .models import MemberResource
 from prompts.models import Prompt
 from assets.models import Asset
 from prompts.utils.token_helper import formatTokens
@@ -70,6 +71,9 @@ def profile_view(request):
 def dashboard_view(request):
     # Get user projects
     projects = request.user.projects.all().order_by('-updated_at')
+
+    # Get member resources
+    member_resources = MemberResource.objects.filter(is_active=True).order_by('-created_at')
     
     # Ensure token usage record exists for user
     ensure_token_usage_exists(request.user)
