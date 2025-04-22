@@ -30,48 +30,69 @@ def get_token_count(text):
     except Exception as e:
         print(f"Error counting tokens: {e}")
         # Fallback to a simple word count estimation if tiktoken fails
-        return len(text.split())
+        word_count = len(text.split())
+        print(f"Falling back to word count estimation: {word_count} words")
+        return word_count
 
 def process_text_file(file_path):
     """Process a text file and return content and token count"""
+    content = ""
+    token_count = 0
+    
+    print(f"Processing text file: {file_path}")
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
         
+        # Get token count before sanitization to ensure accurate counts
         token_count = get_token_count(content)
+        print(f"Text file token count (before sanitizing): {token_count}")
         return content, token_count
-    except UnicodeDecodeError:
-        # Try with different encoding if UTF-8 fails
+    except UnicodeDecodeError as e:
+        print(f"UTF-8 decode error: {e}, trying latin-1")
         try:
             with open(file_path, 'r', encoding='latin-1') as f:
                 content = f.read()
             token_count = get_token_count(content)
+            print(f"Text file token count (latin-1): {token_count}")
             return content, token_count
         except Exception as e:
-            print(f"Error processing text file with latin-1 encoding: {e}")
+            print(f"Latin-1 fallback error: {e}")
             return "", 0
     except Exception as e:
-        print(f"Error processing text file: {e}")
+        print(f"Unexpected error processing text file: {e}")
         return "", 0
 
 def process_pdf_file(file_path):
     """Process a PDF file and return extracted text and token count"""
+    content = ""
+    token_count = 0
+    
+    print(f"Processing PDF file: {file_path}")
     try:
         import PyPDF2
         text = ""
         with open(file_path, 'rb') as f:
             pdf_reader = PyPDF2.PdfReader(f)
             for page_num in range(len(pdf_reader.pages)):
-                page = pdf_reader.pages[page_num]
-                text += page.extract_text()
+                try:
+                    page = pdf_reader.pages[page_num]
+                    page_text = page.extract_text()
+                    text += page_text if page_text else ""
+                except Exception as page_e:
+                    print(f"Error extracting page {page_num}: {page_e}")
+                    continue
         
+        # Get token count before sanitization
         token_count = get_token_count(text)
-        return text, token_count
-    except ImportError:
-        print("PyPDF2 is not installed. Cannot process PDF files.")
+        print(f"PDF token count (before sanitizing): {token_count}")
+        content = text
+        return content, token_count
+    except ImportError as e:
+        print(f"PyPDF2 import error: {e}")
         return "", 0
     except Exception as e:
-        print(f"Error processing PDF file: {e}")
+        print(f"Unexpected error processing PDF: {e}")
         return "", 0
 
 def process_markdown_file(file_path):

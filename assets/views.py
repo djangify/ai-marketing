@@ -98,31 +98,55 @@ def asset_upload(request, project_id):
                 # Initialize content and token_count
                 content = ""
                 token_count = 0
-                
-                # Process files immediately for content when possible
                 # Process files immediately for content when possible
                 try:
                     process_func = determine_process_function(file_type, file.content_type)
                     content, token_count = process_func(file_path)
+                    print(f"File processed successfully, original token count: {token_count}")
                     
-                    # Sanitize content to handle special characters
-                    if content:
-                        # Replace problematic characters with their safe equivalents
-                        content = sanitize_content(content)
-                        
-                except UnicodeDecodeError as e:
-                    print(f"Unicode decoding error processing file: {e}")
-                    content = f"[File content contains special characters that couldn't be processed. The file is still accessible.]"
-                    token_count = len(content.split())
-                except Exception as e:
-                    print(f"Error processing file: {e}")
-                    content = ""
-                    token_count = 0
-                
-                print(f"About to create asset with title: {file.name}")
-                
-                # Create asset in database - with content sanitized
-                try:
+                    # First store the token count before sanitization
+                    original_token_count = token_count
+                    
+                    # Now sanitize content for database storage
+                    sanitized_content = sanitize_content(content) if content else ""
+                    print(f"Content sanitized for database storage")
+                    
+                    # Create asset with sanitized content but preserve original token count
+                    try:
+                        asset = Asset.objects.create(
+                            project=project,
+                            title=file.name,
+                            file_name=filename,
+                            file_url=file_url,
+                            file_type=file_type,
+                            mime_type=file.content_type,
+                            size=file.size,
+                            content=sanitized_content,
+                            token_count=original_token_count,  # Use original token count even if content is sanitized
+                        )
+                        print(f"Asset created successfully with token count: {original_token_count}")
+                    except Exception as db_error:
+                        print(f"Database error creating asset with sanitized content: {db_error}")
+                        # If even sanitized content fails, create with empty content but keep token count
+                        asset = Asset.objects.create(
+                            project=project,
+                            title=file.name,
+                            file_name=filename,
+                            file_url=file_url,
+                            file_type=file_type,
+                            mime_type=file.content_type,
+                            size=file.size,
+                            content="[Content not available due to encoding issues]",
+                            token_count=original_token_count,  # Still use original token count
+                        )
+                        print(f"Created asset with placeholder content but preserved token count: {original_token_count}")
+                    
+                except Exception as process_error:
+                    print(f"Error during file processing: {process_error}")
+                    # Create asset with no content but still try to estimate token count from file size
+                    estimated_token_count = max(1, int(file.size / 4))  # Rough estimate: ~4 bytes per token
+                    print(f"Creating asset with estimated token count based on file size: {estimated_token_count}")
+                    
                     asset = Asset.objects.create(
                         project=project,
                         title=file.name,
@@ -131,22 +155,8 @@ def asset_upload(request, project_id):
                         file_type=file_type,
                         mime_type=file.content_type,
                         size=file.size,
-                        content=content,
-                        token_count=token_count,
-                    )
-                except Exception as db_error:
-                    print(f"Database error creating asset: {db_error}")
-                    # Fallback - try creating with empty content if there was a database error
-                    asset = Asset.objects.create(
-                        project=project,
-                        title=file.name,
-                        file_name=filename,
-                        file_url=file_url,
-                        file_type=file_type,
-                        mime_type=file.content_type,
-                        size=file.size,
-                        content="[Content not available due to encoding issues]",
-                        token_count=0,
+                        content="[File could not be processed. Original file preserved.]",
+                        token_count=estimated_token_count,
                     )
                 except Exception as db_error:
                     print(f"Database error creating asset: {db_error}")
@@ -201,41 +211,32 @@ def sanitize_content(content):
     """Sanitize content to handle special characters and encoding issues"""
     if not content:
         return ""
-        
-    # Replace problematic characters or character sequences
-    replacements = {
-        '\xE2\x80\x94': '-',  # em dash
-        '\xE2\x80\x93': '-',  # en dash
-        '\xE2\x80\x99': "'",  # right single quotation mark
-        '\xE2\x80\x98': "'",  # left single quotation mark
-        '\xE2\x80\x9C': '"',  # left double quotation mark
-        '\xE2\x80\x9D': '"',  # right double quotation mark
-        '\xC2\xA0': ' ',      # non-breaking space
-    }
     
     # First try to normalize Unicode
     try:
         import unicodedata
         content = unicodedata.normalize('NFKD', content)
-    except:
-        pass
+    except Exception as e:
+        print(f"Unicode normalization error: {e}")
+    
+    # Remove or replace problematic characters that cause MySQL encoding issues
+    try:
+        # More aggressive sanitization for production MySQL
+        # Replace any character that's not ASCII or basic Unicode with a space
+        import re
+        # This regex keeps only ASCII characters, common Unicode, and basic punctuation
+        content = re.sub(r'[^\x00-\x7F\u2000-\u206F\u2E00-\u2E7F\s]', ' ', content)
+    except Exception as e:
+        print(f"Regex sanitization error: {e}")
         
-    # Handle any remaining problematic sequences
-    for bad_char, good_char in replacements.items():
-        try:
-            content = content.replace(bad_char, good_char)
-        except:
-            pass
-            
-    # As a last resort, encode and decode with error handling
+    # As a last resort, encode and decode with strict error handling
     try:
         if isinstance(content, str):
-            content = content.encode('utf-8', errors='ignore').decode('utf-8', errors='ignore')
-    except:
-        pass
-        
+            content = content.encode('ascii', errors='ignore').decode('ascii', errors='ignore')
+    except Exception as e:
+        print(f"ASCII encode/decode error: {e}")
+    
     return content
-
 
 @login_required
 @csrf_exempt
