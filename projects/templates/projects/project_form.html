@@ -13,11 +13,11 @@
             <p class="text-gray-600 mt-2">Start a new project to manage your content assets and AI-generated marketing materials.</p>
         </div>
         {% if project %}
-        <a href="{% url 'projects:project_detail' project_id=project.id %}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm  transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-secondary/10 text-secondary font-semibold hover:bg-secondary/20 h-9 px-4 py-2">
+        <a href="{% url 'projects:project_detail' project_id=project.id %}" class="btn-main inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm  transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-secondary/10 text-secondary font-semibold hover:bg-secondary/20 h-9 px-4 py-2">
             Cancel
         </a>
         {% else %}
-        <a href="{% url 'projects:project_list' %}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-secondary/10 text-secondary font-semibold hover:bg-secondary/20 h-9 px-4 py-2">
+        <a href="{% url 'projects:project_list' %}" class="btn-main inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-secondary/10 text-secondary font-semibold hover:bg-secondary/20 h-9 px-4 py-2">
             Cancel
         </a>
         {% endif %}
