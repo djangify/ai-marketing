@@ -17,7 +17,7 @@
                 Tokens: {{ prompt.token_count|default:"0" }}/20000
             </span>
             <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
-                <button onclick="closePromptEditor()" class="w-full text-sm sm:text-base sm:w-auto bg-gray-100 text-gray-500 hover:bg-gray-200/80 hover:text-gray-500 border-2 border-gray-200 rounded-lg px-4 py-2">
+                <button onclick="closePromptEditor()" class="btn-main w-full text-sm sm:text-base sm:w-auto bg-gray-100 text-gray-500 hover:bg-gray-200/80 hover:text-gray-500 border-2 border-gray-200 rounded-lg px-4 py-2">
                     Cancel
                 </button>
                 <button onclick="savePrompt('{{ prompt.id }}')" id="save-button" class="w-full text-sm sm:text-base sm:w-auto bg-[#9810fa] text-white hover:bg-[#9810fa]/90 rounded-lg px-4 py-2">
