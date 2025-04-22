@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
+from django.utils import timezone
+
 
 class StripeCustomer(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -29,4 +31,20 @@ class Profile(models.Model):
     
     def __str__(self):
         return f"{self.user.username}'s Profile"
+
+# Add to accounts/models.py after the Profile model
+class TokenUsage(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='token_usage')
+    prompt_tokens_used = models.IntegerField(default=0)
+    asset_tokens_used = models.IntegerField(default=0)
+    last_reset_date = models.DateTimeField(auto_now_add=True)
     
+    def __str__(self):
+        return f"{self.user.username}'s Token Usage"
+    
+    def reset_usage(self):
+        """Reset token usage counters on subscription renewal"""
+        self.prompt_tokens_used = 0
+        self.asset_tokens_used = 0
+        self.last_reset_date = timezone.now()
+        self.save()

@@ -8,6 +8,8 @@ from django.urls import reverse
 from content_templates.models import Template, TemplatePrompt
 from projects.models import Project
 import json
+from prompts.utils.token_tracker import add_prompt_tokens, update_prompt_tokens
+
 
 @login_required
 def prompt_add_page(request, project_id):
@@ -36,12 +38,12 @@ def prompt_add_page(request, project_id):
             token_count=token_count
         )
         
+        # Track token usage
+        from prompts.utils.token_tracker import add_prompt_tokens
+        add_prompt_tokens(request.user, token_count)
+        
         messages.success(request, "Prompt created successfully!")
-        return redirect(reverse('projects:project_detail', kwargs={'project_id': project.id}) + '?tab=prompts')
-    
-    # Display the form
-    return render(request, 'prompts/prompt_create.html', {'project': project})  
-
+        return redirect(reverse('projects:project_detail', kwargs={'project_id': project.id}) + '?tab=prompts') 
 
 @login_required
 def prompt_edit_page(request, project_id, prompt_id):
@@ -56,13 +58,17 @@ def prompt_edit_page(request, project_id, prompt_id):
         
         # Calculate token count
         from prompts.utils.token_helper import getPromptTokenCount
-        token_count = getPromptTokenCount(prompt_text)
-        print(f"Calculated token count for prompt: {token_count}")
+        old_token_count = prompt.token_count
+        new_token_count = getPromptTokenCount(prompt_text)
         
-        # Update the prompt
+        # Update the token usage if token count increased
+        if new_token_count > old_token_count:
+            from prompts.utils.token_tracker import update_prompt_tokens
+            update_prompt_tokens(request.user, old_token_count, new_token_count)
+        
         prompt.name = name
         prompt.prompt = prompt_text
-        prompt.token_count = token_count
+        prompt.token_count = new_token_count
         prompt.save()
         
         messages.success(request, "Prompt updated successfully!")
@@ -186,6 +192,7 @@ def import_template(request, project_id):
         
         # Create new prompts from template prompts
         new_prompts = []
+        total_new_tokens = 0
         for i, tp in enumerate(template_prompts):
             prompt = Prompt.objects.create(
                 project=project,
@@ -194,7 +201,11 @@ def import_template(request, project_id):
                 order=start_order + i,
                 token_count=tp.token_count
             )
+            total_new_tokens += tp.token_count
             new_prompts.append(prompt)
+
+        # Track token usage for all imported prompts
+        add_prompt_tokens(request.user, total_new_tokens)
         
         # Store success message in session
         request.session['import_success'] = f"Successfully imported {len(new_prompts)} prompts from template: {template.title}"

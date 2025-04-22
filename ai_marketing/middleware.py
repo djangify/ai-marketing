@@ -22,7 +22,7 @@ class AuthRequiredMiddleware:
             '/policy/support-policy/',
             '/policy/advertising-policy/',
             '/policy/policies/',
-            '/documentation/',
+            
         ]
         # Admin paths will be handled separately
     

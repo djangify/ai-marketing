@@ -48,7 +48,7 @@
     {% include 'includes/messages.html' %} 
     
     {% if user.is_authenticated %}
-      {% if '/blog/' in request.path or '/policy/policies/' in request.path or '/quick_start/' in request.path %}
+      {% if '/blog/' in request.path or '/policy/policies/' in request.path or '/quick_start/' in request.path or '/documentation/' in request.path %}
         {% include 'includes/logged_in_public_header.html' %}
       {% else %}
         {% include 'includes/navbar.html' %}

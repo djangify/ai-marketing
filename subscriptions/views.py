@@ -8,6 +8,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils import timezone
 
+from prompts.utils.token_tracker import reset_token_usage
+
 from .models import Subscription
 from .stripe_utils import create_checkout_session, create_portal_session
 
@@ -121,6 +123,8 @@ def stripe_webhook(request):
         handle_payment_succeeded(event)
     elif event['type'] == 'invoice.payment_failed':
         handle_payment_failed(event)
+    elif event['type'] == 'customer.subscription.renewed':
+        handle_subscription_renewed(event)
     
     return HttpResponse(status=200)
 
@@ -354,3 +358,21 @@ def resume_subscription(request):
         messages.error(request, f"Error resuming subscription: {str(e)}")
     
     return redirect('subscriptions:subscription_management')
+
+
+def handle_subscription_renewed(event):
+    """Handle subscription renewal webhook event"""
+    subscription_data = event['data']['object']
+    subscription_id = subscription_data['id']
+    
+    try:
+        subscription = Subscription.objects.get(stripe_subscription_id=subscription_id)
+        user = subscription.user
+        
+        # Reset token usage for the user
+        from prompts.utils.token_tracker import reset_token_usage
+        reset_token_usage(user)
+        
+    except Subscription.DoesNotExist:
+        # Subscription not found in our database
+        pass

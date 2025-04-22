@@ -90,9 +90,13 @@ def template_create(request):
     
     return render(request, 'content_templates/template_form.html', {'form': form, 'action': 'Create'})
 
+
 @login_required
 def template_detail(request, template_id):
     template = get_object_or_404(Template, id=template_id, user=request.user)
+    
+    # Get template prompts - this is the critical fix
+    prompts = template.template_prompts.all().order_by('order')
     
     # Get associated tags
     from django.contrib.contenttypes.models import ContentType
@@ -108,6 +112,7 @@ def template_detail(request, template_id):
     
     context = {
         'template': template,
+        'prompts': prompts,  # Add prompts to the context
         'tags': tags,
     }
     

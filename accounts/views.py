@@ -8,6 +8,7 @@ from django.conf import settings
 from prompts.models import Prompt
 from assets.models import Asset
 from prompts.utils.token_helper import formatTokens
+from prompts.utils.token_tracker import get_prompt_tokens_used, get_asset_tokens_used, ensure_token_usage_exists
 
 
 def signup_view(request):
@@ -70,15 +71,20 @@ def dashboard_view(request):
     # Get user projects
     projects = request.user.projects.all().order_by('-updated_at')
     
-    # Calculate prompt token usage
-    prompts = Prompt.objects.filter(project__user=request.user)
-    
-    prompt_token_count = sum(prompt.token_count or 0 for prompt in prompts)
-    
+    # Ensure token usage record exists for user
+    ensure_token_usage_exists(request.user)
+
+    # Get prompt token usage from accumulated total
+    prompt_token_count = get_prompt_tokens_used(request.user)
+
     max_prompt_tokens = getattr(settings, 'MAX_TOKENS_PROMPTS', 20000)  # Default to 20,000 if not set
     prompt_token_percentage = min(round((prompt_token_count / max_prompt_tokens) * 100), 100)
-    
-    # Calculate asset token usage
+
+    # Get current prompts for count display
+    prompts = Prompt.objects.filter(project__user=request.user)
+
+    # For assets, we're still showing current assets (not cumulative)
+    # This can be changed if you want assets to work the same way as prompts
     assets = Asset.objects.filter(project__user=request.user)
     asset_token_count = sum(asset.token_count or 0 for asset in assets)
     max_asset_tokens = getattr(settings, 'MAX_TOKENS_ASSETS', 100000)  # Default to 100,000 if not set
@@ -108,4 +114,3 @@ def dashboard_view(request):
     }
     
     return render(request, 'accounts/dashboard.html', context)
-

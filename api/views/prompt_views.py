@@ -121,15 +121,21 @@ def import_template(request, project_id):
         
         # Create new prompts from template prompts
         new_prompts = []
+        total_new_tokens = 0
         for i, tp in enumerate(template_prompts):
             prompt = Prompt.objects.create(
                 project=project,
                 name=tp.name,
                 prompt=tp.prompt,
-                token_count=tp.token_count,
-                order=start_order + i
+                order=start_order + i,
+                token_count=tp.token_count
             )
+            total_new_tokens += tp.token_count
             new_prompts.append(prompt)
+
+        # Track token usage for all imported prompts
+        from prompts.utils.token_tracker import add_prompt_tokens
+        add_prompt_tokens(request.user, total_new_tokens)
             
         serializer = PromptSerializer(new_prompts, many=True)
         return Response(serializer.data)
