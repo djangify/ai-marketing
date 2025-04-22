@@ -50,16 +50,17 @@ def logout_view(request):
     messages.info(request, "You have been logged out.")
     return redirect('accounts:login')
 
+
 @login_required
 def profile_view(request):
     if request.method == 'POST':
-        form = ProfileUpdateForm(request.POST, instance=request.user.subscription_profile)
+        form = ProfileUpdateForm(request.POST, instance=request.user.profile)
         if form.is_valid():
             form.save()
             messages.success(request, "Your profile has been updated!")
             return redirect('accounts:profile')
     else:
-        form = ProfileUpdateForm(instance=request.user.subscription_profile)
+        form = ProfileUpdateForm(instance=request.user.profile)
     
     return render(request, 'accounts/profile.html', {'form': form})
 
