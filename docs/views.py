@@ -1,7 +1,10 @@
 # docs/views.py
 from django.shortcuts import render, get_object_or_404
 from .models import DocumentationCategory, DocumentationPage
+from django.contrib.auth.decorators import login_required
 
+
+@login_required
 def docs_home(request):
     """Display documentation homepage with categories"""
     categories = DocumentationCategory.objects.all()
@@ -17,6 +20,7 @@ def docs_home(request):
     }
     return render(request, 'docs/docs_home.html', context)
 
+@login_required
 def category_detail(request, slug):
     """Display documentation category with pages"""
     category = get_object_or_404(DocumentationCategory, slug=slug)
@@ -34,6 +38,7 @@ def category_detail(request, slug):
     }
     return render(request, 'docs/category_detail.html', context)
 
+@login_required
 def page_detail(request, category_slug, slug):
     """Display a specific documentation page"""
     page = get_object_or_404(DocumentationPage, slug=slug, category__slug=category_slug, is_published=True)
