@@ -6,7 +6,10 @@ from .models import Profile
 
 
 class SignUpForm(UserCreationForm):
-    email = forms.EmailField(required=True)
+    email = forms.EmailField(
+        required=True,
+        help_text="Business Address only"
+    )
     
     class Meta:
         model = User
@@ -14,6 +17,38 @@ class SignUpForm(UserCreationForm):
         help_texts = {
             'username': 'Choose carefully, this cannot be changed later!'
         }
+        
+    def clean_email(self):
+        email = self.cleaned_data.get('email', '').lower()
+        
+        # Blacklist of common free email providers
+        blacklisted_domains = [
+            'gmail.com', 'googlemail.com',
+            'hotmail.com', 'hotmail.co.uk', 'hotmail.fr', 'hotmail.it',
+            'live.com', 'live.co.uk',
+            'yahoo.com', 'yahoo.co.uk', 'yahoo.fr',
+            'outlook.com',
+            'aol.com',
+            'protonmail.com',
+            'icloud.com',
+            'mail.com',
+            'inbox.com',
+            'zoho.com',
+            'yandex.com',
+            'gmx.com',
+        ]
+        
+        # Extract domain from email
+        domain = email.split('@')[-1]
+        
+        # Check if domain is blacklisted
+        if domain in blacklisted_domains:
+            raise forms.ValidationError(
+                "Please use your company email address. "
+                "Free email providers (like Gmail, Hotmail, Yahoo) are not allowed for registration."
+            )
+        
+        return email
  
     def __init__(self, *args, **kwargs):
         super(SignUpForm, self).__init__(*args, **kwargs)
@@ -78,3 +113,35 @@ class ProfileUpdateForm(forms.ModelForm):
             user.save()
             profile.save()
         return profile
+
+def clean_email(self):
+    email = self.cleaned_data.get('email', '').lower()
+    
+    # Blacklist of common free email providers
+    blacklisted_domains = [
+        'gmail.com', 'googlemail.com',
+        'hotmail.com', 'hotmail.co.uk', 'hotmail.fr', 'hotmail.it',
+        'live.com', 'live.co.uk',
+        'yahoo.com', 'yahoo.co.uk', 'yahoo.fr',
+        'outlook.com',
+        'aol.com',
+        'protonmail.com',
+        'icloud.com',
+        'mail.com',
+        'inbox.com',
+        'zoho.com',
+        'yandex.com',
+        'gmx.com',
+    ]
+    
+    # Extract domain from email
+    domain = email.split('@')[-1]
+    
+    # Check if domain is blacklisted
+    if domain in blacklisted_domains:
+        raise forms.ValidationError(
+            "Please use your company email address. "
+            "Free email providers (like Gmail, Hotmail, Yahoo) are not allowed for registration."
+        )
+    
+    return email

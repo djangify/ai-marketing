@@ -9,7 +9,9 @@
     <div class="flex flex-col  items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 max-w-md bg-white rounded-lg ">
         <div class="p-8 bg-gray-50">
             <h2 class="text-2xl font-bold text-center mb-6">Sign Up</h2>
-            <p class = "mb-4 text-center text-sm text-gray-600">Create an account to get started. Free access for 3 days. No credit card needed.</p>
+            <p class = "mb-4 text-center text-xl text-gray-600">This site is under construction.</p>
+{% comment %}             
+             <p class = "mb-4 text-center text-sm text-gray-600">Create an account using your <strong>BUSINESS</strong> email to get started. Get FREE access for 3 days. No credit card needed.</p>
             
             {% if form.non_field_errors %}
                 <div class="text-red-500 text-sm mb-4">
@@ -42,8 +44,8 @@
             
             <div class="text-center mt-4">
                 <p>Already have an account? <a href="{% url 'accounts:login' %}" class="text-main hover:underline">Login</a></p>
-            </div>
-        </div>
+            </div> 
+        </div> {% endcomment %}
     </div>
 </div>
 {% endblock %}
