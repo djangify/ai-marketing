@@ -1,6 +1,10 @@
 # core/views.py
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from .forms import ContactMessageForm
+
 
 def index(request): 
     if request.user.is_authenticated:
@@ -127,3 +131,17 @@ def refund_policy(request):
     }
     return render(request, 'policy/refund_policy.html', context)
 
+@login_required
+def contact_us(request):
+    if request.method == 'POST':
+        form = ContactMessageForm(request.POST)
+        if form.is_valid():
+            contact_message = form.save(commit=False)
+            contact_message.user = request.user
+            contact_message.save()
+            messages.success(request, "Your message has been sent. We'll get back to you as soon as possible.")
+            return redirect('accounts:profile')
+    else:
+        form = ContactMessageForm()
+    
+    return render(request, 'core/contact_form.html', {'form': form})

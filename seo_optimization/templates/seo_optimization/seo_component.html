@@ -3,11 +3,11 @@
 <!-- SEO Analysis Component for including in other templates -->
 <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm">
   <div class="flex justify-between items-center mb-3">
-      <h3 class="text-lg font-semibold">SEO Analysis</h3>
+      <h3 class="text-lg font-semibold">SEO Content Inspection</h3>
       {% if content_id %}
           <a href="{% url 'seo_optimization:analyze_content' content_id=content_id %}" class="text-[#9810fa] text-sm hover:underline">
               {% if has_analysis %}
-              View Analysis
+              View Results
               {% else %}
               Analyze Content
               {% endif %}
