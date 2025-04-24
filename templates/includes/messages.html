@@ -1,38 +1,44 @@
 {% load static %}
 <!-- templates/includes/messages.html -->
 {% if messages %}
-<div class="container mx-auto px-4 py-2">
+<div class="fixed top-24 left-1/2 transform -translate-x-1/2 z-50 w-full max-w-md">
     {% for message in messages %}
-        <div id="alert-{{ forloop.counter }}" class="{% if message.tags == 'success' %}bg-green-100 text-green-800{% elif message.tags == 'error' %}bg-red-100 text-red-800{% elif message.tags == 'warning' %}bg-yellow-100 text-yellow-800{% else %}bg-blue-100 text-blue-800{% endif %} px-4 py-3 rounded relative mb-2" role="alert">
-            <span class="block sm:inline">{{ message }}</span>
-            <button type="button" class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="closeAlert('alert-{{ forloop.counter }}')">
-                <span class="sr-only">Close</span>
-                <i class="fas fa-times"></i>
-            </button>
+        <div id="alert-{{ forloop.counter }}" class="{% if message.tags == 'success' %}bg-green-100 text-green-800{% elif message.tags == 'error' %}bg-red-100 text-red-800{% elif message.tags == 'warning' %}bg-yellow-100 text-yellow-800{% else %}bg-blue-100 text-blue-800{% endif %} px-4 py-3 rounded-lg shadow-md mb-3 opacity-0" role="alert" style="transition: opacity 0.5s ease-in-out;">
+            <div class="flex justify-between items-center">
+                <span class="block">{{ message }}</span>
+                <button type="button" class="ml-4 text-gray-400 hover:text-gray-900" onclick="closeAlert('alert-{{ forloop.counter }}')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
         </div>
     {% endfor %}
 </div>
 
 <script>
+    // Show messages with fade-in
+    document.addEventListener('DOMContentLoaded', function() {
+        const messages = document.querySelectorAll('[role="alert"]');
+        messages.forEach(function(message, index) {
+            setTimeout(function() {
+                message.style.opacity = '1';
+            }, 100 * index);
+            
+            // Auto-close after 3 seconds
+            setTimeout(function() {
+                closeAlert(message.id);
+            }, 3000 + (100 * index));
+        });
+    });
+    
     // Function to close an alert by ID
     function closeAlert(alertId) {
         const alert = document.getElementById(alertId);
         if (alert) {
             alert.style.opacity = '0';
-            alert.style.transition = 'opacity 0.5s';
             setTimeout(function() {
                 alert.remove();
             }, 500);
         }
     }
-    
-    // Auto-close alerts after 3 seconds
-    document.addEventListener('DOMContentLoaded', function() {
-        {% for message in messages %}
-            setTimeout(function() {
-                closeAlert('alert-{{ forloop.counter }}');
-            }, 3000);
-        {% endfor %}
-    });
 </script>
 {% endif %}

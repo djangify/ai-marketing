@@ -63,7 +63,7 @@ def calculate_readability_score(text):
 
 
 def extract_keywords(text, num_keywords=10):
-    """Extract potential keywords from text"""
+    """Extract potential keywords from text, prioritizing multi-word phrases"""
     if not text:
         return []
     
@@ -72,24 +72,58 @@ def extract_keywords(text, num_keywords=10):
     
     # Remove stopwords and punctuation
     stop_words = set(stopwords.words('english'))
-    words = [word for word in words if word.isalnum() and word not in stop_words and len(word) > 2]
+    filtered_words = [word for word in words if word.isalnum() and word not in stop_words and len(word) > 3]
     
-    # Count word frequency
-    word_freq = Counter(words)
+    # Only include single words that are longer than 4 characters
+    single_words = [word for word in filtered_words if len(word) > 4]
+    word_freq = Counter(single_words)
     
     # Get bigrams (two-word phrases)
     bigrams = []
-    for i in range(len(words) - 1):
-        bigrams.append(f"{words[i]} {words[i+1]}")
+    for i in range(len(filtered_words) - 1):
+        bigrams.append(f"{filtered_words[i]} {filtered_words[i+1]}")
     bigram_freq = Counter(bigrams)
     
-    # Combine words and bigrams, giving bigrams more weight
+    # Get trigrams (three-word phrases)
+    trigrams = []
+    for i in range(len(filtered_words) - 2):
+        trigrams.append(f"{filtered_words[i]} {filtered_words[i+1]} {filtered_words[i+2]}")
+    trigram_freq = Counter(trigrams)
+    
+    # Create keyword dictionary with weighted scores
+    all_keywords = {}
+    
+    # Add single words with lower weight (only if they're substantial)
+    for word, count in word_freq.items():
+        if len(word) > 4:  # Only include significant single words
+            all_keywords[word] = count * 0.5  # Lower weight for single words
+    
+    # Add bigrams with higher weight
     for bigram, count in bigram_freq.items():
         if count > 1:  # Only consider bigrams that appear more than once
-            word_freq[bigram] = count * 2  # Give bigrams double weight
+            all_keywords[bigram] = count * 3  # Triple weight for bigrams
     
-    # Return the most common keywords
-    return [word for word, count in word_freq.most_common(num_keywords)]
+    # Add trigrams with highest weight
+    for trigram, count in trigram_freq.items():
+        if count > 1:  # Only consider trigrams that appear more than once
+            all_keywords[trigram] = count * 5  # Five times weight for trigrams
+    
+    # Sort by weight and get top keywords, favoring multi-word phrases
+    keywords_with_weights = sorted(all_keywords.items(), key=lambda x: x[1], reverse=True)
+    
+    # Filter results to prioritize multi-word phrases
+    multi_word_keywords = [k for k, _ in keywords_with_weights if ' ' in k]
+    single_word_keywords = [k for k, _ in keywords_with_weights if ' ' not in k]
+    
+    # First include all multi-word phrases (up to the limit)
+    final_keywords = multi_word_keywords[:num_keywords]
+    
+    # If we haven't reached the limit, add single words
+    remaining_slots = num_keywords - len(final_keywords)
+    if remaining_slots > 0:
+        final_keywords.extend(single_word_keywords[:remaining_slots])
+    
+    return final_keywords[:num_keywords]
 
 
 def calculate_keyword_density(text, keywords):

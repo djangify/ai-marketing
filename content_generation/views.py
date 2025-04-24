@@ -2,7 +2,9 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.http import HttpResponse, FileResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils.text import slugify
 from django.utils import timezone
 from django.views.decorators.http import require_POST, require_http_methods
 from django.views.decorators.csrf import csrf_exempt
@@ -14,6 +16,12 @@ import json
 from projects.models import Project, GeneratedContent
 from .models import ContentGenerationJob, AIConfig
 from .services import GenerationManager
+
+
+import io
+import zipfile
+
+from .utils import generate_docx
 
 generation_manager = GenerationManager()
 
@@ -75,6 +83,7 @@ def generation_status(request, project_id):
     
     # Regular HTML request
     return render(request, 'content_generation/status.html', context)
+
 
 @login_required
 def update_generated_content(request, content_id):
@@ -324,4 +333,65 @@ def edit_generated_content(request, content_id):
     except Exception as e:
         print(f"Error updating content {content_id}: {str(e)}")
         return JsonResponse({'error': str(e)}, status=400)
+
+@login_required
+def download_content(request, content_id):
+    """Download a single content as DOCX"""
+    content = get_object_or_404(GeneratedContent, id=content_id)
+    project = content.project
     
+    # Ensure user has permission
+    if project.user != request.user:
+        return HttpResponse('Permission denied', status=403)
+    
+    # Generate the DOCX file
+    file_stream = generate_docx(content.name, content.result)
+    
+    # Create safe filename
+    safe_filename = f"{slugify(content.name)}.docx"
+    
+    # Return as downloadable file
+    response = FileResponse(file_stream, as_attachment=True, filename=safe_filename)
+    return response
+
+@login_required
+@require_POST
+def download_batch(request, project_id):
+    """Download multiple content items as a ZIP file of DOCX files"""
+    project = get_object_or_404(Project, id=project_id, user=request.user)
+    
+    # Get selected content IDs from POST data
+    content_ids = request.POST.getlist('content_ids', [])
+    
+    if not content_ids:
+        messages.error(request, "No content selected for download")
+        return redirect('projects:project_detail', project_id=project.id, tab='generate')
+    
+    # Create a ZIP file in memory
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        for content_id in content_ids:
+            try:
+                content = GeneratedContent.objects.get(id=content_id, project=project)
+                
+                # Generate DOCX for this content
+                file_stream = generate_docx(content.name, content.result)
+                
+                # Add to ZIP with safe filename
+                safe_filename = f"{slugify(content.name)}.docx"
+                zip_file.writestr(safe_filename, file_stream.getvalue())
+                
+            except GeneratedContent.DoesNotExist:
+                continue  # Skip if content not found
+    
+    # Reset buffer position
+    zip_buffer.seek(0)
+    
+    # Create response with ZIP file
+    response = FileResponse(
+        zip_buffer,
+        as_attachment=True,
+        filename=f"{slugify(project.title)}_content.zip"
+    )
+    
+    return response

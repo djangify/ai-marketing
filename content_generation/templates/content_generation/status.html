@@ -59,6 +59,23 @@
 {% endif %}
 
 {% if generated_contents %}
+    <div class="flex justify-between items-center mb-4">
+        <div class="flex items-center">
+            <button id="toggle-select-all" class="text-gray-700 bg-gray-200 hover:bg-gray-300 py-1 px-3 rounded-md text-sm font-medium mr-2">
+                Select All
+            </button>
+            <form id="batch-download-form" action="{% url 'content_generation:download_batch' project_id=project.id %}" method="post">
+                {% csrf_token %}
+                <!-- Content IDs will be added via JavaScript -->
+                <button id="download-selected" type="submit" class="bg-main text-white py-1 px-3 rounded-md text-sm font-medium hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Download Selected
+                </button>
+            </form>
+        </div>
+    </div>
     <!-- Generated content cards -->
     <div class="space-y-8">
         {% for content in generated_contents %}
@@ -66,12 +83,18 @@
                 <div class="px-4 py-5 border-b border-gray-200 sm:px-6 flex items-center justify-between">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">{{ content.name }}</h3>
                     <div class="flex space-x-2">
-                        <button class="copy-button text-gray-500 hover:text-main p-1 rounded-full">
+                        <input type="checkbox" class="content-checkbox hidden" data-content-id="{{ content.id }}" /> 
+                        <button class="copy-button text-gray-500 hover:text-main p-1 rounded-full" title="Copy content">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                             </svg>
                         </button>
-                        <button class="edit-button text-gray-500 hover:text-main p-1 rounded-full">
+                        <a href="{% url 'content_generation:download_content' content_id=content.id %}" class="download-button text-gray-500 hover:text-main p-1 rounded-full" title="Download as DOCX">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                        </a>
+                        <button class="edit-button text-gray-500 hover:text-main p-1 rounded-full" title="Edit content">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                             </svg>
