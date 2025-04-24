@@ -2,7 +2,6 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 import uuid
-from tinymce.models import HTMLField
 
 class DocumentationCategory(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -31,7 +30,7 @@ class DocumentationPage(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     category = models.ForeignKey(DocumentationCategory, on_delete=models.PROTECT, related_name='pages')
-    content = HTMLField()
+    content = models.TextField()
     order = models.IntegerField(default=0)
     is_published = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

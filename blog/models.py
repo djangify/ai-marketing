@@ -2,7 +2,6 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils import timezone
-from tinymce.models import HTMLField 
 
 
 class Category(models.Model):
@@ -44,7 +43,7 @@ class Post(models.Model):
     publish_date = models.DateTimeField(null=True, blank=True)
 
     # Content
-    content = HTMLField(verbose_name="Blog Content")
+    content = models.TextField(verbose_name="Blog Content")
 
     # Media fields
     image = models.ImageField(

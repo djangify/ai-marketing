@@ -334,6 +334,7 @@ def edit_generated_content(request, content_id):
         print(f"Error updating content {content_id}: {str(e)}")
         return JsonResponse({'error': str(e)}, status=400)
 
+
 @login_required
 def download_content(request, content_id):
     """Download a single content as DOCX"""
@@ -344,15 +345,31 @@ def download_content(request, content_id):
     if project.user != request.user:
         return HttpResponse('Permission denied', status=403)
     
-    # Generate the DOCX file
-    file_stream = generate_docx(content.name, content.result)
+    try:
+        # Generate the DOCX file
+        file_stream = generate_docx(content.name, content.result)
+        
+        # Create safe filename
+        safe_filename = f"{slugify(content.name)}.docx"
+        
+        # Return as downloadable file
+        response = HttpResponse(
+            file_stream.getvalue(),
+            content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        )
+        response['Content-Disposition'] = f'attachment; filename="{safe_filename}"'
+        return response
     
-    # Create safe filename
-    safe_filename = f"{slugify(content.name)}.docx"
-    
-    # Return as downloadable file
-    response = FileResponse(file_stream, as_attachment=True, filename=safe_filename)
-    return response
+    except Exception as e:
+        # Log the error
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error generating DOCX: {str(e)}")
+        
+        # Return plain text as fallback
+        response = HttpResponse(content.result, content_type='text/plain; charset=utf-8')
+        response['Content-Disposition'] = f'attachment; filename="{slugify(content.name)}.txt"'
+        return response
 
 @login_required
 @require_POST
@@ -374,13 +391,24 @@ def download_batch(request, project_id):
             try:
                 content = GeneratedContent.objects.get(id=content_id, project=project)
                 
-                # Generate DOCX for this content
-                file_stream = generate_docx(content.name, content.result)
-                
-                # Add to ZIP with safe filename
-                safe_filename = f"{slugify(content.name)}.docx"
-                zip_file.writestr(safe_filename, file_stream.getvalue())
-                
+                try:
+                    # Try to generate DOCX for this content
+                    file_stream = generate_docx(content.name, content.result)
+                    
+                    # Add to ZIP with safe filename
+                    safe_filename = f"{slugify(content.name)}.docx"
+                    zip_file.writestr(safe_filename, file_stream.getvalue())
+                    
+                except Exception as e:
+                    # Fall back to plain text if DOCX generation fails
+                    import logging
+                    logger = logging.getLogger(__name__)
+                    logger.error(f"Error generating DOCX for {content.id}: {str(e)}")
+                    
+                    # Add plain text instead
+                    safe_filename = f"{slugify(content.name)}.txt"
+                    zip_file.writestr(safe_filename, content.result.encode('utf-8', errors='replace'))
+                    
             except GeneratedContent.DoesNotExist:
                 continue  # Skip if content not found
     
@@ -388,10 +416,10 @@ def download_batch(request, project_id):
     zip_buffer.seek(0)
     
     # Create response with ZIP file
-    response = FileResponse(
-        zip_buffer,
-        as_attachment=True,
-        filename=f"{slugify(project.title)}_content.zip"
+    response = HttpResponse(
+        zip_buffer.getvalue(),
+        content_type='application/zip'
     )
+    response['Content-Disposition'] = f'attachment; filename="{slugify(project.title)}_content.zip"'
     
     return response

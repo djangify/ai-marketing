@@ -42,6 +42,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+    <!-- In base.html just before the closing </head> tag -->
+<!-- TinyMCE CDN with your API key -->
+<script src="https://cdn.tiny.cloud/1/un8zow1xkkig1b5u22a9c87leiaqptdawjb1glbheshusyz1/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    tinymce.init({
+      selector: 'textarea.tinymce',  // This will apply to any textarea with class="tinymce"
+      height: 560,
+      width: '100%',
+      menubar: 'file edit view insert format tools table help',
+      plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
+      toolbar: 'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent | numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen preview save print | insertfile image media template link anchor codesample | ltr rtl',
+      toolbar_sticky: true,
+      image_advtab: true,
+      importcss_append: true,
+      browser_spellcheck: true,
+      relative_urls: false,
+      remove_script_host: false,
+      convert_urls: true,
+      file_picker_callback: function (callback, value, meta) {
+        // Custom file picker implementation if needed
+      },
+    });
+  });
+</script>
     {% block extra_meta %}{% endblock %}
   </head>
   <body>
