@@ -1,8 +1,13 @@
+{% extends 'dashboard_layout.html' %}
 {% load static %}
+{% load widget_tweaks %}
 
+{% block title %}Training - AI Marketing Platform{% endblock %}
+
+{% block dashboard_content %}
 <!-- Member Resources Section -->
 <div class="bg-white  overflow-hidden mt-4 lg:text-lg">
-    <h2 class="text-lg font-semibold mb-8">Training Resources</h2>
+  <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-4">Training Resources</h1>
     <p class="mb-4"> Exclusive member only training resources covering prompt engineering, prompt marketing and other relevant topics. 
   <div class="p-6">
     {% if member_resources %}
@@ -54,3 +59,4 @@
     {% endif %}
   </div>
 </div>
+{% endblock %}

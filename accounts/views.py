@@ -72,8 +72,6 @@ def dashboard_view(request):
     # Get user projects
     projects = request.user.projects.all().order_by('-updated_at')
 
-    # Get member resources
-    member_resources = MemberResource.objects.filter(is_active=True).order_by('-created_at')
     
     # Ensure token usage record exists for user
     ensure_token_usage_exists(request.user)
@@ -118,3 +116,18 @@ def dashboard_view(request):
     }
     
     return render(request, 'accounts/dashboard.html', context)
+
+
+@login_required
+def member_resources(request):
+    """
+    Display member resources documentation
+    """
+    # Get member resources
+    member_resources = MemberResource.objects.filter(is_active=True).order_by('-created_at')
+    
+    context = {
+        'member_resources': member_resources
+    }
+    
+    return render(request, 'accounts/resources.html', context)
