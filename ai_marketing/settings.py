@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'core',
     'docs',
     'content_generation',
+    'seo_optimization'
    
 ]
 

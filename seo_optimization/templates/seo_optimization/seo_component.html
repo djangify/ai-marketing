@@ -1,0 +1,68 @@
+<!-- seo_optimization/templates/seo_optimization/seo_component.html-->
+
+<!-- SEO Analysis Component for including in other templates -->
+<div class="bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm">
+  <div class="flex justify-between items-center mb-3">
+      <h3 class="text-lg font-semibold">SEO Analysis</h3>
+      {% if content_id %}
+          <a href="{% url 'seo_optimization:analyze_content' content_id=content_id %}" class="text-[#9810fa] text-sm hover:underline">
+              {% if has_analysis %}
+              View Analysis
+              {% else %}
+              Analyze Content
+              {% endif %}
+          </a>
+      {% endif %}
+  </div>
+  
+  {% if has_analysis %}
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
+          <!-- SEO Score -->
+          <div class="bg-white p-3 rounded border border-gray-200">
+              <p class="text-sm font-medium mb-1">SEO Score</p>
+              <div class="flex items-center">
+                  <div class="h-2 w-full bg-gray-200 rounded-full">
+                      <div class="h-2 rounded-full {% if seo_score < 50 %}bg-red-500{% elif seo_score < 70 %}bg-yellow-500{% else %}bg-green-500{% endif %}" style="width: {{ seo_score }}%;"></div>
+                  </div>
+                  <span class="ml-2 text-sm font-bold">{{ seo_score|floatformat:0 }}</span>
+              </div>
+          </div>
+          
+          <!-- Readability -->
+          <div class="bg-white p-3 rounded border border-gray-200">
+              <p class="text-sm font-medium mb-1">Readability</p>
+              <div class="flex items-center">
+                  <div class="h-2 w-full bg-gray-200 rounded-full">
+                      <div class="h-2 rounded-full {% if readability_score < 30 %}bg-red-500{% elif readability_score < 50 %}bg-orange-500{% elif readability_score < 70 %}bg-yellow-500{% else %}bg-green-500{% endif %}" style="width: {{ readability_score }}%;"></div>
+                  </div>
+                  <span class="ml-2 text-sm font-bold">{{ readability_score|floatformat:0 }}</span>
+              </div>
+          </div>
+          
+          <!-- Top Keyword -->
+          <div class="bg-white p-3 rounded border border-gray-200">
+              <p class="text-sm font-medium mb-1">Top Keyword</p>
+              {% if top_keyword %}
+                  <p class="text-sm">{{ top_keyword }} ({{ top_keyword_density }}%)</p>
+              {% else %}
+                  <p class="text-sm text-gray-500">Not available</p>
+              {% endif %}
+          </div>
+      </div>
+      
+      <!-- Meta Description -->
+      <div class="bg-white p-3 rounded border border-gray-200 mb-2">
+          <p class="text-sm font-medium mb-1">Meta Description</p>
+          <p class="text-sm text-gray-600 line-clamp-2">{{ meta_description|default:"No meta description generated" }}</p>
+      </div>
+  {% else %}
+      <div class="text-center py-4 bg-white rounded border border-gray-200">
+          <p class="text-sm text-gray-500">No SEO inspections available.</p>
+          {% if content_id %}
+              <a href="{% url 'seo_optimization:analyze_content' content_id=content_id %}" class="mt-2 inline-block text-sm px-3 py-1 bg-[#9810fa] text-white rounded hover:bg-[#9810fa]/90">
+                  Inspect Now
+              </a>
+          {% endif %}
+      </div>
+  {% endif %}
+</div>

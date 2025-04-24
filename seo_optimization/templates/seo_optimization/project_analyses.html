@@ -1,0 +1,150 @@
+<!--seo_optimization/templates/seo_optimization/project_analyses.html-->
+{% extends 'dashboard_layout.html' %}
+{% load static %}
+
+{% block title %}SEO Analyses - {{ project.title }} - AI Marketing Platform{% endblock %}
+
+{% block dashboard_content %}
+<div class="max-w-screen-xl mx-auto p-4 sm:p-6 lg:p-8 bg-white space-y-8 rounded-xl shadow-sm mt-16">
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">SEO Analyses</h1>
+            <p class="text-sm text-gray-500 mt-1">Project: {{ project.title }}</p>
+        </div>
+        <a href="{% url 'projects:project_detail' project_id=project.id %}" 
+           class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-gray-700 bg-gray-100 hover:bg-gray-200">
+            Back to Project
+        </a>
+    </div>
+
+    <!-- SEO Score Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="col-span-full md:col-span-1">
+            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+                <h3 class="text-lg font-semibold mb-2">Average SEO Score</h3>
+                {% if analyses %}
+                    {% with avg_score=analyses|dictsort:"seo_score"|last %}
+                    <div class="relative pt-1">
+                        <div class="overflow-hidden h-20 flex justify-center items-center">
+                            <div class="relative w-24 h-24">
+                                <svg class="w-24 h-24 transform -rotate-90" viewBox="0 0 100 100">
+                                    <circle class="text-gray-200" stroke-width="8" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50"/>
+                                    <circle class="text-[#9810fa]" stroke-width="8" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50"
+                                        stroke-dasharray="251.2" stroke-dashoffset="{{ avg_score.seo_score|default:0|floatformat:0|add:251.2|add:-250|floatformat:0 }}"/>
+                                </svg>
+                                <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+                                    <span class="text-2xl font-bold">{{ avg_score.seo_score|default:0|floatformat:0 }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endwith %}
+                {% else %}
+                    <p class="text-center text-gray-500 py-4">No analyses yet</p>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-span-full md:col-span-3">
+            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm h-full">
+                <h3 class="text-lg font-semibold mb-2">Top Keywords</h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {% for analysis in analyses|slice:":1" %}
+                        {% for keyword, density in analysis.keyword_density.items|slice:":6" %}
+                            <div class="bg-white p-2 rounded border border-gray-200">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-medium text-sm">{{ keyword }}</span>
+                                    <span class="text-xs text-gray-500">{{ density }}%</span>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <div class="col-span-3 text-center text-gray-500 py-4">No keywords found</div>
+                        {% endfor %}
+                    {% empty %}
+                        <div class="col-span-3 text-center text-gray-500 py-4">No analyses yet</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analyses List -->
+    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+        <h3 class="text-lg font-semibold mb-4">Content Analyses</h3>
+        
+        {% if analyses %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Content</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SEO Score</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Readability</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Top Keyword</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for analysis in analyses %}
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900 truncate max-w-[150px]">{{ analysis.content.name }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="h-2 w-24 bg-gray-200 rounded-full">
+                                            <div class="h-2 rounded-full {% if analysis.seo_score < 50 %}bg-red-500{% elif analysis.seo_score < 70 %}bg-yellow-500{% else %}bg-green-500{% endif %}" style="width: {{ analysis.seo_score }}%;"></div>
+                                        </div>
+                                        <span class="ml-2 text-sm text-gray-500">{{ analysis.seo_score|floatformat:0 }}</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="h-2 w-24 bg-gray-200 rounded-full">
+                                            <div class="h-2 rounded-full {% if analysis.readability_score < 30 %}bg-red-500{% elif analysis.readability_score < 50 %}bg-orange-500{% elif analysis.readability_score < 70 %}bg-yellow-500{% else %}bg-green-500{% endif %}" style="width: {{ analysis.readability_score }}%;"></div>
+                                        </div>
+                                        <span class="ml-2 text-sm text-gray-500">{{ analysis.readability_score|floatformat:0 }}</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">
+                                        {% with top_keyword=analysis.keyword_density|dictsort:1|last %}
+                                            {% if top_keyword.0 %}
+                                                {{ top_keyword.0 }} ({{ top_keyword.1 }}%)
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        {% endwith %}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ analysis.created_at|date:"M d, Y" }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="{% url 'seo_optimization:analysis_detail' analysis_id=analysis.id %}" class="text-[#9810fa] hover:text-[#9810fa]/80">View</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-8 bg-white rounded-lg border border-gray-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <h3 class="text-lg font-medium text-gray-900">No SEO analyses yet</h3>
+                <p class="mt-2 text-sm text-gray-500">
+                    Generate content and analyze it to see SEO metrics.
+                </p>
+                <div class="mt-6">
+                    <a href="{% url 'projects:project_detail' project_id=project.id %}?tab=generate" class="btn-main inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white">
+                        Generate Content
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

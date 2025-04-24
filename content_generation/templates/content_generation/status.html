@@ -93,6 +93,10 @@
                         </div>
                     </div>
                 </div>
+                <!-- Add SEO analysis component for each content -->
+                <div class="mt-4 px-4 py-5 sm:px-6">
+                    {% include 'seo_optimization/seo_component.html' with content_id=content.id has_analysis=content.seo_analysis.exists seo_score=content.seo_analysis.first.seo_score|default:0 readability_score=content.seo_analysis.first.readability_score|default:0 meta_description=content.seo_analysis.first.meta_description|default:'' top_keyword=content.seo_analysis.first.keyword_density.items|dictsort:1|last|first|default:'' top_keyword_density=content.seo_analysis.first.keyword_density.items|dictsort:1|last|last|default:0 %}
+                </div>
             </div>
         {% endfor %}
     </div>

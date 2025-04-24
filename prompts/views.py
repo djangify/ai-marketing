@@ -43,7 +43,10 @@ def prompt_add_page(request, project_id):
         add_prompt_tokens(request.user, token_count)
         
         messages.success(request, "Prompt created successfully!")
-        return redirect(reverse('projects:project_detail', kwargs={'project_id': project.id}) + '?tab=prompts') 
+        return redirect(reverse('projects:project_detail', kwargs={'project_id': project.id}) + '?tab=prompts')
+    
+    # For GET requests, render the form template
+    return render(request, 'prompts/prompt_create.html', {'project': project})
 
 @login_required
 def prompt_edit_page(request, project_id, prompt_id):

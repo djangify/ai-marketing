@@ -27,6 +27,7 @@ urlpatterns = [
     path('documentation/', include('docs.urls', namespace='docs')),
     path('assets/', include('assets.urls', namespace='assets')),
     path('subscriptions/', include('subscriptions.urls', namespace='subscriptions')),
+    path('seo/', include('seo_optimization.urls', namespace='seo_optimization')),
     path('api/', include(router.urls)),
 ]
 

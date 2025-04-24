@@ -50,6 +50,14 @@
         </span>
         <span>Templates</span>
       </a>
+
+      <a href="{% url 'seo_optimization:keyword_tracking' %}" 
+         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-lg font-medium py-2 px-4 rounded-lg {% if '/seo/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}">
+        <span class="mr-3">
+          <i class="fas fa-chart-line h-[22px] w-[22px]"></i>
+        </span>
+        <span>SEO</span>
+      </a>
       
       <a href="{% url 'accounts:profile' %}" 
          class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-lg font-medium py-2 px-4 rounded-lg {% if request.path == '/accounts/profile/' %}bg-gray-200 text-[#9810fa]{% endif %}">

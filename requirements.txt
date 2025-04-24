@@ -13,6 +13,7 @@ django-widget-tweaks==1.5.0
 requests==2.32.3
 pydantic==2.11.2
 gunicorn==23.0.0
+nltk==3.8.1
 openai==1.72.0
 python-decouple==3.8
 pymysql==1.1.1

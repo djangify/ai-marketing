@@ -1,0 +1,315 @@
+<!--seo_optimization/templates/seo_optimization/analysis_detail.html-->
+{% extends 'dashboard_layout.html' %}
+{% load static %}
+{% load seo_filters %}
+
+{% block title %}SEO Analysis - {{ content.name }} - AI Marketing Platform{% endblock %}
+
+{% block dashboard_content %}
+<div class="max-w-screen-xl mx-auto p-4 sm:p-6 lg:p-8 bg-white space-y-8 rounded-xl shadow-sm mt-16">
+    <!-- Analysis Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">SEO Analysis</h1>
+            <p class="text-sm text-gray-500 mt-1">For content: {{ content.name }}</p>
+        </div>
+        <div class="flex space-x-3">
+            <a href="{% url 'projects:project_detail' project_id=project.id %}?tab=generate" 
+               class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-gray-700 bg-gray-100 hover:bg-gray-200">
+                Back to Project
+            </a>
+            <button id="reanalyze-btn" data-content-id="{{ content.id }}" 
+                    class="btn-main inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-[#9810fa] hover:bg-[#9810fa]/90">
+                Re-evaluate
+            </button>
+        </div>
+    </div>
+
+    <!-- Analysis Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- SEO Score -->
+        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+            <h3 class="text-lg font-semibold mb-2">SEO Score</h3>
+            <div class="relative pt-1">
+                <div class="overflow-hidden h-20 flex justify-center items-center">
+                    <div class="relative w-40 h-40">
+                        <svg class="w-40 h-40 transform -rotate-90" viewBox="0 0 100 100">
+                            <circle class="text-gray-200" stroke-width="8" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50"/>
+                            <circle class="text-[#9810fa]" stroke-width="8" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50"
+                                   stroke-dasharray="251.2" stroke-dashoffset="{{ analysis.seo_score|default:0|floatformat:0|add:251.2|add:-250|floatformat:0 }}"/>
+                        </svg>
+                        <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+                            <span class="text-3xl font-bold">{{ analysis.seo_score|default:0|floatformat:0 }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center text-sm text-gray-500">
+                    {% if analysis.seo_score < 50 %}
+                        <span class="text-red-500 font-medium">Needs Improvement</span>
+                    {% elif analysis.seo_score < 70 %}
+                        <span class="text-yellow-500 font-medium">Average</span>
+                    {% else %}
+                        <span class="text-green-500 font-medium">Good</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Readability Score -->
+        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+            <h3 class="text-lg font-semibold mb-2">Readability</h3>
+            <div class="relative pt-1">
+                <div class="overflow-hidden h-20 flex justify-center items-center">
+                    <div class="relative w-40 h-40">
+                        <svg class="w-40 h-40 transform -rotate-90" viewBox="0 0 100 100">
+                            <circle class="text-gray-200" stroke-width="8" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50"/>
+                            <circle class="text-green-500" stroke-width="8" stroke="currentColor" fill="transparent" r="40" cx="50" cy="50"
+                                   stroke-dasharray="251.2" stroke-dashoffset="{{ analysis.readability_score|default:0|floatformat:0|add:251.2|add:-250|floatformat:0 }}"/>
+                        </svg>
+                        <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center">
+                            <span class="text-3xl font-bold">{{ analysis.readability_score|default:0|floatformat:0 }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center text-sm text-gray-500">
+                    {% if analysis.readability_score < 30 %}
+                        <span class="text-red-500 font-medium">Very Difficult</span>
+                    {% elif analysis.readability_score < 50 %}
+                        <span class="text-orange-500 font-medium">Difficult</span>
+                    {% elif analysis.readability_score < 70 %}
+                        <span class="text-yellow-500 font-medium">Standard</span>
+                    {% else %}
+                        <span class="text-green-500 font-medium">Easy to Read</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Keyword Analysis -->
+        <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+            <h3 class="text-lg font-semibold mb-2">Keyword Analysis</h3>
+            <p class="text-sm text-gray-500 mb-2">Top keywords found in your content:</p>
+            <div class="space-y-1.5 max-h-24 overflow-y-auto">
+                {% for keyword, density in analysis.keyword_density.items|slice:":5" %}
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="font-medium">{{ keyword }}</span>
+                        <span class="text-gray-500">{{ density }}%</span>
+                    </div>
+                {% empty %}
+                    <p class="text-sm text-gray-500">No keywords detected</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Meta Description -->
+    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+        <div class="flex justify-between items-start mb-3">
+            <h3 class="text-lg font-semibold">Meta Description</h3>
+            <button id="edit-meta-description" class="text-[#9810fa] text-sm hover:underline">Edit</button>
+        </div>
+        
+        <div id="meta-description-display">
+            <p class="text-sm text-gray-800 bg-white p-3 rounded border border-gray-200">
+                {{ analysis.meta_description|default:"No meta description generated" }}
+            </p>
+            <p class="text-xs text-gray-500 mt-2">
+                Characters: {{ analysis.meta_description|length }} / 160
+                {% if analysis.meta_description|length > 160 %}
+                    <span class="text-red-500">(Too long)</span>
+                {% endif %}
+            </p>
+        </div>
+        
+        <div id="meta-description-edit" class="hidden">
+            <textarea id="meta-description-input" class="w-full h-32 text-sm text-gray-800 bg-white p-3 rounded border border-gray-200" maxlength="250">{{ analysis.meta_description }}</textarea>
+            <p id="character-count" class="text-xs text-gray-500 mt-2">
+                Characters: {{ analysis.meta_description|length }} / 160
+            </p>
+            <div class="flex justify-end space-x-2 mt-3">
+                <button id="cancel-meta-edit" class="text-gray-600 text-sm hover:underline">Cancel</button>
+                <button id="save-meta-description" data-analysis-id="{{ analysis.id }}" class="text-sm px-3 py-1 bg-[#9810fa] text-white rounded hover:bg-[#9810fa]/90">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Improvement Suggestions -->
+    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+        <h3 class="text-lg font-semibold mb-3">Improvement Suggestions</h3>
+        <ul class="space-y-2 text-sm">
+            {% for suggestion in analysis.improvement_suggestions %}
+                <li class="flex items-start">
+                    <svg class="h-5 w-5 text-yellow-500 flex-shrink-0 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                    </svg>
+                    <span>{{ suggestion }}</span>
+                </li>
+            {% empty %}
+                <li>No suggestions - your content looks good!</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Keyword Details -->
+    <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+        <h3 class="text-lg font-semibold mb-3">All Detected Keywords</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {% for keyword, density in analysis.keyword_density.items %}
+                <div class="bg-white p-3 rounded border border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <span class="font-medium">{{ keyword }}</span>
+                        <span class="text-sm text-gray-500">{{ density }}%</span>
+                    </div>
+                    <div class="mt-1 w-full bg-gray-200 rounded-full h-1.5">
+                        <div class="bg-[#9810fa] h-1.5 rounded-full" style="width: {{ density|floatformat:2|mul:20 }}%;"></div>
+                    </div>
+                    <div class="mt-1 text-xs text-gray-500">
+                        {% if density < 0.5 %}
+                            Consider using this keyword more
+                        {% elif density > 5 %}
+                            Consider reducing this keyword
+                        {% else %}
+                            Good keyword density
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-span-3">
+                    <p class="text-center text-gray-500">No keywords detected</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for interactivity -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Edit meta description
+        const editMetaBtn = document.getElementById('edit-meta-description');
+        const displayDiv = document.getElementById('meta-description-display');
+        const editDiv = document.getElementById('meta-description-edit');
+        const cancelBtn = document.getElementById('cancel-meta-edit');
+        const saveBtn = document.getElementById('save-meta-description');
+        const metaInput = document.getElementById('meta-description-input');
+        const charCount = document.getElementById('character-count');
+        
+        if(editMetaBtn) {
+            editMetaBtn.addEventListener('click', function() {
+                displayDiv.classList.add('hidden');
+                editDiv.classList.remove('hidden');
+            });
+        }
+        
+        if(cancelBtn) {
+            cancelBtn.addEventListener('click', function() {
+                displayDiv.classList.remove('hidden');
+                editDiv.classList.add('hidden');
+            });
+        }
+        
+        if(metaInput) {
+            metaInput.addEventListener('input', function() {
+                const count = metaInput.value.length;
+                charCount.textContent = `Characters: ${count} / 160`;
+                if(count > 160) {
+                    charCount.classList.add('text-red-500');
+                } else {
+                    charCount.classList.remove('text-red-500');
+                }
+            });
+        }
+        
+        if(saveBtn) {
+            saveBtn.addEventListener('click', function() {
+                const analysisId = saveBtn.dataset.analysisId;
+                const newMetaDescription = metaInput.value;
+                
+                // Show loading state
+                saveBtn.disabled = true;
+                saveBtn.textContent = 'Saving...';
+                
+                // Send request to update
+                fetch('{% url "seo_optimization:ajax_update_meta_description" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        analysis_id: analysisId,
+                        meta_description: newMetaDescription
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success) {
+                        // Update display and close edit mode
+                        const displayText = document.querySelector('#meta-description-display p:first-child');
+                        displayText.textContent = data.meta_description;
+                        
+                        // Update character count
+                        const displayCount = document.querySelector('#meta-description-display p:last-child');
+                        displayCount.textContent = `Characters: ${data.meta_description.length} / 160`;
+                        
+                        displayDiv.classList.remove('hidden');
+                        editDiv.classList.add('hidden');
+                    } else {
+                        alert('Error updating meta description: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error updating meta description');
+                })
+                .finally(() => {
+                    saveBtn.disabled = false;
+                    saveBtn.textContent = 'Save';
+                });
+            });
+        }
+        
+        // Reanalyze content
+        const reanalyzeBtn = document.getElementById('reanalyze-btn');
+        if(reanalyzeBtn) {
+            reanalyzeBtn.addEventListener('click', function() {
+                const contentId = reanalyzeBtn.dataset.contentId;
+                
+                // Show loading state
+                reanalyzeBtn.disabled = true;
+                reanalyzeBtn.textContent = 'Analyzing...';
+                
+                // Send request to reanalyze
+                fetch('{% url "seo_optimization:ajax_analyze_content" %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        content_id: contentId,
+                        force_reanalyze: true
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if(data.error) {
+                        alert('Error: ' + data.error);
+                    } else {
+                        // Reload page to show updated analysis
+                        window.location.reload();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error analyzing content');
+                })
+                .finally(() => {
+                    reanalyzeBtn.disabled = false;
+                    reanalyzeBtn.textContent = 'Reanalyze';
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}
