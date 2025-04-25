@@ -67,7 +67,7 @@
             <form id="batch-download-form" action="{% url 'content_generation:download_batch' project_id=project.id %}" method="post">
                 {% csrf_token %}
                 <!-- Content IDs will be added via JavaScript -->
-                <button id="download-selected" type="submit" class="bg-main text-white py-1 px-3 rounded-md text-sm font-medium hidden">
+                <button id="download-selected" type="submit" class="btn-main text-white py-1 px-3 rounded-md text-sm font-medium hidden">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                     </svg>
@@ -82,14 +82,17 @@
             <div class="bg-white shadow overflow-hidden sm:rounded-lg content-card" data-content-id="{{ content.id }}">
                 <div class="px-4 py-5 border-b border-gray-200 sm:px-6 flex items-center justify-between">
                     <h3 class="text-lg leading-6 font-medium text-gray-900">{{ content.name }}</h3>
-                    <div class="flex space-x-2">
-                        <input type="checkbox" class="content-checkbox" data-content-id="{{ content.id }}" /> 
+                    <div class="flex items-center space-x-2">
+                        <!-- Checkbox for selection - aligned properly with items-center class -->
+                        <div class="flex items-center">
+                            <input type="checkbox" class="content-checkbox w-4 h-4 text-main border-gray-300 rounded" data-content-id="{{ content.id }}" /> 
+                        </div>
                         <button class="copy-button text-gray-500 hover:text-main p-1 rounded-full" title="Copy content">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                             </svg>
                         </button>
-                        <a href="{% url 'content_generation:download_content' content_id=content.id %}" class="download-button text-gray-500 hover:text-main p-1 rounded-full" title="Download as DOCX">
+                        <a href="{% url 'content_generation:download_content' content_id=content.id %}" class="btn-maindownload-button text-gray-500 hover:text-main p-1 rounded-full" title="Download as DOCX">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                             </svg>
@@ -174,3 +177,110 @@
 
 <!-- Inject a hidden CSRF token field to be used by JavaScript -->
 <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
+<!-- Load the content download script only if there's content to download -->
+{% if generated_contents %}
+<script>
+    // Ensure the old JS doesn't conflict with new functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize batch download functionality
+        const toggleAllButton = document.getElementById('toggle-select-all');
+        const downloadSelectedButton = document.getElementById('download-selected');
+        const batchDownloadForm = document.getElementById('batch-download-form');
+        const checkboxes = document.querySelectorAll('.content-checkbox');
+        
+        // State tracking
+        let allSelected = false;
+        
+        if (toggleAllButton) {
+            // Toggle all content selection
+            toggleAllButton.addEventListener('click', function(e) {
+                e.preventDefault(); // Prevent default button action
+                console.log("Toggle All clicked");
+                
+                allSelected = !allSelected;
+                
+                // Update checkboxes
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = allSelected;
+                    updateCardSelection(checkbox);
+                });
+                
+                // Update button text
+                this.textContent = allSelected ? 'Deselect All' : 'Select All';
+                
+                // Update download button visibility
+                updateDownloadButtonVisibility();
+            });
+        }
+        
+        // Handle individual checkbox changes
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                updateCardSelection(this);
+                updateDownloadButtonVisibility();
+            });
+        });
+        
+        // Update form before submission
+        if (batchDownloadForm) {
+            batchDownloadForm.addEventListener('submit', function(e) {
+                // Clear any previous hidden inputs
+                const existingInputs = this.querySelectorAll('input[name="content_ids"]');
+                existingInputs.forEach(input => input.remove());
+                
+                // Add selected content IDs as hidden inputs
+                let hasSelected = false;
+                checkboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        hasSelected = true;
+                        const input = document.createElement('input');
+                        input.type = 'hidden';
+                        input.name = 'content_ids';
+                        input.value = checkbox.dataset.contentId;
+                        this.appendChild(input);
+                    }
+                });
+                
+                // Prevent submission if no items selected
+                if (!hasSelected) {
+                    e.preventDefault();
+                    alert('Please select at least one content item to download.');
+                }
+            });
+        }
+        
+        // Helper function to update card selection styling
+        function updateCardSelection(checkbox) {
+            const card = checkbox.closest('.content-card');
+            if (card) {
+                if (checkbox.checked) {
+                    card.classList.add('ring-2', 'ring-main', 'ring-opacity-50');
+                } else {
+                    card.classList.remove('ring-2', 'ring-main', 'ring-opacity-50');
+                }
+            }
+        }
+        
+        // Helper function to update download button visibility
+        function updateDownloadButtonVisibility() {
+            if (!downloadSelectedButton) return;
+            
+            let anySelected = false;
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    anySelected = true;
+                }
+            });
+            
+            if (anySelected) {
+                downloadSelectedButton.classList.remove('hidden');
+            } else {
+                downloadSelectedButton.classList.add('hidden');
+            }
+        }
+        
+        console.log("Batch download functionality initialized");
+    });
+</script>
+{% endif %}

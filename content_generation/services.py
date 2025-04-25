@@ -5,6 +5,7 @@ from django.conf import settings
 from django.utils import timezone
 from .models import ContentGenerationJob, AIConfig
 from projects.models import Project, GeneratedContent
+from .prompt_enhancement import PromptEnhancer
 
 logger = logging.getLogger(__name__)
 
@@ -20,13 +21,14 @@ class OpenAIService:
             logger.warning(f"Failed to load AI config: {e}")
             self.config = None
 
-    def generate_content(self, prompt_text, content_source, max_retries=2):
+    def generate_content(self, prompt_text, content_source, content_type="general", max_retries=2):
         """
         Generate content using OpenAI API with retry and fallback mechanisms
         
         Args:
             prompt_text (str): The prompt to send to OpenAI
             content_source (str): Source content to use for generation
+            content_type (str): Type of content (general, blog, social, email)
             max_retries (int): Maximum number of retries before failing
             
         Returns:
@@ -38,6 +40,13 @@ class OpenAIService:
         fallback_model = self.config.fallback_model if self.config else "gpt-3.5-turbo"
         temperature = self.config.temperature if self.config else 0.7
         
+        # Enhanced prompt messages using prompt layering
+        messages = PromptEnhancer.enhance_prompt(
+            user_prompt=prompt_text,
+            content_type=content_type,
+            asset_content=content_source
+        )
+        
         models_to_try = [primary_model, fallback_model]
         
         for attempt in range(max_retries + 1):
@@ -45,41 +54,7 @@ class OpenAIService:
                 try:
                     response = self.openai_client.chat.completions.create(
                         model=model,
-                        messages=[
-                            {"role": "system", "content": """You are a professional content generation assistant with expertise in marketing and communication. 
-                            
-                    Your tasks include:
-                    1. Produce high-quality, well-structured content
-                    2. Use proper formatting with Markdown syntax
-                    3. Always include appropriate headings, paragraphs, and lists
-                    4. Create content that sounds natural, professional, and engaging
-                    5. Format titles with # or ## syntax rather than using hashtags in the text
-                    6. Ensure content has proper spacing and organization
-                    7. Never use emojis in your responses
-                    8. Always follow the specific style or tone requested in the prompt
-
-                    For titles and headings:
-                    - Use # For main titles
-                    - Use ## For section headings 
-                    - Use ### For subsection headings
-
-                    For formatting:
-                    - Use line breaks between paragraphs
-                    - Use bullet points (* or -) for lists
-                    - Use numbered lists (1. 2. 3.) for sequential steps
-                    - Use **bold** for emphasis
-                    - Use *italic* for subtle emphasis
-
-                    Always maintain a professional, clear writing style unless otherwise specified."""},
-                            {"role": "user", "content": f"""
-                            Use the following prompt and summary to generate new content:
-                            ** PROMPT:
-                            {prompt_text}
-                            ---------------------
-                            ** SUMMARY:
-                            {content_source}
-                            """}
-                        ],
+                        messages=messages,
                         temperature=temperature,
                     )
                     
@@ -191,38 +166,19 @@ class GenerationManager:
                 print(f"Error getting AI config: {e}")
                 ai_config = None
             
-            # Set up OpenAI client
-            openai_client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
-            
             # Generate content for each prompt
             for i, prompt in enumerate(prompts):
                 try:
-                    # Configure model settings
-                    model = ai_config.model_name if ai_config else settings.OPENAI_DEFAULT_MODEL
-                    temperature = ai_config.temperature if ai_config else 0.7
-                    max_tokens = ai_config.max_tokens if ai_config else 4000
+                    # Detect content type from prompt text
+                    content_type = PromptEnhancer.detect_content_type(prompt.prompt)
+                    print(f"Detected content type: {content_type} for prompt '{prompt.name}'")
                     
-                    # Make API call to OpenAI
-                    response = openai_client.chat.completions.create(
-                        model=model,
-                        messages=[
-                            {"role": "system", "content": "You are a content generation assistant."},
-                            {"role": "user", "content": f"""
-                            Use the following prompt and summary to generate new content:
-                            
-                            ** PROMPT:
-                            {prompt.prompt}
-                            
-                            ** SOURCE CONTENT:
-                            {content_from_assets}
-                            """}
-                        ],
-                        temperature=temperature,
-                        max_tokens=max_tokens
+                    # Generate content with enhanced prompt
+                    generated_text = self.openai_service.generate_content(
+                        prompt_text=prompt.prompt,
+                        content_source=content_from_assets,
+                        content_type=content_type
                     )
-                    
-                    # Extract generated text
-                    generated_text = response.choices[0].message.content.strip()
                     
                     # Save generated content
                     GeneratedContent.objects.create(
@@ -270,3 +226,4 @@ class GenerationManager:
                 job.save()
             print(f"Error processing generation job {job_id}: {e}")
             raise
+        
