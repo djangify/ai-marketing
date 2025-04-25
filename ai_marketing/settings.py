@@ -192,7 +192,7 @@ PROCESSING_SERVICE_API_KEY = os.environ.get('PROCESSING_SERVICE_API_KEY')
 # OpenAI API settings
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 OPENAI_DEFAULT_MODEL = 'gpt-4o'
-OPENAI_FALLBACK_MODEL = 'gpt-4o-mini'
+OPENAI_FALLBACK_MODEL = 'gpt-3.5-turbo'
 
 CACHES = {
     'default': {

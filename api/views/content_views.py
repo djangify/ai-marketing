@@ -51,7 +51,7 @@ def project_generated_content(request, project_id):
             
             # Generate content for each prompt
             generated_contents = []
-            models = ["gpt-4o", "gpt-4o-mini"]
+            models = ["gpt-4o", "gpt-3.5-turbo"]
             
             for prompt in prompts:
                 success = False

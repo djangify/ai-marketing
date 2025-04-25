@@ -34,7 +34,7 @@ class AIConfig(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     model_name = models.CharField(max_length=100, default="gpt-4o")
-    fallback_model = models.CharField(max_length=100, default="gpt-4o-mini", blank=True)
+    fallback_model = models.CharField(max_length=100, default="gpt-3.5-turbo", blank=True)
     temperature = models.FloatField(default=0.7)
     max_tokens = models.IntegerField(default=4000)
     is_active = models.BooleanField(default=True)

@@ -19,7 +19,7 @@ class OpenAIService:
         except Exception as e:
             logger.warning(f"Failed to load AI config: {e}")
             self.config = None
-    
+
     def generate_content(self, prompt_text, content_source, max_retries=2):
         """
         Generate content using OpenAI API with retry and fallback mechanisms
@@ -32,9 +32,10 @@ class OpenAIService:
         Returns:
             str: Generated content text
         """
+    
         # Get model configuration
         primary_model = self.config.model_name if self.config else "gpt-4o"
-        fallback_model = self.config.fallback_model if self.config else "gpt-4o-mini"
+        fallback_model = self.config.fallback_model if self.config else "gpt-3.5-turbo"
         temperature = self.config.temperature if self.config else 0.7
         
         models_to_try = [primary_model, fallback_model]
@@ -45,7 +46,31 @@ class OpenAIService:
                     response = self.openai_client.chat.completions.create(
                         model=model,
                         messages=[
-                            {"role": "system", "content": "You are a content generation assistant."},
+                            {"role": "system", "content": """You are a professional content generation assistant with expertise in marketing and communication. 
+                            
+                    Your tasks include:
+                    1. Produce high-quality, well-structured content
+                    2. Use proper formatting with Markdown syntax
+                    3. Always include appropriate headings, paragraphs, and lists
+                    4. Create content that sounds natural, professional, and engaging
+                    5. Format titles with # or ## syntax rather than using hashtags in the text
+                    6. Ensure content has proper spacing and organization
+                    7. Never use emojis in your responses
+                    8. Always follow the specific style or tone requested in the prompt
+
+                    For titles and headings:
+                    - Use # For main titles
+                    - Use ## For section headings 
+                    - Use ### For subsection headings
+
+                    For formatting:
+                    - Use line breaks between paragraphs
+                    - Use bullet points (* or -) for lists
+                    - Use numbered lists (1. 2. 3.) for sequential steps
+                    - Use **bold** for emphasis
+                    - Use *italic* for subtle emphasis
+
+                    Always maintain a professional, clear writing style unless otherwise specified."""},
                             {"role": "user", "content": f"""
                             Use the following prompt and summary to generate new content:
                             ** PROMPT:

@@ -213,7 +213,7 @@ Meta description:"""
         
         # Get response from OpenAI
         response = client.chat.completions.create(
-            model="gpt-4o-mini",  # Using smaller model for efficiency
+            model="gpt-3.5-turbo",  
             messages=[
                 {"role": "system", "content": "You are an SEO specialist creating meta descriptions."},
                 {"role": "user", "content": prompt}

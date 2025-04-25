@@ -134,17 +134,57 @@ def project_detail(request, project_id):
 @subscription_required
 def project_update(request, project_id):
     project = get_object_or_404(Project, id=project_id, user=request.user)
-    
+    # Get existing tags for the project
+    from django.contrib.contenttypes.models import ContentType
+    from core.models import TaggedItem
+
+    project_content_type = ContentType.objects.get_for_model(Project)
+    tagged_items = TaggedItem.objects.filter(
+        content_type=project_content_type,
+        object_id=project.id
+    ).select_related('tag')
+
+    existing_tags = [item.tag.name for item in tagged_items]
+    initial_data = {'tags': ', '.join(existing_tags)}
+
     if request.method == 'POST':
         form = ProjectForm(request.POST, instance=project)
         if form.is_valid():
             form.save()
+            
+            # Process tags
+            tags_string = form.cleaned_data.get('tags')
+            
+            # First remove existing tags
+            TaggedItem.objects.filter(
+                content_type=project_content_type,
+                object_id=project.id
+            ).delete()
+            
+            # Then add new tags
+            if tags_string:
+                from core.models import Tag
+                
+                tag_names = [tag.strip() for tag in tags_string.split(',') if tag.strip()]
+                
+                for tag_name in tag_names:
+                    tag, created = Tag.objects.get_or_create(
+                        name=tag_name,
+                        user=request.user
+                    )
+                    TaggedItem.objects.get_or_create(
+                        tag=tag,
+                        content_type=project_content_type,
+                        object_id=project.id
+                    )
+            
             messages.success(request, "Project updated successfully!")
             return redirect('projects:project_detail', project_id=project.id)
     else:
-        form = ProjectForm(instance=project)
-    
+        form = ProjectForm(instance=project, initial=initial_data)
+
     return render(request, 'projects/project_form.html', {'form': form, 'project': project, 'action': 'Update'})
+
 
 @login_required
 def project_delete(request, project_id):
