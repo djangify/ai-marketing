@@ -5,6 +5,9 @@
 {% block title %}My Templates - AI Marketing Platform{% endblock %}
 
 {% block dashboard_content %}
+{% if not subscription.is_active %}
+    {% include 'includes/subscription_message.html' %}
+{% else %}
 <div class="max-w-screen-xl mx-auto p-4 sm:p-6 lg:p-8 bg-white rounded-xl shadow-sm mt-16">
     <!-- Page Header -->
     <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">My Templates</h1>
@@ -66,4 +69,5 @@
         {% endif %}
     </div>
 </div>
+{% endif %}
 {% endblock %}

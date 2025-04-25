@@ -11,6 +11,8 @@ from .utils import analyze_content_for_seo
 import json
 import os
 import nltk
+from subscriptions.utils import subscription_required
+
 
 # Set up the NLTK data path 
 nltk_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'nltk_data')
@@ -42,6 +44,7 @@ except LookupError as e:
 
 
 @login_required
+@subscription_required
 def analyze_content(request, content_id):
     """Analyze a single generated content for SEO"""
     content = get_object_or_404(GeneratedContent, id=content_id)
@@ -112,6 +115,7 @@ def analyze_content(request, content_id):
 
 
 @login_required
+@subscription_required
 def analysis_detail(request, analysis_id):
     """View a specific SEO analysis"""
     analysis = get_object_or_404(SEOAnalysis, id=analysis_id)
@@ -129,6 +133,7 @@ def analysis_detail(request, analysis_id):
 
 
 @login_required
+@subscription_required
 def project_analyses(request, project_id):
     """View all SEO analyses for a project"""
     project = get_object_or_404(Project, id=project_id, user=request.user)
@@ -141,6 +146,7 @@ def project_analyses(request, project_id):
 
 
 @login_required
+@subscription_required
 def keyword_tracking(request):
     """View all tracked keywords for a user"""
     keywords = KeywordTracking.objects.filter(user=request.user).order_by('-relevance_score')
@@ -235,6 +241,7 @@ def ajax_analyze_content(request):
 
 @require_POST
 @login_required
+@subscription_required
 def ajax_update_meta_description(request):
     """AJAX endpoint to update a meta description"""
     try:
@@ -266,6 +273,7 @@ def ajax_update_meta_description(request):
 
 @require_POST
 @login_required
+@subscription_required
 def ajax_toggle_primary_keyword(request):
     """AJAX endpoint to toggle primary status of a keyword"""
     try:

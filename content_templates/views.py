@@ -5,9 +5,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Template, TemplatePrompt
 from .forms import TemplateForm, TemplatePromptForm
+from subscriptions.utils import subscription_required
 
 
 @login_required
+@subscription_required
 def template_list(request):
     # Start with all user's templates
     templates_query = request.user.templates.all()
@@ -54,6 +56,7 @@ def template_list(request):
 
 
 @login_required
+@subscription_required
 def template_create(request):
     if request.method == 'POST':
         form = TemplateForm(request.POST)
@@ -92,6 +95,7 @@ def template_create(request):
 
 
 @login_required
+@subscription_required
 def template_detail(request, template_id):
     template = get_object_or_404(Template, id=template_id, user=request.user)
     
@@ -186,6 +190,7 @@ def template_delete(request, template_id):
 
 
 @login_required
+@subscription_required
 def template_prompt_list(request, template_id):
     template = get_object_or_404(Template, id=template_id, user=request.user)
     

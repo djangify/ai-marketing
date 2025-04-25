@@ -5,9 +5,11 @@ from django.contrib import messages
 from .models import Project
 from .forms import ProjectForm
 from .models import Project
+from subscriptions.utils import subscription_required
 
 
 @login_required
+@subscription_required
 def project_list(request):
     # Start with all user's projects
     projects_query = request.user.projects.all()
@@ -86,6 +88,7 @@ def project_create(request):
     return render(request, 'projects/project_form.html', {'form': form, 'action': 'Create'})
 
 @login_required
+@subscription_required
 def project_detail(request, project_id):
     project = get_object_or_404(Project, id=project_id, user=request.user)
     
@@ -128,6 +131,7 @@ def project_detail(request, project_id):
 
 
 @login_required
+@subscription_required
 def project_update(request, project_id):
     project = get_object_or_404(Project, id=project_id, user=request.user)
     

@@ -12,9 +12,11 @@ from .models import Asset, AssetProcessingJob
 from projects.models import Project
 from .utils import create_asset_processing_job, determine_process_function
 from django.contrib import messages
+from subscriptions.utils import subscription_required
 
 
 @login_required
+@subscription_required
 def asset_list(request, project_id):
     project = get_object_or_404(Project, id=project_id, user=request.user)
     assets = project.client_assets.all().order_by('-updated_at')
@@ -40,6 +42,7 @@ def asset_list(request, project_id):
 
 
 @login_required
+@subscription_required
 @require_POST
 def asset_upload(request, project_id):
     project = get_object_or_404(Project, id=project_id, user=request.user)
@@ -348,6 +351,7 @@ def determine_file_type(filename, mime_type):
         return 'other'
     
 @login_required
+@subscription_required
 def all_assets(request):
     # Get all projects for the user
     projects = Project.objects.filter(user=request.user)

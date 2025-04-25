@@ -17,16 +17,18 @@ def has_access(user):
     
     # Check if user is in trial period
     try:
-        if user.subscription_profile.is_in_trial_period():
+        if hasattr(user, 'subscription_profile') and user.subscription_profile.is_in_trial_period():
             return True
-    except:
+    except Exception as e:
+        print(f"Error checking trial period: {e}")
         pass
     
     # Check if user has active subscription
     try:
-        if user.stripe_subscription.is_active():
+        if hasattr(user, 'stripe_subscription') and user.stripe_subscription.is_active():
             return True
-    except:
+    except Exception as e:
+        print(f"Error checking subscription: {e}")
         pass
     
     return False
