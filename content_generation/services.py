@@ -4,7 +4,7 @@ import logging
 from django.conf import settings
 from django.utils import timezone
 from .models import ContentGenerationJob, AIConfig
-from projects.models import Project, GeneratedContent
+from projects.models import Project, GeneratedContent, Prompt
 from .prompt_enhancement import PromptEnhancer
 
 logger = logging.getLogger(__name__)
@@ -88,13 +88,22 @@ class GenerationManager:
     def __init__(self):
         self.openai_service = OpenAIService()
     
-    def start_generation_job(self, project_id, user):
+    def start_generation_job(self, project_id, user, prompt_ids=None):
         """Start a content generation job for a project"""
         try:
             project = Project.objects.get(id=project_id)
             
-            # Clean up any existing content
-            GeneratedContent.objects.filter(project=project).delete()
+            # If specific prompt_ids are provided, only delete content for those prompts
+            if prompt_ids:
+                prompt_names = Prompt.objects.filter(id__in=prompt_ids).values_list('name', flat=True)
+                GeneratedContent.objects.filter(project=project, name__in=prompt_names).delete()
+                # Also filter prompts to only include selected ones
+                prompts = project.project_prompts.filter(id__in=prompt_ids).order_by('order')
+            else:
+                # If no specific prompts selected, delete all existing content
+                GeneratedContent.objects.filter(project=project).delete()
+                # Use all prompts
+                prompts = project.project_prompts.all().order_by('order')
             
             # Check if assets have content
             assets_with_content = project.client_assets.filter(content__isnull=False).exclude(content='')
@@ -147,8 +156,11 @@ class GenerationManager:
             if len(content_from_assets) > max_content_length:
                 content_from_assets = content_from_assets[:max_content_length] + "\n[Content truncated due to length...]"
             
-            # Get prompts
-            prompts = project.project_prompts.all().order_by('order')
+            # Get prompts - if job has prompt_ids, use only those
+            if hasattr(job, 'prompt_ids') and job.prompt_ids:
+                prompts = project.project_prompts.filter(id__in=job.prompt_ids).order_by('order')
+            else:
+                prompts = project.project_prompts.all().order_by('order')
             
             # Get active AI config or use default
             try:

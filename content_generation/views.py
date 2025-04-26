@@ -161,8 +161,11 @@ def start_generation(request, project_id):
             'error': 'No assets with content found in this project'
         }, status=400)
     try:
-        # Create new generation job
-        job = generation_manager.start_generation_job(project_id, request.user)
+        # Get selected prompt IDs from the request
+        prompt_ids = request.POST.getlist('prompt_ids', [])
+
+        # Start a new generation job with selected prompts
+        job = generation_manager.start_generation_job(project_id, request.user, prompt_ids)
         
         if not job:
             error_message = "Failed to create generation job"

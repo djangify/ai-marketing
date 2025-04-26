@@ -42,6 +42,21 @@
                 <h3 class="text-sm leading-5 font-medium">Generation failed</h3>
                 <p class="mt-1 text-sm leading-5">{{ job.error_message|default:"An error occurred during content generation." }}</p>
                 <div class="mt-2">
+                <div class="flex flex-col space-y-2">
+                    <!-- Prompt selection section - only shown if prompts exist -->
+                    {% if project.project_prompts.exists %}
+                    <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                        <h3 class="font-medium text-gray-700 mb-2">Select prompts to generate:</h3>
+                        <form id="prompt-selection-form" class="space-y-2">
+                            {% for prompt in project.project_prompts.all %}
+                            <div class="flex items-center">
+                                <input type="checkbox" id="prompt-{{ prompt.id }}" name="prompt_ids" value="{{ prompt.id }}" class="mr-2 h-4 w-4 rounded border-gray-300 text-main focus:ring-main" checked>
+                                <label for="prompt-{{ prompt.id }}" class="text-sm text-gray-700">{{ prompt.name }}</label>
+                            </div>
+                            {% endfor %}
+                        </form>
+                    </div>
+                    {% endif %}
                     <button 
                         id="generate-content-button"
                         hx-post="{% url 'content_generation:start_generation' project_id=project.id %}"
@@ -49,7 +64,7 @@
                         hx-swap="innerHTML"
                         hx-indicator="#loading-indicator"
                         hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                        class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs leading-4 font-medium rounded text-red-700 bg-red-100 hover:bg-red-200 focus:outline-none focus:border-red-300 focus:shadow-outline-red active:bg-red-200 transition ease-in-out duration-150">
+                        class="btn-main inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs leading-4 font-medium rounded  focus:border-red-300 focus:shadow-outline-red active:bg-red-200 transition ease-in-out duration-150">
                         Try Again
                     </button>
                 </div>
@@ -106,8 +121,8 @@
                 </div>
                 <div class="px-4 py-5 sm:p-6">
                     <!-- Display view -->
-                    <div class="prose prose-lg max-w-none content-display text-gray-700 px-2 py-1">
-                        {{ content.result|linebreaks }}
+                    <div class="prose max-w-none content-display whitespace-pre-wrap">
+                        {{ content.result|safe }}
                     </div>
                     
                     <!-- Edit form (initially hidden) -->

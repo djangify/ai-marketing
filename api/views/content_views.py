@@ -40,8 +40,15 @@ def project_generated_content(request, project_id):
             if not prompts.exists():
                 return Response({"error": "Project has no prompts"}, status=status.HTTP_400_BAD_REQUEST)
                 
-            # Delete existing generated content
-            GeneratedContent.objects.filter(project=project).delete()
+            # Only delete content for prompts we're about to regenerate
+            # We'll get the prompt IDs from the request data
+            prompt_ids = request.data.get('prompt_ids', [])
+            if prompt_ids:
+                # If specific prompts are selected, only delete content for those
+                GeneratedContent.objects.filter(project=project, name__in=Prompt.objects.filter(id__in=prompt_ids).values_list('name', flat=True)).delete()
+            else:
+                # If no specific prompts are selected, delete all and regenerate all
+                GeneratedContent.objects.filter(project=project).delete()
             
             # Get content from assets
             content_from_assets = "\n\n".join([asset.content for asset in assets if asset.content])
