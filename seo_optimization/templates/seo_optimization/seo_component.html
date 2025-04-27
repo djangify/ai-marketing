@@ -19,24 +19,62 @@
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
           <!-- SEO Score -->
           <div class="bg-white p-3 rounded border border-gray-200">
-              <p class="text-sm font-medium mb-1">SEO Score</p>
-              <div class="flex items-center">
-                  <div class="h-2 w-full bg-gray-200 rounded-full">
-                      <div class="h-2 rounded-full {% if seo_score < 50 %}bg-red-500{% elif seo_score < 70 %}bg-yellow-500{% else %}bg-green-500{% endif %}" style="width: {{ seo_score }}%;"></div>
-                  </div>
-                  <span class="ml-2 text-sm font-bold">{{ seo_score|floatformat:0 }}</span>
-              </div>
-          </div>
+            <div class="flex items-center justify-between mb-1">
+                <p class="text-sm font-medium">SEO Score</p>
+                <button type="button" class="seo-help-btn text-gray-500 hover:text-[#9810fa]" title="Learn about SEO Score">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </button>
+            </div>
+            <div class="flex items-center">
+                <div class="h-2 w-full bg-gray-200 rounded-full">
+                    <div class="h-2 rounded-full {% if seo_score < 50 %}bg-red-500{% elif seo_score < 70 %}bg-yellow-500{% else %}bg-green-500{% endif %}" style="width: {{ seo_score }}%;"></div>
+                </div>
+                <span class="ml-2 text-sm font-bold">{{ seo_score|floatformat:0 }}</span>
+            </div>
+            <!-- Hidden SEO help tooltip -->
+            <div class="seo-help-tooltip hidden bg-white border border-gray-200 shadow-md rounded-md p-3 text-xs text-gray-600 mt-2">
+                <p><strong>What is this?</strong> Our SEO score evaluates your content's search-engine friendliness based on:</p>
+                <ul class="mt-1 pl-4 list-disc">
+                    <p>Readability (how easy the content is to understand)</p>
+                    <p>Keyword usage (appropriate density of relevant terms)</p>
+                    <p>Meta description (presence and quality)</p>
+                </ul>
+                <p class="mt-1">Higher scores typically indicate content that's better optimized for search engines and readers.</p>
+            </div>
+        </div>
           
           <!-- Readability -->
-          <div class="bg-white p-3 rounded border border-gray-200">
-              <p class="text-sm font-medium mb-1">Readability</p>
-              <div class="flex items-center">
-                  <div class="h-2 w-full bg-gray-200 rounded-full">
-                      <div class="h-2 rounded-full {% if readability_score < 30 %}bg-red-500{% elif readability_score < 50 %}bg-orange-500{% elif readability_score < 70 %}bg-yellow-500{% else %}bg-green-500{% endif %}" style="width: {{ readability_score }}%;"></div>
-                  </div>
-                  <span class="ml-2 text-sm font-bold">{{ readability_score|floatformat:0 }}</span>
-              </div>
+            <div class="bg-white p-3 rounded border border-gray-200">
+                <div class="flex items-center justify-between mb-1">
+                    <p class="text-sm font-medium">Flesch Reading Ease</p>
+                    <button type="button" class="readability-help-btn text-gray-500 hover:text-[#9810fa]" title="Learn about Flesch Reading Ease">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex items-center">
+                    <div class="h-2 w-full bg-gray-200 rounded-full">
+                        <div class="h-2 rounded-full {% if readability_score < 30 %}bg-red-500{% elif readability_score < 50 %}bg-orange-500{% elif readability_score < 70 %}bg-yellow-500{% else %}bg-green-500{% endif %}" style="width: {{ readability_score }}%;"></div>
+                    </div>
+                    <span class="ml-2 text-sm font-bold">{{ readability_score|floatformat:0 }}</span>
+                </div>
+                <!-- Hidden readability help tooltip -->
+                <div class="readability-help-tooltip hidden bg-white border border-gray-200 shadow-md rounded-md p-3 text-xs text-gray-600 mt-2">
+                    <p><strong>What is this?</strong> We use the Flesch Reading Ease formula—higher means simpler language. The lower the score the more complex the language.</p>
+                    <ul class="mt-1 pl-4 list-disc">
+                        <p>90-100: Very easy (grade 5)</p>
+                        <p>80-90: Easy to read (grade 6)</p>
+                        <p>70-80: Fairly easy (grade 7-8)</p>
+                        <p>60-70: Standard (grade 9-10)</p>
+                        <p>50-60: Fairly difficult (grade 11-12)</p>
+                        <p>30-50: Difficult (college)</p>
+                        <p>0-30: Very difficult (college graduate)</p>
+                    </ul>
+                </div>
+            </div>
           </div>
           
           <!-- Top Keyword -->
@@ -66,3 +104,78 @@
       </div>
   {% endif %}
 </div>
+<script>
+    // Use an immediately invoked function expression (IIFE) to avoid 
+    // potential conflicts with multiple instances on the same page
+    (function() {
+        // Wait for DOM to be fully loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initTooltips);
+        } else {
+            initTooltips();
+        }
+        
+        function initTooltips() {
+            // Add click handlers for tooltip buttons
+            const readabilityButtons = document.querySelectorAll('.readability-help-btn');
+            readabilityButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const container = this.closest('.bg-white');
+                    const tooltip = container.querySelector('.readability-help-tooltip');
+                    
+                    // Close all tooltips first
+                    document.querySelectorAll('.readability-help-tooltip, .seo-help-tooltip').forEach(t => {
+                        if (t !== tooltip) {
+                            t.classList.add('hidden');
+                        }
+                    });
+                    
+                    // Toggle this tooltip
+                    if (tooltip) {
+                        tooltip.classList.toggle('hidden');
+                    }
+                });
+            });
+            
+            const seoButtons = document.querySelectorAll('.seo-help-btn');
+            seoButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const container = this.closest('.bg-white');
+                    const tooltip = container.querySelector('.seo-help-tooltip');
+                    
+                    // Close all tooltips first
+                    document.querySelectorAll('.readability-help-tooltip, .seo-help-tooltip').forEach(t => {
+                        if (t !== tooltip) {
+                            t.classList.add('hidden');
+                        }
+                    });
+                    
+                    // Toggle this tooltip
+                    if (tooltip) {
+                        tooltip.classList.toggle('hidden');
+                    }
+                });
+            });
+            
+            // Close tooltips when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.readability-help-btn') && 
+                    !e.target.closest('.seo-help-btn') && 
+                    !e.target.closest('.readability-help-tooltip') && 
+                    !e.target.closest('.seo-help-tooltip')) {
+                    
+                    document.querySelectorAll('.readability-help-tooltip, .seo-help-tooltip').forEach(tooltip => {
+                        tooltip.classList.add('hidden');
+                    });
+                }
+            });
+            
+            // For debugging - log that initialization completed
+            console.log('SEO Component tooltips initialized');
+        }
+    })();
+    </script>

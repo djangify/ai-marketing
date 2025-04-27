@@ -1,3 +1,4 @@
+# content_views.py
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -21,112 +22,127 @@ def project_generated_content(request, project_id):
     """
     try:
         project = get_object_or_404(Project, id=project_id, user=request.user)
-        
+
         if request.method == 'GET':
             # Get all generated content for the project
             generated_content = GeneratedContent.objects.filter(project=project).order_by('order')
             serializer = GeneratedContentSerializer(generated_content, many=True)
             return Response(serializer.data)
-            
+
         elif request.method == 'POST':
-            # Generate new content
+            # Fetch assets and prompts
             assets = Asset.objects.filter(project=project)
-            prompts = Prompt.objects.filter(project=project).order_by('order')
-            
-            # Check if project has assets and prompts
+            prompts_qs = Prompt.objects.filter(project=project).order_by('order')
+
             if not assets.filter(content__isnull=False).exists():
-                return Response({"error": "Project has no assets with content"}, status=status.HTTP_400_BAD_REQUEST)
-                
-            if not prompts.exists():
-                return Response({"error": "Project has no prompts"}, status=status.HTTP_400_BAD_REQUEST)
-                
-            # Only delete content for prompts we're about to regenerate
-            # We'll get the prompt IDs from the request data
+                return Response(
+                    {"error": "Project has no assets with content"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            if not prompts_qs.exists():
+                return Response(
+                    {"error": "Project has no prompts"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Determine which prompts to generate for
             prompt_ids = request.data.get('prompt_ids', [])
             if prompt_ids:
-                # If specific prompts are selected, only delete content for those
-                GeneratedContent.objects.filter(project=project, name__in=Prompt.objects.filter(id__in=prompt_ids).values_list('name', flat=True)).delete()
+                # regenerate only the chosen prompts
+                to_generate = prompts_qs.filter(id__in=prompt_ids)
+                names = to_generate.values_list('name', flat=True)
+                GeneratedContent.objects.filter(
+                    project=project,
+                    name__in=names
+                ).delete()
             else:
-                # If no specific prompts are selected, delete all and regenerate all
-                GeneratedContent.objects.filter(project=project).delete()
-            
-            # Get content from assets
-            content_from_assets = "\n\n".join([asset.content for asset in assets if asset.content])
-            
+                # append-only: skip prompts that already have content
+                existing = GeneratedContent.objects.filter(project=project) \
+                                  .values_list('name', flat=True)
+                to_generate = prompts_qs.exclude(name__in=existing)
+
+            if not to_generate.exists():
+                return Response(
+                    {"error": "No prompts to generate content for"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # Prepare the asset summary
+            content_from_assets = "\n\n".join(
+                asset.content for asset in assets if asset.content
+            )
+
             # Initialize OpenAI client
             client = openai.Client(api_key=settings.OPENAI_API_KEY)
-            
-            # Generate content for each prompt
-            generated_contents = []
             models = ["gpt-4o", "gpt-3.5-turbo"]
-            
-            for prompt in prompts:
-                success = False
-                text = ""
-                
+            created = []
+
+            # Generate content for each missing/regenerated prompt
+            for prompt in to_generate:
+                text = None
                 for model in models:
                     try:
-                        response = client.chat.completions.create(
+                        resp = client.chat.completions.create(
                             model=model,
                             messages=[
                                 {"role": "system", "content": "You are a content generation assistant"},
                                 {"role": "user", "content": f"""
-                                Use the following prompt and summary to generate new content:
-                                ** PROMPT:
-                                {prompt.prompt}
-                                ---------------------
-                                ** SUMMARY:
-                                {content_from_assets}
-                                """}
+Use the following prompt and summary to generate new content:
+** PROMPT:
+{prompt.prompt}
+---------------------
+** SUMMARY:
+{content_from_assets}
+"""}
                             ]
                         )
-                        
-                        text = response.choices[0].message.content
-                        success = True
+                        text = resp.choices[0].message.content
                         break
                     except Exception as e:
-                        # If error is retryable, continue to next model
-                        if getattr(e, 'status_code', None) in [503, 429] or 'overloaded' in str(e):
+                        # retry on rate limits or overloads
+                        if getattr(e, 'status_code', None) in [429, 503] or 'overloaded' in str(e):
                             continue
                         else:
-                            raise e
-                
-                if not success:
-                    return Response({"error": "Failed to generate content"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-                
-                # Create generated content record
-                content = GeneratedContent.objects.create(
+                            raise
+
+                if not text:
+                    return Response(
+                        {"error": f"Failed to generate content for prompt '{prompt.name}'"},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    )
+
+                obj = GeneratedContent.objects.create(
                     project=project,
                     name=prompt.name,
                     result=text,
                     order=prompt.order
                 )
-                
-                generated_contents.append(content)
-            
-            # Return the newly created content
-            serializer = GeneratedContentSerializer(generated_contents, many=True)
+                created.append(obj)
+
+            # Return the full up-to-date list
+            all_content = GeneratedContent.objects.filter(project=project).order_by('order')
+            serializer = GeneratedContentSerializer(all_content, many=True)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-            
+
         elif request.method == 'DELETE':
             # Delete all generated content for the project
             GeneratedContent.objects.filter(project=project).delete()
             return Response({"message": "Generated content deleted"}, status=status.HTTP_200_OK)
-            
+
         elif request.method == 'PATCH':
             # Update a specific generated content
             content_id = request.data.get('id')
             result = request.data.get('result')
-            
-            if not content_id or not result:
-                return Response({"error": "ID and result are required"}, status=status.HTTP_400_BAD_REQUEST)
-                
+            if not content_id or result is None:
+                return Response(
+                    {"error": "ID and result are required"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
             content = get_object_or_404(GeneratedContent, id=content_id, project=project)
             content.result = result
             content.save()
-            
             serializer = GeneratedContentSerializer(content)
             return Response(serializer.data)
-    
+
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

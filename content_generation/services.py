@@ -1,3 +1,4 @@
+# services.py
 import openai
 import time
 import logging
@@ -11,10 +12,8 @@ logger = logging.getLogger(__name__)
 
 class OpenAIService:
     """Service for interacting with OpenAI API"""
-    
     def __init__(self):
         self.openai_client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
-        # Get active AI config or use default values
         try:
             self.config = AIConfig.objects.filter(is_active=True).first()
         except Exception as e:
@@ -22,220 +21,124 @@ class OpenAIService:
             self.config = None
 
     def generate_content(self, prompt_text, content_source, content_type="general", max_retries=2):
-        """
-        Generate content using OpenAI API with retry and fallback mechanisms
-        
-        Args:
-            prompt_text (str): The prompt to send to OpenAI
-            content_source (str): Source content to use for generation
-            content_type (str): Type of content (general, blog, social, email)
-            max_retries (int): Maximum number of retries before failing
-            
-        Returns:
-            str: Generated content text
-        """
-    
-        # Get model configuration
-        primary_model = self.config.model_name if self.config else "gpt-4o"
-        fallback_model = self.config.fallback_model if self.config else "gpt-3.5-turbo"
-        temperature = self.config.temperature if self.config else 0.7
-        
-        # Enhanced prompt messages using prompt layering
+        primary = self.config.model_name if self.config else "gpt-4o"
+        fallback = self.config.fallback_model if self.config else "gpt-3.5-turbo"
+        temp = self.config.temperature if self.config else 0.7
+
         messages = PromptEnhancer.enhance_prompt(
             user_prompt=prompt_text,
             content_type=content_type,
             asset_content=content_source
         )
-        
-        models_to_try = [primary_model, fallback_model]
-        
         for attempt in range(max_retries + 1):
-            for model in models_to_try:
+            for model in (primary, fallback):
                 try:
-                    response = self.openai_client.chat.completions.create(
+                    resp = self.openai_client.chat.completions.create(
                         model=model,
                         messages=messages,
-                        temperature=temperature,
+                        temperature=temp
                     )
-                    
-                    return response.choices[0].message.content
-                
+                    return resp.choices[0].message.content
                 except openai.RateLimitError:
-                    # If it's a rate limit error, wait and retry
                     if attempt < max_retries:
-                        # Exponential backoff
-                        wait_time = (2 ** attempt) + 1
-                        logger.warning(f"Rate limit reached with model {model}. Waiting {wait_time}s before retry.")
-                        time.sleep(wait_time)
-                    else:
-                        # Try the fallback model if we haven't already
+                        wait = (2 ** attempt) + 1
+                        logger.warning(f"Rate limit on {model}, retrying in {wait}s")
+                        time.sleep(wait)
                         continue
-                
                 except Exception as e:
-                    # For any other error, log it and try the fallback model
-                    logger.error(f"Error using {model}: {str(e)}")
-                    # If we're on the last model, raise the error
-                    if model == models_to_try[-1]:
+                    logger.error(f"Error with {model}: {e}")
+                    if model == fallback:
                         raise
-        
-        # If we get here, all retries and fallbacks failed
-        raise Exception("Failed to generate content after all retries and fallbacks")
-
+        raise Exception("All retries/fallbacks failed")
 
 class GenerationManager:
     """Manager for handling the content generation process"""
-    
+
     def __init__(self):
         self.openai_service = OpenAIService()
-    
-    def start_generation_job(self, project_id, user, prompt_ids=None):
-        """Start a content generation job for a project"""
-        try:
-            project = Project.objects.get(id=project_id)
-            
-            # If specific prompt_ids are provided, only delete content for those prompts
-            if prompt_ids:
-                prompt_names = Prompt.objects.filter(id__in=prompt_ids).values_list('name', flat=True)
-                GeneratedContent.objects.filter(project=project, name__in=prompt_names).delete()
-                # Also filter prompts to only include selected ones
-                prompts = project.project_prompts.filter(id__in=prompt_ids).order_by('order')
-            else:
-                # If no specific prompts selected, delete all existing content
-                GeneratedContent.objects.filter(project=project).delete()
-                # Use all prompts
-                prompts = project.project_prompts.all().order_by('order')
-            
-            # Check if assets have content
-            assets_with_content = project.client_assets.filter(content__isnull=False).exclude(content='')
-            if not assets_with_content.exists():
-                raise ValueError("No assets with content found in this project")
-            
-            # Check if prompts exist
-            prompts = project.project_prompts.all().order_by('order')
-            if not prompts.exists():
-                raise ValueError("No prompts found in this project")
-            
-            # Create new generation job
-            job = ContentGenerationJob.objects.create(
-                project=project,
-                user=user,
-                status='in_progress',
-                prompts_total=prompts.count(),
-                prompts_completed=0
-            )
-            
-            return job
-        except Exception as e:
-            print(f"Error creating generation job: {str(e)}")
-            return None
-        
-    def process_generation_job(self, job_id):
-        """Process a generation job"""
-        try:
-            job = ContentGenerationJob.objects.get(id=job_id)
-            if not job:
-                print(f"Job with ID {job_id} not found")
-                return
-            
-            project = job.project
-            print(f"Processing generation job {job_id} for project {project.id}")
-            
-            # Get assets content
-            print("Getting asset content...")
-            assets = project.client_assets.filter(content__isnull=False).exclude(content='')
-            print(f"Found {assets.count()} assets with content")
-            
-            if assets.count() > 0:
-                print("Asset IDs with content:", list(assets.values_list('id', flat=True)))
-            
-            content_from_assets = "\n\n".join([asset.content for asset in assets if asset.content])
-            print(f"Total characters from asset content: {len(content_from_assets)}")
-            
-            # If content is too long, truncate it to a reasonable size
-            max_content_length = 24000  # Approximately 6000 tokens
-            if len(content_from_assets) > max_content_length:
-                content_from_assets = content_from_assets[:max_content_length] + "\n[Content truncated due to length...]"
-            
-            # Get prompts - if job has prompt_ids, use only those
-            if hasattr(job, 'prompt_ids') and job.prompt_ids:
-                prompts = project.project_prompts.filter(id__in=job.prompt_ids).order_by('order')
-            else:
-                prompts = project.project_prompts.all().order_by('order')
-            
-            # Get active AI config or use default
-            try:
-                ai_config = AIConfig.objects.filter(is_active=True).first()
-                if not ai_config:
-                    ai_config = AIConfig.objects.create(
-                        name="Default Config",
-                        model_name=settings.OPENAI_DEFAULT_MODEL,
-                        fallback_model=settings.OPENAI_FALLBACK_MODEL,
-                        temperature=0.7,
-                        max_tokens=4000,
-                        is_active=True
-                    )
-            except Exception as e:
-                print(f"Error getting AI config: {e}")
-                ai_config = None
-            
-            # Generate content for each prompt
-            for i, prompt in enumerate(prompts):
-                try:
-                    # Detect content type from prompt text
-                    content_type = PromptEnhancer.detect_content_type(prompt.prompt)
-                    print(f"Detected content type: {content_type} for prompt '{prompt.name}'")
-                    
-                    # Generate content with enhanced prompt
-                    generated_text = self.openai_service.generate_content(
-                        prompt_text=prompt.prompt,
-                        content_source=content_from_assets,
-                        content_type=content_type
-                    )
-                    
-                    # Save generated content
-                    GeneratedContent.objects.create(
-                        project=project,
-                        name=prompt.name,
-                        result=generated_text,
-                        order=i
-                    )
-                    
-                    # Update job progress
-                    job.prompts_completed += 1
-                    job.save(update_fields=['prompts_completed'])  
-                    # Use update_fields for more frequent updates
-                    print(f"Progress update: {job.prompts_completed} of {job.prompts_total} ({int((job.prompts_completed/job.prompts_total)*100)}%)")
-                    
-                    # Small delay to prevent rate limiting
-                    time.sleep(1)
-                    
-                except Exception as e:
-                    print(f"Error generating content for prompt {prompt.id}: {e}")
-                    # Continue to next prompt on error
-            
-            # Mark job as completed
-            job.status = 'completed'
-            job.completed_at = timezone.now()
-            job.save()
 
-            # Add a success message
-            from django.contrib import messages
+    def start_generation_job(self, project_id, user, prompt_ids=None):
+        project = Project.objects.get(id=project_id)
+
+        # Selectively delete or skip
+        if prompt_ids:
+            to_generate = project.project_prompts.filter(id__in=prompt_ids).order_by('order')
+            names = to_generate.values_list('name', flat=True)
+            GeneratedContent.objects.filter(project=project, name__in=names).delete()
+        else:
+            existing = GeneratedContent.objects.filter(project=project) \
+                              .values_list('name', flat=True)
+            to_generate = project.project_prompts.exclude(name__in=existing) \
+                               .order_by('order')
+
+        if not to_generate.exists():
+            raise ValueError("No new prompts to generate for this project")
+
+        # Ensure there is asset content
+        assets = project.client_assets.filter(content__isnull=False).exclude(content='')
+        if not assets.exists():
+            raise ValueError("No assets with content found in this project")
+
+        # Create the job for exactly these prompts
+        job = ContentGenerationJob.objects.create(
+            project=project,
+            user=user,
+            status='in_progress',
+            prompts_total=to_generate.count(),
+            prompts_completed=0
+        )
+        return job
+
+    def process_generation_job(self, job_id):
+        job = ContentGenerationJob.objects.get(id=job_id)
+        project = job.project
+
+        # Gather and truncate asset content
+        assets = project.client_assets.filter(content__isnull=False).exclude(content='')
+        content_src = "\n\n".join(a.content for a in assets)
+        if len(content_src) > 24000:
+            content_src = content_src[:24000] + "\n[Content truncated]"
+
+        # Only generate for prompts without existing content
+        existing = GeneratedContent.objects.filter(project=project) \
+                          .values_list('name', flat=True)
+        prompts = project.project_prompts.exclude(name__in=existing).order_by('order')
+
+        # Get or build AIConfig
+        ai_conf = AIConfig.objects.filter(is_active=True).first()
+        if not ai_conf:
+            ai_conf = AIConfig.objects.create(
+                name="Default Config",
+                model_name=settings.OPENAI_DEFAULT_MODEL,
+                fallback_model=settings.OPENAI_FALLBACK_MODEL,
+                temperature=0.7,
+                max_tokens=4000,
+                is_active=True
+            )
+
+        # Generate for each prompt
+        for idx, prompt in enumerate(prompts):
             try:
-                # Add message to the request context or session if available
-                from django.contrib.messages import constants as message_constants
-                from django.contrib.messages.storage.fallback import FallbackStorage
-                
-                print(f"Content generation completed successfully! Generated {job.prompts_completed} items.")
+                ctype = PromptEnhancer.detect_content_type(prompt.prompt)
+                text = self.openai_service.generate_content(
+                    prompt_text=prompt.prompt,
+                    content_source=content_src,
+                    content_type=ctype
+                )
+                GeneratedContent.objects.create(
+                    project=project,
+                    name=prompt.name,
+                    result=text,
+                    order=idx
+                )
+                job.prompts_completed += 1
+                job.save(update_fields=['prompts_completed'])
+                time.sleep(1)
             except Exception as e:
-                print(f"Could not add success message: {e}")
-                        
-        except Exception as e:
-            # Mark job as failed
-            if job:
-                job.status = 'failed'
-                job.error_message = str(e)
-                job.completed_at = timezone.now()
-                job.save()
-            print(f"Error processing generation job {job_id}: {e}")
-            raise
-        
+                logger.error(f"Failed on prompt {prompt.id}: {e}")
+                continue
+
+        job.status = 'completed'
+        job.completed_at = timezone.now()
+        job.save()
+        logger.info(f"Generation job {job_id} completed ({job.prompts_completed}/{job.prompts_total})")

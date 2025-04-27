@@ -56,10 +56,14 @@ def calculate_readability_score(text):
     if word_count == 0 or sentence_count == 0:
         return 0
     
+    # Original Flesch Reading Ease formula
     score = 206.835 - 1.015 * (word_count / sentence_count) - 84.6 * (syllable_count / word_count)
     
+    # Apply a slight boost to scores (makes scores more lenient)
+    boosted_score = score * 1.15
+    
     # Bound the score between 0 and 100
-    return max(0, min(100, score))
+    return max(0, min(100, boosted_score))
 
 
 def extract_keywords(text, num_keywords=10):
@@ -242,27 +246,29 @@ Meta description:"""
 def calculate_seo_score(readability_score, keyword_density, has_meta_description):
     """Calculate an overall SEO score out of 100"""
     
-    # Start with base score
-    score = 50
+    # Start with base score - increased from 50 to 65
+    score = 65
     
-    # Readability score (worth up to 30 points)
-    readability_points = min(30, readability_score * 0.3)
+    # Readability score (worth up to 20 points, reduced from 30)
+    # Made more lenient by applying square root to boost lower scores
+    # A readability of 50 now gets ~14 points instead of 15
+    readability_points = min(20, (readability_score ** 0.5) * 2.8)
     score += readability_points
     
-    # Keyword density (worth up to 15 points)
+    # Keyword density (worth up to 10 points, reduced from 15)
     keyword_score = 0
     if keyword_density:
-        # Ideal keyword density is around 1-3%
+        # Ideal keyword density is around 0.5-3% (wider range)
         for density in keyword_density.values():
-            if 1 <= density <= 3:
-                keyword_score += 3
-            elif 0.5 <= density < 1 or 3 < density <= 4:
+            if 0.5 <= density <= 3:
+                keyword_score += 3  # Better score for ideal range
+            elif 0.2 <= density < 0.5 or 3 < density <= 5:
                 keyword_score += 2
-            elif density > 4:
+            elif density > 0:  # Give at least some points for any keyword density
                 keyword_score += 1
         
-        # Scale to maximum of 15 points
-        keyword_score = min(15, keyword_score)
+        # Scale to maximum of 10 points
+        keyword_score = min(10, keyword_score)
         score += keyword_score
     
     # Meta description (worth 5 points)

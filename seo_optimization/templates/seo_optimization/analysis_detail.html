@@ -57,7 +57,31 @@
         
         <!-- Readability Score -->
         <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
-            <h3 class="text-lg font-semibold mb-2">Readability</h3>
+            <div class="flex justify-between items-start mb-2">
+                <h3 class="text-lg font-semibold">Flesch Reading Ease</h3>
+                <button type="button" id="readability-help" class="text-gray-500 hover:text-[#9810fa] flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span class="text-sm">What's this?</span>
+                </button>
+            </div>
+            
+            <!-- Readability help text (initially hidden) -->
+            <div id="readability-help-text" class="bg-white border border-gray-200 rounded-md p-4 mb-4 text-sm text-gray-600 hidden">
+                <p><strong>The Flesch Reading Ease Score</strong> measures how easy your text is to read based on sentence length and word complexity.</p>
+                <ul class="mt-2 pl-4 list-disc">
+                    <li>90-100: Very easy to read (5th grade level)</li>
+                    <li>80-90: Easy to read (6th grade level)</li>
+                    <li>70-80: Fairly easy to read (7th grade level)</li>
+                    <li>60-70: Standard difficulty (8-9th grade level)</li>
+                    <li>50-60: Fairly difficult (10-12th grade level)</li>
+                    <li>30-50: Difficult (College level)</li>
+                    <li>0-30: Very difficult (College graduate level)</li>
+                </ul>
+                <p class="mt-2">The higher the score, the easier your content is to read. Different types of content target different reading levels. For general audiences, aim for 60+.</p>
+            </div>
+            
             <div class="relative pt-1">
                 <div class="overflow-hidden h-20 flex justify-center items-center">
                     <div class="relative w-40 h-40">
@@ -71,15 +95,19 @@
                         </div>
                     </div>
                 </div>
-                <div class="text-center text-sm text-gray-500">
+                <div class="text-center">
                     {% if analysis.readability_score < 30 %}
                         <span class="text-red-500 font-medium">Very Difficult</span>
+                        <p class="text-sm text-gray-500 mt-1">Graduate-level text. Consider simplifying.</p>
                     {% elif analysis.readability_score < 50 %}
                         <span class="text-orange-500 font-medium">Difficult</span>
+                        <p class="text-sm text-gray-500 mt-1">College-level text. Try shorter sentences.</p>
                     {% elif analysis.readability_score < 70 %}
                         <span class="text-yellow-500 font-medium">Standard</span>
+                        <p class="text-sm text-gray-500 mt-1">High school level. Good for professional content.</p>
                     {% else %}
                         <span class="text-green-500 font-medium">Easy to Read</span>
+                        <p class="text-sm text-gray-500 mt-1">Perfect for general audiences.</p>
                     {% endif %}
                 </div>
             </div>
@@ -269,6 +297,26 @@
             });
         }
         
+        // Toggle readability help text
+        const readabilityHelpBtn = document.getElementById('readability-help');
+        const readabilityHelpText = document.getElementById('readability-help-text');
+        if (readabilityHelpBtn && readabilityHelpText) {
+            readabilityHelpBtn.addEventListener('click', function() {
+                readabilityHelpText.classList.toggle('hidden');
+            });
+        }
+
+         // Close help text when clicking outside
+        document.addEventListener('click', function(event) {
+            const target = event.target;
+            if (!target.closest('#readability-help') && !target.closest('#readability-help-text')) {
+                const helpText = document.getElementById('readability-help-text');
+                if (helpText && !helpText.classList.contains('hidden')) {
+                    helpText.classList.add('hidden');
+                }
+            }
+        });
+        
         // Reanalyze content
         const reanalyzeBtn = document.getElementById('reanalyze-btn');
         if(reanalyzeBtn) {
@@ -310,6 +358,7 @@
                 });
             });
         }
-    });
+        });
+        
 </script>
 {% endblock %}
