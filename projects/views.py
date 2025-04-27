@@ -87,6 +87,7 @@ def project_create(request):
     
     return render(request, 'projects/project_form.html', {'form': form, 'action': 'Create'})
 
+
 @login_required
 @subscription_required
 def project_detail(request, project_id):
@@ -121,7 +122,9 @@ def project_detail(request, project_id):
         assets = project.assets.all().order_by('-updated_at')
         context['assets'] = assets
     elif tab == 'prompts':
-        prompts = project.project_prompts.all().order_by('order')
+        # HERE IS THE KEY CHANGE - use direct query instead of related_name
+        from prompts.models import Prompt
+        prompts = Prompt.objects.filter(project=project).order_by('order')
         context['prompts'] = prompts
     elif tab == 'generate':
         generated_contents = project.generated_contents.all().order_by('order')
