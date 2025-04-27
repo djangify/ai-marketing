@@ -22,7 +22,7 @@
         </p>
         
         <div class="flex flex-col sm:flex-row gap-3 w-full pt-4">
-            <a href="{% url 'prompt_generator:generator_detail' prompt_id=prompt.id %}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 w-full sm:w-auto">
+            <a href="{% url 'prompt_generator:prompt_detail' prompt_id=prompt.id %}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 w-full sm:w-auto">
                 Cancel
             </a>
             

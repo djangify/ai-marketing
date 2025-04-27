@@ -67,7 +67,7 @@
             <ul class="space-y-2">
                 {% for prompt in recent_prompts %}
                     <li class="p-4 bg-white border border-gray-200 rounded-lg hover:border-main hover:shadow-sm transition-all duration-300">
-                        <a href="{% url 'prompt_generator:generator_detail' prompt_id=prompt.id %}" class="block">
+                        <a href="{% url 'prompt_generator:prompt_detail' prompt_id=prompt.id %}" class="block">
                             <div class="flex justify-between items-start">
                                 <div>
                                     <h4 class="font-medium text-main">{{ prompt.name }}</h4>
