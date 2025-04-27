@@ -10,6 +10,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('profile/', views.profile_view, name='profile'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
-    path('resources/', views.member_resources, name='resources'),
+    path('resources/', views.member_resources, name='member_resources'),
+    path('resources/<int:resource_id>/download/', views.download_resource, name='download_resource'),
     
 ]

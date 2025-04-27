@@ -1,5 +1,8 @@
 # accounts/views.py
-from django.shortcuts import render, redirect
+import os
+from django.http import HttpResponse
+from django.utils.text import slugify
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -9,8 +12,9 @@ from .models import MemberResource
 from prompts.models import Prompt
 from assets.models import Asset
 from prompts.utils.token_helper import formatTokens
-from prompts.utils.token_tracker import get_prompt_tokens_used, get_asset_tokens_used, ensure_token_usage_exists
-
+from prompts.utils.token_tracker import get_prompt_tokens_used, ensure_token_usage_exists
+import mimetypes
+from content_generation.utils import generate_docx
 
 def signup_view(request):
     if request.method == 'POST':
@@ -24,6 +28,7 @@ def signup_view(request):
         form = SignUpForm()
     
     return render(request, 'accounts/signup.html', {'form': form})
+
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -46,6 +51,7 @@ def login_view(request):
         form = LoginForm()
     
     return render(request, 'accounts/login.html', {'form': form})
+
 
 def logout_view(request):
     logout(request)
@@ -131,3 +137,45 @@ def member_resources(request):
     }
     
     return render(request, 'accounts/resources.html', context)
+
+
+@login_required
+def download_resource(request, resource_id):
+    """Download a single member resource with proper headers"""
+    resource = get_object_or_404(MemberResource, id=resource_id, is_active=True)
+    
+    try:
+        # Get the file path
+        file_path = os.path.join(settings.MEDIA_ROOT, str(resource.file))
+        
+        if not os.path.exists(file_path):
+            messages.error(request, f"Resource file not found: {resource.title}")
+            return redirect('accounts:member_resources')
+        
+        # Detect content type
+        content_type, encoding = mimetypes.guess_type(file_path)
+        if not content_type:
+            content_type = 'application/octet-stream'
+        
+        # Create safe filename
+        filename = os.path.basename(resource.file.name)
+        safe_filename = slugify(os.path.splitext(filename)[0]) + os.path.splitext(filename)[1]
+        
+        # Read the file
+        with open(file_path, 'rb') as f:
+            file_data = f.read()
+        
+        # Return as downloadable file
+        response = HttpResponse(file_data, content_type=content_type)
+        response['Content-Disposition'] = f'attachment; filename="{safe_filename}"'
+        return response
+        
+    except Exception as e:
+        # Log the error
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error downloading resource: {str(e)}")
+        
+        messages.error(request, f"Error downloading resource: {str(e)}")
+        return redirect('accounts:member_resources')
+    
