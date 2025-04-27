@@ -7,6 +7,7 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 import json
 import os
+from django.urls import reverse
 import uuid
 from .models import Asset, AssetProcessingJob
 from projects.models import Project
@@ -20,6 +21,7 @@ from subscriptions.utils import subscription_required
 def asset_list(request, project_id):
     project = get_object_or_404(Project, id=project_id, user=request.user)
     assets = project.client_assets.all().order_by('-updated_at')
+    
     
     # Calculate total token count for usage stats
     total_token_count = sum(asset.token_count or 0 for asset in assets)
@@ -241,43 +243,38 @@ def sanitize_content(content):
     
     return content
 
+
 @login_required
-@csrf_exempt
-def asset_delete(request, project_id):
-    if request.method == 'DELETE' or (request.method == 'POST' and request.POST.get('_method') == 'DELETE'):
-        asset_id = request.GET.get('asset_id')
-        if not asset_id:
-            return JsonResponse({'success': False, 'error': 'Asset ID is required'}, status=400)
-        
-        project = get_object_or_404(Project, id=project_id, user=request.user)
+def asset_delete(request, project_id, asset_id):
+    """Delete an asset (with confirmation page)"""
+    project = get_object_or_404(Project, id=project_id, user=request.user)
+    asset = get_object_or_404(Asset, id=asset_id, project=project)
+
+    if request.method == 'POST':
         try:
-            asset = get_object_or_404(Asset, id=asset_id, project=project)
-            
             # Delete the file from storage
             file_path = os.path.join(settings.MEDIA_ROOT, asset.file_name)
             if os.path.exists(file_path):
                 os.remove(file_path)
-            
-            # Delete the asset record (cascade will delete the processing job)
+
+            # Delete the asset record
             asset.delete()
-            
-            # Add success message
+
             messages.success(request, "Asset deleted successfully")
-            
-            # For AJAX requests, still return JSON response
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'success': True, 'message': 'Asset deleted successfully'})
-            
-            # For regular requests, redirect to project detail page
-            return redirect('projects:project_detail', project_id=project.id, tab='upload')
-        
+            # Redirect back to project detail with ?tab=upload
+            url = reverse('projects:project_detail', kwargs={'project_id': project.id})
+            return redirect(f"{url}?tab=upload")
+
         except Exception as e:
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'success': False, 'error': str(e)}, status=500)
             messages.error(request, f"Error deleting asset: {str(e)}")
-            return redirect('projects:project_detail', project_id=project.id, tab='upload')
-    
-    return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
+            url = reverse('projects:project_detail', kwargs={'project_id': project.id})
+            return redirect(f"{url}?tab=upload")
+
+    # GET request – show confirmation page
+    return render(request, 'assets/asset_confirm_delete.html', {
+        'project': project,
+        'asset': asset,
+    })
 
 
 @login_required
@@ -349,7 +346,8 @@ def determine_file_type(filename, mime_type):
         elif ext == '.pdf':
             return 'pdf'
         return 'other'
-    
+
+
 @login_required
 @subscription_required
 def all_assets(request):
