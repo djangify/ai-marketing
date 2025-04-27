@@ -32,6 +32,21 @@
                     Subscribe now to maintain uninterrupted access.
                 </p>
                 
+                <!-- FOMO messaging based on days remaining -->
+                {% if trial_days_remaining == 2 %}
+                <p class="text-xs mb-2 text-orange-700 font-medium">
+                    <strong>Don't lose your saved prompts and progress!</strong> Subscribe now to keep unlimited access and continue where you left off.
+                </p>
+                {% elif trial_days_remaining == 1 %}
+                <p class="text-xs mb-2 text-orange-700 font-medium">
+                    <strong>Your free trial ends tomorrow!</strong> Don't risk losing access to your projects and saved prompts. Upgrade now for uninterrupted access.
+                </p>
+                {% elif trial_days_remaining == 0 %}
+                <p class="text-xs mb-2 text-red-700 font-medium">
+                     Your free trial ends today. Subscribe now to keep all your saved prompts and continue using the platform without interruption.
+                </p>
+                {% endif %}
+                
                 <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
                     {% if trial_days_remaining == 3 %}
                         <div class="bg-blue-500 h-2 rounded-full" style="width: 100%;"></div>
