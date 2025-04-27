@@ -28,6 +28,7 @@ urlpatterns = [
     path('subscriptions/', include('subscriptions.urls', namespace='subscriptions')),
     path('seo/', include('seo_optimization.urls', namespace='seo_optimization')),
     path('api/', include(router.urls)),
+    path('prompt-generator/', include('prompt_generator.urls', namespace='prompt_generator')),
 ]
 
 if settings.DEBUG:

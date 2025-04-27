@@ -1,0 +1,97 @@
+<!-- prompt_generator/templates/prompt_generator/generator.html -->
+{% extends 'dashboard_layout.html' %}
+{% load static %}
+
+{% block title %}Prompt Generator - AI Marketing Platform{% endblock %}
+
+{% block dashboard_content %}
+<div class="max-w-screen-xl mx-auto p-4 sm:p-6 lg:p-8 bg-white space-y-8 rounded-xl shadow-sm mt-16">
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+        <div>
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">Prompt Generator</h1>
+            <p class="text-gray-600">Generate professional marketing prompts with just a few clicks.</p>
+        </div>
+        <a href="{% url 'prompt_generator:generator_categories' %}" class="btn-main mt-4 sm:mt-0 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 text-white shadow hover:bg-primary/90 h-9 px-4 py-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Generate New Prompt
+        </a>
+    </div>
+    
+    <!-- Featured Templates -->
+    <div class="mt-8">
+        <h2 class="text-xl font-bold mb-4">Featured Templates</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for template in featured_templates %}
+                <a href="{% url 'prompt_generator:generate_prompt' template_id=template.id %}" class="block bg-white border border-gray-200 rounded-lg shadow-sm p-6 hover:border-main hover:shadow-md transition-all duration-300">
+                    <h3 class="text-lg font-semibold text-main mb-2">{{ template.name }}</h3>
+                    <p class="text-gray-600 text-sm">{{ template.description }}</p>
+                    <div class="mt-4 text-sm text-gray-500">Category: {{ template.category.name }}</div>
+                </a>
+            {% empty %}
+                <div class="col-span-full text-center py-8">
+                    <p class="text-gray-500">No featured templates available.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Categories -->
+    <div class="mt-8">
+        <h2 class="text-xl font-bold mb-4">Browse by Category</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {% for category in categories %}
+                <a href="{% url 'prompt_generator:generator_category' category_id=category.id %}" class="block text-center py-6 px-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:border-main hover:shadow-md transition-all duration-300">
+                    {% if category.icon %}
+                        <i class="{{ category.icon }} text-3xl text-main mb-3"></i>
+                    {% else %}
+                        <i class="fas fa-file-alt text-3xl text-main mb-3"></i>
+                    {% endif %}
+                    <h3 class="text-lg font-semibold">{{ category.name }}</h3>
+                    <p class="text-gray-600 text-sm mt-2">{{ category.description }}</p>
+                </a>
+            {% empty %}
+                <div class="col-span-full text-center py-8">
+                    <p class="text-gray-500">No categories available.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Recent Prompts -->
+    <div class="mt-8">
+        <h2 class="text-xl font-bold mb-4">Your Recent Prompts</h2>
+        {% if recent_prompts %}
+            <ul class="space-y-2">
+                {% for prompt in recent_prompts %}
+                    <li class="p-4 bg-white border border-gray-200 rounded-lg hover:border-main hover:shadow-sm transition-all duration-300">
+                        <a href="{% url 'prompt_generator:generator_detail' prompt_id=prompt.id %}" class="block">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="font-medium text-main">{{ prompt.name }}</h4>
+                                    <p class="text-sm text-gray-600 mt-1 line-clamp-2">{{ prompt.prompt_text|truncatechars:100 }}</p>
+                                </div>
+                                <div class="text-sm text-gray-500">
+                                    {{ prompt.created_at|date:"M d, Y" }}
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="mt-4 text-right">
+                <a href="{% url 'prompt_generator:generator_templates' %}" class="text-main hover:underline">View All Prompts</a>
+            </div>
+        {% else %}
+            <div class="text-center py-8 bg-gray-50 rounded-lg">
+                <p class="text-gray-500">You haven't generated any prompts yet.</p>
+                <p class="mt-2 text-gray-600">
+                    Start by selecting a template from the featured templates or browse by category.
+                </p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

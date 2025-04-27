@@ -1,0 +1,90 @@
+<!-- prompt_generator/templates/prompt_generator/generator_prompt.html -->
+{% extends 'dashboard_layout.html' %}
+{% load static %}
+{% load generator_filters %}
+
+{% block title %}Generate Prompt - {{ template.name }} - AI Marketing Platform{% endblock %}
+
+{% block dashboard_content %}
+<div class="max-w-screen-xl mx-auto p-4 sm:p-6 lg:p-8 bg-white space-y-8 rounded-xl shadow-sm mt-16">
+    <!-- Page Header -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">Generate {{ template.name }}</h1>
+            <p class="text-gray-600 mt-2">{{ template.description }}</p>
+        </div>
+        <a href="{% url 'prompt_generator:generator_category' category_id=template.category.id %}" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-secondary/10 text-secondary font-semibold hover:bg-secondary/20 h-9 px-4 py-2">
+            Back to Templates
+        </a>
+    </div>
+    
+    <!-- Generate Form -->
+    <div class="bg-gray-50 rounded-xl p-6 shadow-sm">
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            <input type="hidden" name="template" value="{{ template.id }}">
+            
+            {% for param in parameters %}
+                <div class="space-y-2">
+                    <label for="id_{{ param.name }}" class="block text-sm font-medium text-gray-700">
+                        {{ param.display_name }}
+                        {% if param.is_required %}<span class="text-red-500">*</span>{% endif %}
+                    </label>
+                    
+                    {% if param.description %}
+                        <p class="text-sm text-gray-500">{{ param.description }}</p>
+                    {% endif %}
+                    
+                    {% if param.parameter_type == 'text' %}
+                        <input type="text" id="id_{{ param.name }}" name="{{ param.name }}" value="{{ param.default_value }}" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-main focus:border-main"
+                               {% if param.is_required %}required{% endif %}>
+                               
+                    {% elif param.parameter_type == 'select' %}
+                        <select id="id_{{ param.name }}" name="{{ param.name }}" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-main focus:border-main"
+                                {% if param.is_required %}required{% endif %}>
+                            {% for option in param.options|split_comma %}
+                                <option value="{{ option|trim }}" {% if param.default_value == option|trim %}selected{% endif %}>
+                                    {{ option|trim }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        
+                    {% elif param.parameter_type == 'radio' %}
+                        <div class="space-y-4">
+                            {% for option in param.options|split_comma %}
+                                <label class="flex items-center py-1">
+                                    <input type="radio" name="{{ param.name }}" value="{{ option|trim }}" 
+                                           class="form-radio text-main h-4 w-4" 
+                                           {% if param.default_value == option|trim %}checked{% endif %}
+                                           {% if param.is_required %}required{% endif %}>
+                                    <span class="ml-3">{{ option|trim }}</span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                        
+                    {% elif param.parameter_type == 'checkbox' %}
+                        <div class="space-y-3">
+                            {% for option in param.options|split_comma %}
+                                <label class="flex items-center py-1">
+                                    <input type="checkbox" name="{{ param.name }}_{{ forloop.counter0 }}" value="{{ option|trim }}" 
+                                           class="form-checkbox text-main h-4 w-4" 
+                                           {% if param.default_value == option|trim or param.default_value == 'true' %}checked{% endif %}>
+                                    <span class="ml-3">{{ option|trim }}</span>
+                                </label>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            <div class="pt-4 flex justify-end">
+                <button type="submit" class="btn-main inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2">
+                    Generate Prompt
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
