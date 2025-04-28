@@ -15,6 +15,7 @@ class GeneratorCategoryAdmin(admin.ModelAdmin):
 @admin.register(GeneratorTemplate)
 class GeneratorTemplateAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'is_featured', 'is_active', 'created_at')
+    list_editable = ('is_featured', 'is_active')  # Add this line
     list_filter = ('category', 'is_featured', 'is_active')
     search_fields = ('name', 'description', 'template_text')
     inlines = [GeneratorParameterInline]
