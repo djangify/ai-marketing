@@ -95,6 +95,42 @@
      <!-- Flowbite CSS and JS -->
      <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
      <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+     <!-- dark and light mode  -->
+     <script>
+      const themeToggleBtn = document.getElementById('theme-toggle');
+      const darkIcon = document.getElementById('theme-toggle-dark-icon');
+      const lightIcon = document.getElementById('theme-toggle-light-icon');
+    
+      // On page load
+      if (localStorage.getItem('color-theme') === 'dark' || 
+          (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+        darkIcon.classList.remove('hidden');
+      } else {
+        document.documentElement.classList.remove('dark');
+        lightIcon.classList.remove('hidden');
+      }
+    
+      themeToggleBtn.addEventListener('click', function () {
+        darkIcon.classList.toggle('hidden');
+        lightIcon.classList.toggle('hidden');
+    
+        // Add a quick rotation effect
+        darkIcon.classList.toggle('rotate-180');
+        lightIcon.classList.toggle('rotate-180');
+    
+        // Toggle the theme and save
+        if (document.documentElement.classList.contains('dark')) {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('color-theme', 'light');
+        } else {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('color-theme', 'dark');
+        }
+      });
+    </script>
+    
+    
      {% block extra_js %}{% endblock %}
   </body>
 </html>
