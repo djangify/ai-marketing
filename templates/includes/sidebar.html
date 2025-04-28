@@ -10,76 +10,76 @@
 
     <div class="space-y4 overflow-hidden pt-10 mb-auto">
       <a href="{% url 'accounts:dashboard' %}" 
-         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-lg font-medium py-2 px-4 rounded-lg {% if request.path == '/dashboard/' %}bg-gray-200 text-[#9810fa]{% endif %}">
+         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if request.path == '/dashboard/' %}bg-gray-200 text-[#9810fa]{% endif %}">
         <span class="mr-3">
-          <i class="fas fa-home h-[22px] w-[22px]"></i>
+          <i class="fas fa-home h-[18px] w-[18px]"></i>
         </span>
         <span>Dashboard</span>
       </a>
       
       {% if project and project.id %}
         <a href="{% url 'projects:project_detail' project_id=project.id %}?tab=upload" 
-          class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-lg font-medium py-2 px-4 rounded-lg {% if request.resolver_match.url_name == 'project_detail' and request.GET.tab == 'upload' %}bg-gray-200 text-[#9810fa]{% endif %}">
+          class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if request.resolver_match.url_name == 'project_detail' and request.GET.tab == 'upload' %}bg-gray-200 text-[#9810fa]{% endif %}">
           <span class="mr-3">
-            <i class="fas fa-file-upload h-[22px] w-[22px]"></i>
+            <i class="fas fa-file-upload h-[18px] w-[18px]"></i>
           </span>
           <span>Project Assets</span>
         </a>
       {% else %}
         <a href="{% url 'assets:all_assets' %}" 
-          class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-lg font-medium py-2 px-4 rounded-lg {% if request.resolver_match.url_name == 'all_assets' %}bg-gray-200 text-[#9810fa]{% endif %}">
+          class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if request.resolver_match.url_name == 'all_assets' %}bg-gray-200 text-[#9810fa]{% endif %}">
           <span class="mr-3">
-            <i class="fas fa-file-upload h-[22px] w-[22px]"></i>
+            <i class="fas fa-file-upload h-[18px] w-[18px]"></i>
           </span>
           <span>Project Assets</span>
         </a>
       {% endif %}
       
       <a href="{% url 'projects:project_list' %}" 
-         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-lg font-medium py-2 px-4 rounded-lg {% if '/projects/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}">
+         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if '/projects/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}">
         <span class="mr-3">
-          <i class="fas fa-project-diagram h-[22px] w-[22px]"></i>
+          <i class="fas fa-project-diagram h-[18px] w-[18px]"></i>
         </span>
         <span>Projects</span>
       </a>
       
       <a href="{% url 'content_templates:template_list' %}" 
-         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-lg font-medium py-2 px-4 rounded-lg {% if '/templates/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}">
+         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if '/templates/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}">
         <span class="mr-3">
-          <i class="fas fa-file-alt h-[22px] w-[22px]"></i>
+          <i class="fas fa-file-alt h-[18px] w-[18px]"></i>
         </span>
         <span>Templates</span>
       </a>
 
       <a href="{% url 'prompt_generator:generator' %}" 
-         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-lg font-medium py-2 px-4 rounded-lg {% if '/generator/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}">
+         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if '/generator/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}">
         <span class="mr-3">
-          <i class="fa-solid fa-folder-plus h-[22px] w-[22px]"></i>
+          <i class="fa-solid fa-folder-plus h-[18px] w-[18px]"></i>
           
         </span>
         <span>Generator</span>
       </a>
 
       <a href="{% url 'seo_optimization:keyword_tracking' %}" 
-         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-lg font-medium py-2 px-4 rounded-lg {% if '/seo/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}">
+         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if '/seo/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}">
         <span class="mr-3">
-          <i class="fas fa-chart-line h-[22px] w-[22px]"></i>
+          <i class="fas fa-chart-line h-[18px] w-[18px]"></i>
         </span>
         <span>SEO</span>
       </a>
 
       <a href="{% url 'accounts:member_resources' %}" 
-         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-lg font-medium py-2 px-4 rounded-lg {% if '/member_resources/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}">
+         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if '/member_resources/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}">
         <span class="mr-3">
-          <i class="fa-solid fa-book-open-reader h-[22px] w-[22px]"></i>
+          <i class="fa-solid fa-book-open-reader h-[18px] w-[18px]"></i>
         </span>
         <span>Resources</span>
       </a>
       
       <a href="{% url 'accounts:profile' %}" 
-         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-lg font-medium py-2 px-4 rounded-lg {% if request.path == '/accounts/profile/' %}bg-gray-200 text-[#9810fa]{% endif %}">
+         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if request.path == '/accounts/profile/' %}bg-gray-200 text-[#9810fa]{% endif %}">
         <span class="mr-3">
-          <i class="fas fa-cog h-[22px] w-[22px]"></i>
+          <i class="fas fa-cog h-[18px] w-[18px]"></i>
         </span>
         <span>Settings</span>
       </a>

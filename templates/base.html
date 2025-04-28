@@ -69,7 +69,7 @@
 </script>
     {% block extra_meta %}{% endblock %}
   </head>
-  <body>
+  <body class="flex flex-col min-h-screen bg-white dark:bg-gray-900 transition-all duration-300"><body class="flex flex-col min-h-screen">
    
     {% include 'includes/messages.html' %} 
     
@@ -83,12 +83,12 @@
       {% include 'includes/navbar.html' %}
     {% endif %}
     
-    <main class="bg-white dark:bg-gray-900 min-h-screen">
+    <main class="flex-grow bg-white dark:bg-gray-900">
       {% block content %}{% endblock %}
     </main>
     
     <!-- Footer -->
-    <footer role="contentinfo">{% include 'includes/footer.html' %}</footer>
+    <footer role="contentinfo" class="mt-auto">{% include 'includes/footer.html' %}</footer>
 
     <!-- Scripts -->
   
