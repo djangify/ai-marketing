@@ -111,3 +111,4 @@ passenger_wsgi.py
 # NLTK data directory
 /nltk_data/
 **/settings/local.py
+LOCAL/

@@ -6,13 +6,12 @@ from celery.schedules import crontab
 
 # Initialize environment variables
 env = environ.Env()
-environ.Env.read_env() 
-
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+# Read the .env file
+env.read_env(os.path.join(BASE_DIR, '.env'))
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY", default="your-secret-key-here-change-in-production")
+# SECRET_KEY
+SECRET_KEY = env('SECRET_KEY')
 
 # Application definition
 INSTALLED_APPS = [
@@ -65,9 +64,6 @@ MAX_TOKENS_ASSETS = 100000
 MAX_TOKENS_PROMPT = 20000
 
 ROOT_URLCONF = 'ai_marketing.urls'
-
-# Database configuration will be defined in local.py and production.py
-# No database config in base.py to avoid environment variable requirements
 
 TEMPLATES = [
     {
@@ -163,4 +159,4 @@ CACHES = {
 }
 
 # Default site URL (will be overridden in local/production)
-SITE_URL = env('SITE_URL', default='http://localhost:8000')
+SITE_URL = env('SITE_URL', default='https://aimarketingplatform.app')

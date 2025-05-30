@@ -4,18 +4,7 @@ import ssl
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [
-    'aimarketingplatform.app',
-    'www.aimarketingplatform.app',
-    env('SERVER_IP', default=''),  # Server IP from environment
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://aimarketingplatform.app",
-    "https://www.aimarketingplatform.app",
-]
-
-# Database - PostgreSQL for production
+# Production database configuration
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -31,6 +20,19 @@ DATABASES = {
         },
     },
 }
+
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[
+    'aimarketingplatform.app',
+    'www.aimarketingplatform.app',
+])
+
+CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[
+    "https://aimarketingplatform.app",
+    "https://www.aimarketingplatform.app",
+])
+
+# Database - PostgreSQL for production - in base.py file
+
 
 # Redis and Celery for production
 REDIS_URL = env('REDIS_URL')

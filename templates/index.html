@@ -5,9 +5,34 @@
 {% block title %}AI Marketing Platform - Save Time with AI-Generated Content{% endblock %}
 
 {% block content %}
-{% include "includes/hero.html" %}
+    <!-- Start block HERO section-->
+    <section class="mt-16 bg-gray-50 dark:bg-gray-900">
+    <div class="grid max-w-screen-xl px-4 pt-20 pb-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12 lg:pt-28">
+        <div class="mr-auto place-self-center lg:col-span-7">
+            <h1 class="max-w-2xl mb-4 text-4xl font-semibold leading-none tracking-tight md:text-5xl xl:text-6xl dark:text-white">AI Marketing Assistant</h1>
+            <p class="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">
+                Our AI-powered marketing assistant helps you turn raw ideas, reviews, transcripts, and more into structured content for social media, blogs, emails, onboarding, and beyond. </p> 
+            <p class="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">Say goodbye to writers block or hours spent editing. Just upload your text, audio, or video and let our AI handle the rest. </p>
+            <div class="space-y-4 sm:flex sm:space-y-0 sm:space-x-4">
+                <div class="w-full flex justify-center mt-4">
+                <a href="{% url 'accounts:signup' %}" class="flex items-center justify-center gap-2 bg-purple-700 hover:bg-purple-800 text-white font-medium py-3 px-6 rounded-lg shadow-md transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50">
+                    <span class="text-base sm:text-lg">Get Started</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+                    </svg>
+                </a>
+                </div>
+                
+            </div>
+        </div>
+        <div class="hidden lg:mt-0 lg:col-span-5 lg:flex">
+            <img src="{% static 'images/aimarketing-home-image.webp' %}" alt="AI marketing hero image">
+        </div>                
+    </div>
+    </section>
+    <!-- END block HERO section-->
 
-    <!-- Start block -->
+    <!-- Start block top content -->
     <section id="about" class="bg-white dark:bg-gray-900">
         <div class="items-center max-w-screen-xl px-4 py-8 mx-auto lg:grid lg:grid-cols-4 lg:gap-16 xl:gap-24 lg:py-24 lg:px-6">
             <div class="col-span-2 mb-8">
@@ -59,9 +84,9 @@
             </div>
         </div>
       </section>
-    <!-- End block -->
+    <!-- End block top content-->
      
-    <!-- Start block -->
+    <!-- Start block free trial banner -->
     <section class="bg-gray-50 dark:bg-gray-800">
         <div class="max-w-screen-xl px-4 py-8 mx-auto lg:py-16 lg:px-6">
             <div class="max-w-screen-sm mx-auto text-center">
@@ -71,7 +96,7 @@
                 <a href="{% url 'accounts:signup' %}" class="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800">Start Your Free 3-day trial</a>
             </div>
         </div>
-      <!-- End block -->
+      <!-- End block free trial -->
    
     {% include "includes/pricing.html" %}
     {% include "includes/faq.html" %}
