@@ -14,8 +14,23 @@ CSRF_TRUSTED_ORIGINS = [
     "https://aimarketingplatform.app",
     "https://www.aimarketingplatform.app",
 ]
-# Database in base.py is already set up to use environment variables
 
+# Database - PostgreSQL for production
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": env("DATABASE_NAME"),
+        "USER": env("DATABASE_USER"),
+        "PASSWORD": env("DATABASE_PASSWORD"),
+        "HOST": env("DATABASE_HOST", default="localhost"),
+        "PORT": env("DATABASE_PORT", default="5432"),
+        "CONN_MAX_AGE": 600,
+        "OPTIONS": {
+            "connect_timeout": 10,
+            "sslmode": "prefer",  # Use SSL if available
+        },
+    },
+}
 
 # Redis and Celery for production
 REDIS_URL = env('REDIS_URL')

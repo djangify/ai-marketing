@@ -66,22 +66,8 @@ MAX_TOKENS_PROMPT = 20000
 
 ROOT_URLCONF = 'ai_marketing.urls'
 
-# Database - PostgreSQL for production.py
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": env("DATABASE_NAME"),
-        "USER": env("DATABASE_USER"),
-        "PASSWORD": env("DATABASE_PASSWORD"),
-        "HOST": env("DATABASE_HOST", default="localhost"),
-        "PORT": env("DATABASE_PORT", default="5432"),
-        "CONN_MAX_AGE": 600,
-        "OPTIONS": {
-            "connect_timeout": 10,
-            "sslmode": "prefer",  # Use SSL if available
-        },
-    },
-}
+# Database configuration will be defined in local.py and production.py
+# No database config in base.py to avoid environment variable requirements
 
 TEMPLATES = [
     {

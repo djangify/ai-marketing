@@ -3,6 +3,7 @@ Django
 python-dotenv
 stripe
 Pillow
+django-celery-results
 django-crispy-forms
 djangorestframework
 django-cors-headers

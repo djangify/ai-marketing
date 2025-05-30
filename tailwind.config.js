@@ -5,7 +5,6 @@ export default {
     "./templates/**/*.html",
     "./*/templates/**/*.html",
     "./static/**/*.js",
-    "./node_modules/flowbite/**/*.js",
   ],
   theme: {
     extend: {
@@ -19,7 +18,4 @@ export default {
       },
     },
   },
-  plugins: [
-    require('flowbite/plugin'),
-  ],
 };
