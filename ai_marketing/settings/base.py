@@ -2,32 +2,23 @@ from pathlib import Path
 import os
 from django.urls import reverse_lazy
 import environ
-import pymysql 
+from celery.schedules import crontab
+import pymysql
 
-
+# MySQL setup (matching original remote version)
 pymysql.install_as_MySQLdb()
+
 # Initialize environment variables
 env = environ.Env()
 environ.Env.read_env() 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = os.environ.get("SECRET_KEY")
-
-DEBUG = True
-
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'localhost:8000']
-
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost",
-    "http://127.0.0.1",
-    "http://localhost:8000",
-]
-
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = env("SECRET_KEY", default="your-secret-key-here-change-in-production")
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -36,10 +27,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'subscriptions.apps.SubscriptionsConfig',
-# Third-party apps
+    # Third-party apps
     'widget_tweaks',
+    'django_celery_results',
     'tinymce',
-# Local apps
+    
+    # Local apps
     'accounts',
     'projects',
     'content_templates',
@@ -52,7 +45,6 @@ INSTALLED_APPS = [
     'content_generation',
     'seo_optimization',
     'prompt_generator',
-   
 ]
 
 MIDDLEWARE = [
@@ -76,8 +68,27 @@ ADMIN_URL = 'admin/'
 MAX_TOKENS_ASSETS = 100000
 MAX_TOKENS_PROMPT = 20000
 
-
 ROOT_URLCONF = 'ai_marketing.urls'
+
+# Database - MySQL/MariaDB (original configuration)
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": env("DATABASE_NAME"),
+        "USER": env("DATABASE_USER"),
+        "PASSWORD": env("DATABASE_PASSWORD"),
+        "HOST": env("DATABASE_HOST", default="127.0.0.1"),
+        "PORT": env("DATABASE_PORT", default="3306"),
+        "CONN_MAX_AGE": 600,
+        "OPTIONS": {
+            "charset": "utf8mb4",
+            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+            "use_unicode": True,
+            "connect_timeout": 10,
+            "autocommit": True,
+        },
+    },
+}
 
 TEMPLATES = [
     {
@@ -98,30 +109,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ai_marketing.wsgi.application'
 
-
-# Database
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": env("DATABASE_NAME"),
-        "USER": env("DATABASE_USER"),
-        "PASSWORD": env("DATABASE_PASSWORD"),
-        "HOST": env("DATABASE_HOST", default="127.0.0.1"),
-        "PORT": env("DATABASE_PORT", default="3306"),
-        "CONN_MAX_AGE": 600,
-        "OPTIONS": {
-            "charset": "utf8mb4",
-            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
-            "use_unicode": True,
-            "connect_timeout": 10,
-            "autocommit": True,
-        },
-    },
-}
-
 # Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -138,37 +126,33 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Internationalization
-# https://docs.djangoproject.com/en/5.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-
 # Media and Static files (CSS, JavaScript, Images)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Configure default storage for file uploads
-DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Stripe settings
-# Stripe settings
 STRIPE_PUBLISHABLE_KEY = env('STRIPE_PUBLISHABLE_KEY', default='pk_test_placeholder')
 STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY', default='sk_test_placeholder')
 STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET', default='whsec_placeholder')
-STRIPE_PRICE_ID_MONTHLY = env('STRIPE_PRICE_ID_MONTHLY', default='price_1RBA24BSytWSX0dbNigRddaw')
-STRIPE_PRICE_ID_QUARTERLY = env('STRIPE_PRICE_ID_QUARTERLY', default='price_1RBA5nBSytWSX0db0aRqPViR')
-STRIPE_PRICE_ID_YEARLY = env('STRIPE_PRICE_ID_YEARLY', default='price_1RBA7sBSytWSX0dbLcfpVxKw')
+STRIPE_PRICE_ID_MONTHLY = env('STRIPE_PRICE_ID_MONTHLY', default='price_1RHL24BSytWSX0dbjJFz6BQO')
+STRIPE_PRICE_ID_QUARTERLY = env('STRIPE_PRICE_ID_QUARTERLY', default='price_1RHL4KBSytWSX0db7cIwLiDc')
+STRIPE_PRICE_ID_YEARLY = env('STRIPE_PRICE_ID_YEARLY', default='price_1RHL63BSytWSX0dbfT6OzPq4')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -186,18 +170,18 @@ REST_FRAMEWORK = {
     ],
 }
 
-# Node.js processing service settings
-PROCESSING_SERVICE_URL = os.environ.get('PROCESSING_SERVICE_URL')
-PROCESSING_SERVICE_API_KEY = os.environ.get('PROCESSING_SERVICE_API_KEY')
-
 # OpenAI API settings
-OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
+OPENAI_API_KEY = env('OPENAI_API_KEY', default='')
 OPENAI_DEFAULT_MODEL = 'gpt-4o'
 OPENAI_FALLBACK_MODEL = 'gpt-3.5-turbo'
 
+# Cache settings (base configuration)
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'unique-snowflake',
     }
 }
+
+# Default site URL (will be overridden in local/production)
+SITE_URL = env('SITE_URL', default='http://localhost:8000')

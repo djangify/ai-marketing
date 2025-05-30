@@ -6,7 +6,8 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ai_marketing.settings')
+    # Default to local settings if not specified
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ai_marketing.settings.production')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
