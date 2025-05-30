@@ -1,7 +1,6 @@
 celery
 Django
 python-dotenv
-django-environ
 stripe
 Pillow
 django-crispy-forms
@@ -15,10 +14,10 @@ pydantic
 gunicorn
 nltk
 openai
-python-decouple
+python-environ
 python-docx
 PyPDF2
-pymysql
+psycopg2-binary
 django-redis
 django-celery-results
 django-celery-beat

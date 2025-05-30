@@ -3,10 +3,6 @@ import os
 from django.urls import reverse_lazy
 import environ
 from celery.schedules import crontab
-import pymysql
-
-# MySQL setup (matching original remote version)
-pymysql.install_as_MySQLdb()
 
 # Initialize environment variables
 env = environ.Env()
@@ -70,22 +66,19 @@ MAX_TOKENS_PROMPT = 20000
 
 ROOT_URLCONF = 'ai_marketing.urls'
 
-# Database - MySQL/MariaDB (original configuration)
+# Database - PostgreSQL for production.py
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.mysql",
+        "ENGINE": "django.db.backends.postgresql",
         "NAME": env("DATABASE_NAME"),
         "USER": env("DATABASE_USER"),
         "PASSWORD": env("DATABASE_PASSWORD"),
-        "HOST": env("DATABASE_HOST", default="127.0.0.1"),
-        "PORT": env("DATABASE_PORT", default="3306"),
+        "HOST": env("DATABASE_HOST", default="localhost"),
+        "PORT": env("DATABASE_PORT", default="5432"),
         "CONN_MAX_AGE": 600,
         "OPTIONS": {
-            "charset": "utf8mb4",
-            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
-            "use_unicode": True,
             "connect_timeout": 10,
-            "autocommit": True,
+            "sslmode": "prefer",  # Use SSL if available
         },
     },
 }
