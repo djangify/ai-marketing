@@ -1,41 +1,55 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'base.html' %} {% load static %}
 <!-- templates/accounts/login.html -->
 
-{% block title %}Login - AI Marketing Platform{% endblock %}
+{% block title %}Login - AI Marketing Platform{% endblock %} {% block content %}
+<div class="container mx-auto px-4 py-8">
+  <div
+    class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 max-w-md bg-white dark:bg-gray-800 rounded-lg"
+  >
+    <div class="p-8 bg-gray-50 dark:bg-gray-700">
+      <h2
+        class="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white"
+      >
+        Client Login
+      </h2>
 
-{% block content %}
-<div class="container mx-auto  px-4 py-8">
-    <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0 max-w-md bg-white dark:bg-gray-800 rounded-lg ">
-        <div class="p-8 bg-gray-50 dark:bg-gray-700">
-            <h2 class="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">Client Login</h2>
-            
-            <form method="post">
-                {% csrf_token %}
-                
-                {% for field in form %}
-                    <div class="mb-4">
-                        <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">{{ field.label }}</label>
-                        {{ field }}
-                        {% if field.errors %}
-                            <div class="text-red-500 text-sm mt-1">
-                                {% for error in field.errors %}
-                                    <p>{{ error }}</p>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-                
-                <button type="submit" class="btn-main w-full py-2 px-4 bg-main text-white  bg-purple-700 hover:bg-purple-800  font-medium  rounded-lg shadow-md transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50">
-                    Login
-                </button>
-            </form>
-            
-            <div class="text-center mt-4">
-                <p>Don't have an account? <a href="{% url 'accounts:signup' %}" class="text-main hover:underline">Sign up</a></p>
-            </div>
+      <form method="post">
+        {% csrf_token %} {% for field in form %}
+        <div class="mb-4">
+          <label
+            for="{{ field.id_for_label }}"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
+            >{{ field.label }}</label
+          >
+          {{ field }} {% if field.errors %}
+          <div class="text-red-500 text-sm mt-1">
+            {% for error in field.errors %}
+            <p>{{ error }}</p>
+            {% endfor %}
+          </div>
+          {% endif %}
         </div>
+        {% endfor %}
+
+        <button
+          type="submit"
+          class="btn-main w-full py-2 px-4 bg-main text-white bg-teal-700 hover:bg-purple-800 font-medium rounded-lg shadow-md transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-opacity-50"
+        >
+          Login
+        </button>
+      </form>
+
+      <div class="text-center mt-4">
+        <p>
+          Don't have an account?
+          <a
+            href="{% url 'accounts:signup' %}"
+            class="text-main hover:underline"
+            >Sign up</a
+          >
+        </p>
+      </div>
     </div>
+  </div>
 </div>
 {% endblock %}

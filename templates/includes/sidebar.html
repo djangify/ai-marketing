@@ -1,83 +1,105 @@
 <!-- templates/includes/sidebar.html -->
 {% load static %}
-<div class="bg-gray-50 flex flex-col w-64 transition-all duration-300 overflow-y-auto">
+<div
+  class="bg-gray-50 flex flex-col w-64 transition-all duration-300 overflow-y-auto"
+>
   <div class="flex flex-col flex-grow p-6 pt-10">
-    
     <h1 class="text-4xl text-center pt-10 mb-10">
-        <img src="{% static 'images/amp-trans2.webp' %}" alt="Logo" class="h-12 items-center w-auto">
+      <img
+        src="{% static 'images/amp-trans2.svg' %}"
+        alt="Logo"
+        class="h-12 items-center w-auto"
+      />
       AI Marketing Platform
     </h1>
 
     <div class="space-y4 overflow-hidden pt-10 mb-auto">
-      <a href="{% url 'accounts:dashboard' %}" 
-         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if request.path == '/dashboard/' %}bg-gray-200 text-[#9810fa]{% endif %}">
+      <a
+        href="{% url 'accounts:dashboard' %}"
+        class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if request.path == '/dashboard/' %}bg-gray-200 text-[#9810fa]{% endif %}"
+      >
         <span class="mr-3">
           <i class="fas fa-home h-[18px] w-[18px]"></i>
         </span>
         <span>Dashboard</span>
       </a>
-      
+
       {% if project and project.id %}
-        <a href="{% url 'projects:project_detail' project_id=project.id %}?tab=upload" 
-          class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if request.resolver_match.url_name == 'project_detail' and request.GET.tab == 'upload' %}bg-gray-200 text-[#9810fa]{% endif %}">
-          <span class="mr-3">
-            <i class="fas fa-file-upload h-[18px] w-[18px]"></i>
-          </span>
-          <span>Project Assets</span>
-        </a>
+      <a
+        href="{% url 'projects:project_detail' project_id=project.id %}?tab=upload"
+        class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if request.resolver_match.url_name == 'project_detail' and request.GET.tab == 'upload' %}bg-gray-200 text-[#9810fa]{% endif %}"
+      >
+        <span class="mr-3">
+          <i class="fas fa-file-upload h-[18px] w-[18px]"></i>
+        </span>
+        <span>Project Assets</span>
+      </a>
       {% else %}
-        <a href="{% url 'assets:all_assets' %}" 
-          class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if request.resolver_match.url_name == 'all_assets' %}bg-gray-200 text-[#9810fa]{% endif %}">
-          <span class="mr-3">
-            <i class="fas fa-file-upload h-[18px] w-[18px]"></i>
-          </span>
-          <span>Project Assets</span>
-        </a>
+      <a
+        href="{% url 'assets:all_assets' %}"
+        class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if request.resolver_match.url_name == 'all_assets' %}bg-gray-200 text-[#9810fa]{% endif %}"
+      >
+        <span class="mr-3">
+          <i class="fas fa-file-upload h-[18px] w-[18px]"></i>
+        </span>
+        <span>Project Assets</span>
+      </a>
       {% endif %}
-      
-      <a href="{% url 'projects:project_list' %}" 
-         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if '/projects/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}">
+
+      <a
+        href="{% url 'projects:project_list' %}"
+        class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if '/projects/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}"
+      >
         <span class="mr-3">
           <i class="fas fa-project-diagram h-[18px] w-[18px]"></i>
         </span>
         <span>Projects</span>
       </a>
-      
-      <a href="{% url 'content_templates:template_list' %}" 
-         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if '/templates/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}">
+
+      <a
+        href="{% url 'content_templates:template_list' %}"
+        class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if '/templates/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}"
+      >
         <span class="mr-3">
           <i class="fas fa-file-alt h-[18px] w-[18px]"></i>
         </span>
         <span>Templates</span>
       </a>
 
-      <a href="{% url 'prompt_generator:generator' %}" 
-         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if '/generator/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}">
+      <a
+        href="{% url 'prompt_generator:generator' %}"
+        class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if '/generator/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}"
+      >
         <span class="mr-3">
           <i class="fa-solid fa-folder-plus h-[18px] w-[18px]"></i>
-          
         </span>
         <span>Generator</span>
       </a>
 
-      <a href="{% url 'seo_optimization:keyword_tracking' %}" 
-         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if '/seo/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}">
+      <a
+        href="{% url 'seo_optimization:keyword_tracking' %}"
+        class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if '/seo/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}"
+      >
         <span class="mr-3">
           <i class="fas fa-chart-line h-[18px] w-[18px]"></i>
         </span>
         <span>SEO</span>
       </a>
 
-      <a href="{% url 'accounts:member_resources' %}" 
-         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if '/member_resources/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}">
+      <a
+        href="{% url 'accounts:member_resources' %}"
+        class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if '/member_resources/' in request.path %}bg-gray-200 text-[#9810fa]{% endif %}"
+      >
         <span class="mr-3">
           <i class="fa-solid fa-book-open-reader h-[18px] w-[18px]"></i>
         </span>
         <span>Resources</span>
       </a>
-      
-      <a href="{% url 'accounts:profile' %}" 
-         class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if request.path == '/accounts/profile/' %}bg-gray-200 text-[#9810fa]{% endif %}">
+
+      <a
+        href="{% url 'accounts:profile' %}"
+        class="w-full justify-start hover:text-[#9810fa] hover:bg-gray-200 flex items-center text-md font-medium py-2 px-4 rounded-lg {% if request.path == '/accounts/profile/' %}bg-gray-200 text-[#9810fa]{% endif %}"
+      >
         <span class="mr-3">
           <i class="fas fa-cog h-[18px] w-[18px]"></i>
         </span>
@@ -85,12 +107,26 @@
       </a>
 
       <!-- contact form -->
-      <a href="{% url 'core:contact_us' %}" class="btn-main bg-[#9810fa] text-white text-sm hover:bg-[#9810fa]/90 px-4 py-2 rounded-md inline-flex items-center mt-4 mb-8">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      <a
+        href="{% url 'core:contact_us' %}"
+        class="btn-main bg-[#9810fa] text-white text-sm hover:bg-[#9810fa]/90 px-4 py-2 rounded-md inline-flex items-center mt-4 mb-8"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 mr-2"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+          />
         </svg>
         Contact Support
-    </a>
+      </a>
     </div>
   </div>
 
@@ -98,14 +134,19 @@
   {% include 'subscriptions/dashboard_status.html' %}
 
   <div class="p-4 border-t border-gray-200">
-    <div class="flex items-center space-x-3 text-gray-700 hover:scale-[1.02] transition-all duration-300">
+    <div
+      class="flex items-center space-x-3 text-gray-700 hover:scale-[1.02] transition-all duration-300"
+    >
       <i class="fas fa-user-circle text-xl"></i>
       <div>
         <div class="text-md font-medium">{{ user.username }}</div>
         <div class="text-sm text-gray-500">{{ user.email }}</div>
       </div>
     </div>
-    <a href="{% url 'accounts:logout' %}" class="mt-4 flex items-center justify-center w-full px-4 py-2 text-red-600 border border-red-600 rounded-lg hover:bg-red-50">
+    <a
+      href="{% url 'accounts:logout' %}"
+      class="mt-4 flex items-center justify-center w-full px-4 py-2 text-red-600 border border-red-600 rounded-lg hover:bg-red-50"
+    >
       <i class="fas fa-sign-out-alt mr-2"></i> Logout
     </a>
   </div>

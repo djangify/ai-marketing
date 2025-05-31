@@ -81,13 +81,18 @@ SESSION_COOKIE_AGE = 86400  # 24 hours
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_HTTPONLY = True
 
-# Create logs directory
+# Create logs directory if it doesn't exist
 import os
 logs_dir = os.path.join(BASE_DIR, 'logs')
 if not os.path.exists(logs_dir):
-    os.makedirs(logs_dir)
+    os.makedirs(logs_dir, mode=0o755, exist_ok=True)
 
-# Add to production.py - Enhanced logging with Celery support
+# Create celery log directories
+celery_logs_dir = '/var/log/celery'
+celery_run_dir = '/var/run/celery'
+for directory in [celery_logs_dir, celery_run_dir]:
+    if not os.path.exists(directory):
+        os.makedirs(directory, mode=0o755, exist_ok=True)
 
 LOGGING = {
     'version': 1,
@@ -106,26 +111,29 @@ LOGGING = {
         'django_file': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs', 'django.log'),
+            'filename': os.path.join(logs_dir, 'django.log'),
             'formatter': 'verbose',
             'maxBytes': 10485760,  # 10MB
             'backupCount': 5,
+            'mode': 'a',
         },
         'celery_file': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs', 'celery.log'),
+            'filename': os.path.join(logs_dir, 'celery.log'),
             'formatter': 'verbose',
             'maxBytes': 10485760,  # 10MB
             'backupCount': 5,
+            'mode': 'a',
         },
         'celery_beat_file': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs', 'celery_beat.log'),
+            'filename': os.path.join(logs_dir, 'celery_beat.log'),
             'formatter': 'simple',
             'maxBytes': 5242880,  # 5MB
             'backupCount': 3,
+            'mode': 'a',
         },
         'console': {
             'level': 'ERROR',
