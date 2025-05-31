@@ -1,209 +1,377 @@
-{% extends 'dashboard_layout.html' %}
-{% load static %}
-
-{% block title %}{{ project.title }} - AI Marketing Platform{% endblock %}
-
-{% block dashboard_content %}
+{% extends 'dashboard_layout.html' %} {% load static %} {% block title %}{{
+project.title }} - AI Marketing Platform{% endblock %} {% block
+dashboard_content %}
 <div class="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-    <h1 class="text-3xl font-extrabold text-gray-900 mb-8">Subscription Options</h1>
+  <h1 class="text-3xl font-extrabold text-gray-900 mb-8">
+    Subscription Options
+  </h1>
 
-    {% if messages %}
-    <div class="mb-8">
-        {% for message in messages %}
-        <div class="p-4 {% if message.tags == 'success' %}bg-green-50 text-green-800 border border-green-100{% elif message.tags == 'error' %}bg-red-50 text-red-800 border border-red-100{% else %}bg-blue-50 text-blue-800 border border-blue-100{% endif %} rounded-md">
-            {{ message }}
-        </div>
-        {% endfor %}
+  {% if messages %}
+  <div class="mb-8">
+    {% for message in messages %}
+    <div
+      class="p-4 {% if message.tags == 'success' %}bg-green-50 text-green-800 border border-green-100{% elif message.tags == 'error' %}bg-red-50 text-red-800 border border-red-100{% else %}bg-blue-50 text-blue-800 border border-blue-100{% endif %} rounded-md"
+    >
+      {{ message }}
     </div>
-    {% endif %}
-
-    {% if subscription and subscription.is_active %}
-        <div class="bg-green-50 border border-green-200 rounded-md p-6 mb-8">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <svg class="h-6 w-6 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <div class="ml-3">
-                    <h3 class="text-lg font-medium text-green-800">You have an active subscription</h3>
-                    <div class="mt-2 text-sm text-green-700">
-                        <p>Your subscription is currently active. You have full access to all features.</p>
-                        <p class="mt-2">Next billing date: {{ subscription.end_date|date:"F j, Y" }}</p>
-                    </div>
-                    <div class="mt-4">
-                        <a href="{% url 'subscriptions:subscription_management' %}" class="text-sm font-medium text-green-800 hover:text-green-700">
-                            Manage your subscription →
-                        </a>
-                    </div>
-                </div>
-            </div>
+    {% endfor %}
+  </div>
+  {% endif %} {% if subscription and subscription.is_active %}
+  <div class="bg-green-50 border border-green-200 rounded-md p-6 mb-8">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <svg
+          class="h-6 w-6 text-teal-700"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </div>
+      <div class="ml-3">
+        <h3 class="text-lg font-medium text-green-800">
+          You have an active subscription
+        </h3>
+        <div class="mt-2 text-sm text-green-700">
+          <p>
+            Your subscription is currently active. You have full access to all
+            features.
+          </p>
+          <p class="mt-2">
+            Next billing date: {{ subscription.end_date|date:"F j, Y" }}
+          </p>
         </div>
-    {% elif in_trial %}
-        <div class="bg-blue-50 border border-blue-200 rounded-md p-6 mb-8">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <svg class="h-6 w-6 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <div class="ml-3">
-                    <h3 class="text-lg font-medium text-blue-800">You are in trial mode</h3>
-                    <div class="mt-2 text-sm text-blue-700">
-                        <p>Your trial will expire in {{ trial_days_remaining }} day{{ trial_days_remaining|pluralize }}.</p>
-                        <p class="mt-2">Subscribe now to continue enjoying all features after your trial ends.</p>
-                    </div>
-                </div>
-            </div>
+        <div class="mt-4">
+          <a
+            href="{% url 'subscriptions:subscription_management' %}"
+            class="text-sm font-medium text-green-800 hover:text-green-700"
+          >
+            Manage your subscription →
+          </a>
         </div>
-    {% endif %}
-
-    <div class="space-y-12">
-        <h2 class="text-2xl mb-8 font-bold text-gray-900">Choose Your Plan</h2>
-        
-        <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-            <!-- Monthly plan -->
-            <div class="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-200 hover:border-[#9810fa] hover:shadow-md transition-all">
-                <div class="px-6 py-8">
-                    <h3 class="text-xl font-semibold text-gray-900 text-center">Monthly</h3>
-                    <p class="mt-2 text-gray-500 text-center h-12">Flexible option with no long-term commitment</p>
-                    <p class="mt-6 text-center">
-                        <span class="text-4xl font-extrabold text-gray-900">£19.99</span>
-                        <span class="text-gray-500">/month</span>
-                    </p>
-                    <ul class="mt-6 space-y-4">
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <p class="ml-3 text-sm text-gray-700">Unlimited projects</p>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <p class="ml-3 text-sm text-gray-700">Unlimited storage</p>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <p class="ml-3 text-sm text-gray-700">Unlimited templates</p>
-                        </li>
-                    </ul>
-                    <div class="mt-8">
-                        <a href="{% url 'subscriptions:subscription_checkout' subscription_type='monthly' %}" class="block w-full bg-[#9810fa] text-center text-white py-3 px-4 rounded-md shadow hover:bg-[#9810fa]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9810fa]">Subscribe Now</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quarterly plan -->
-            <div class="bg-white shadow-md rounded-lg overflow-hidden border-2 border-[#9810fa] transform scale-105">
-                <div class="bg-[#9810fa] py-2">
-                    <p class="text-white text-center text-sm font-semibold">MOST POPULAR</p>
-                </div>
-                <div class="px-6 py-8">
-                    <h3 class="text-xl font-semibold text-gray-900 text-center">Quarterly</h3>
-                    <p class="mt-2 text-gray-500 text-center h-12">Save 15% compared to monthly</p>
-                    <p class="mt-6 text-center">
-                        <span class="text-4xl font-extrabold text-gray-900">£50.97</span>
-                        <span class="text-gray-500">/quarter</span>
-                    </p>
-                    <ul class="mt-6 space-y-4">
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <p class="ml-3 text-sm text-gray-700">Unlimited projects</p>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <p class="ml-3 text-sm text-gray-700">Unlimited storage</p>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <p class="ml-3 text-sm text-gray-700">Unlimited templates</p>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <p class="ml-3 text-sm text-gray-700">Priority support</p>
-                        </li>
-                    </ul>
-                    <div class="mt-8">
-                        <a href="{% url 'subscriptions:subscription_checkout' subscription_type='quarterly' %}" class="block w-full bg-[#9810fa] text-center text-white py-3 px-4 rounded-md shadow hover:bg-[#9810fa]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9810fa]">Subscribe Now</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Yearly plan -->
-            <div class="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-200 hover:border-[#9810fa] hover:shadow-md transition-all">
-                <div class="px-6 py-8">
-                    <h3 class="text-xl font-semibold text-gray-900 text-center">Yearly</h3>
-                    <p class="mt-2 text-gray-500 text-center h-12">Best value - save 25% compared to monthly</p>
-                    <p class="mt-6 text-center">
-                        <span class="text-4xl font-extrabold text-gray-900">£179.91</span>
-                        <span class="text-gray-500">/year</span>
-                    </p>
-                    <ul class="mt-6 space-y-4">
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <p class="ml-3 text-sm text-gray-700">Unlimited projects</p>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <p class="ml-3 text-sm text-gray-700">Unlimited storage</p>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <p class="ml-3 text-sm text-gray-700">Unlimited templates</p>
-                        </li>
-                        <li class="flex items-start">
-                            <div class="flex-shrink-0">
-                                <svg class="h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                            <p class="ml-3 text-sm text-gray-700">Premium support</p>
-                        </li>
-                    </ul>
-                    <div class="mt-8">
-                        <a href="{% url 'subscriptions:subscription_checkout' subscription_type='yearly' %}" class="block w-full bg-[#9810fa] text-center text-white py-3 px-4 rounded-md shadow hover:bg-[#9810fa]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9810fa]">Subscribe Now</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
+  {% elif in_trial %}
+  <div class="bg-blue-50 border border-blue-200 rounded-md p-6 mb-8">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <svg
+          class="h-6 w-6 text-blue-500"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      </div>
+      <div class="ml-3">
+        <h3 class="text-lg font-medium text-blue-800">You are in trial mode</h3>
+        <div class="mt-2 text-sm text-blue-700">
+          <p>
+            Your trial will expire in {{ trial_days_remaining }} day{{
+            trial_days_remaining|pluralize }}.
+          </p>
+          <p class="mt-2">
+            Subscribe now to continue enjoying all features after your trial
+            ends.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="space-y-12">
+    <h2 class="text-2xl mb-8 font-bold text-gray-900">Choose Your Plan</h2>
+
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <!-- Monthly plan -->
+      <div
+        class="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-200 hover:border-[#9810fa] hover:shadow-md transition-all"
+      >
+        <div class="px-6 py-8">
+          <h3 class="text-xl font-semibold text-gray-900 text-center">
+            Monthly
+          </h3>
+          <p class="mt-2 text-gray-500 text-center h-12">
+            Flexible option with no long-term commitment
+          </p>
+          <p class="mt-6 text-center">
+            <span class="text-4xl font-extrabold text-gray-900">£19.99</span>
+            <span class="text-gray-500">/month</span>
+          </p>
+          <ul class="mt-6 space-y-4">
+            <li class="flex items-start">
+              <div class="flex-shrink-0">
+                <svg
+                  class="h-5 w-5 text-teal-700"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+              <p class="ml-3 text-sm text-gray-700">Unlimited projects</p>
+            </li>
+            <li class="flex items-start">
+              <div class="flex-shrink-0">
+                <svg
+                  class="h-5 w-5 text-teal-700"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+              <p class="ml-3 text-sm text-gray-700">Unlimited storage</p>
+            </li>
+            <li class="flex items-start">
+              <div class="flex-shrink-0">
+                <svg
+                  class="h-5 w-5 text-teal-700"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+              <p class="ml-3 text-sm text-gray-700">Unlimited templates</p>
+            </li>
+          </ul>
+          <div class="mt-8">
+            <a
+              href="{% url 'subscriptions:subscription_checkout' subscription_type='monthly' %}"
+              class="block w-full bg-[#9810fa] text-center text-white py-3 px-4 rounded-md shadow hover:bg-[#9810fa]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9810fa]"
+              >Subscribe Now</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Quarterly plan -->
+      <div
+        class="bg-white shadow-md rounded-lg overflow-hidden border-2 border-[#9810fa] transform scale-105"
+      >
+        <div class="bg-[#9810fa] py-2">
+          <p class="text-white text-center text-sm font-semibold">
+            MOST POPULAR
+          </p>
+        </div>
+        <div class="px-6 py-8">
+          <h3 class="text-xl font-semibold text-gray-900 text-center">
+            Quarterly
+          </h3>
+          <p class="mt-2 text-gray-500 text-center h-12">
+            Save 15% compared to monthly
+          </p>
+          <p class="mt-6 text-center">
+            <span class="text-4xl font-extrabold text-gray-900">£50.97</span>
+            <span class="text-gray-500">/quarter</span>
+          </p>
+          <ul class="mt-6 space-y-4">
+            <li class="flex items-start">
+              <div class="flex-shrink-0">
+                <svg
+                  class="h-5 w-5 text-teal-700"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+              <p class="ml-3 text-sm text-gray-700">Unlimited projects</p>
+            </li>
+            <li class="flex items-start">
+              <div class="flex-shrink-0">
+                <svg
+                  class="h-5 w-5 text-teal-700"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+              <p class="ml-3 text-sm text-gray-700">Unlimited storage</p>
+            </li>
+            <li class="flex items-start">
+              <div class="flex-shrink-0">
+                <svg
+                  class="h-5 w-5 text-teal-700"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+              <p class="ml-3 text-sm text-gray-700">Unlimited templates</p>
+            </li>
+            <li class="flex items-start">
+              <div class="flex-shrink-0">
+                <svg
+                  class="h-5 w-5 text-teal-700"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+              <p class="ml-3 text-sm text-gray-700">Priority support</p>
+            </li>
+          </ul>
+          <div class="mt-8">
+            <a
+              href="{% url 'subscriptions:subscription_checkout' subscription_type='quarterly' %}"
+              class="block w-full bg-[#9810fa] text-center text-white py-3 px-4 rounded-md shadow hover:bg-[#9810fa]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9810fa]"
+              >Subscribe Now</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Yearly plan -->
+      <div
+        class="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-200 hover:border-[#9810fa] hover:shadow-md transition-all"
+      >
+        <div class="px-6 py-8">
+          <h3 class="text-xl font-semibold text-gray-900 text-center">
+            Yearly
+          </h3>
+          <p class="mt-2 text-gray-500 text-center h-12">
+            Best value - save 25% compared to monthly
+          </p>
+          <p class="mt-6 text-center">
+            <span class="text-4xl font-extrabold text-gray-900">£179.91</span>
+            <span class="text-gray-500">/year</span>
+          </p>
+          <ul class="mt-6 space-y-4">
+            <li class="flex items-start">
+              <div class="flex-shrink-0">
+                <svg
+                  class="h-5 w-5 text-teal-700"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+              <p class="ml-3 text-sm text-gray-700">Unlimited projects</p>
+            </li>
+            <li class="flex items-start">
+              <div class="flex-shrink-0">
+                <svg
+                  class="h-5 w-5 text-teal-700"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+              <p class="ml-3 text-sm text-gray-700">Unlimited storage</p>
+            </li>
+            <li class="flex items-start">
+              <div class="flex-shrink-0">
+                <svg
+                  class="h-5 w-5 text-teal-700"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+              <p class="ml-3 text-sm text-gray-700">Unlimited templates</p>
+            </li>
+            <li class="flex items-start">
+              <div class="flex-shrink-0">
+                <svg
+                  class="h-5 w-5 text-teal-700"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+              <p class="ml-3 text-sm text-gray-700">Premium support</p>
+            </li>
+          </ul>
+          <div class="mt-8">
+            <a
+              href="{% url 'subscriptions:subscription_checkout' subscription_type='yearly' %}"
+              class="block w-full bg-[#9810fa] text-center text-white py-3 px-4 rounded-md shadow hover:bg-[#9810fa]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9810fa]"
+              >Subscribe Now</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

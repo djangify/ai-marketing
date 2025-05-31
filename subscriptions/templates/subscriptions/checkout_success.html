@@ -1,27 +1,45 @@
-{% extends 'dashboard_layout.html' %}
-{% load static %}
-
-{% block title %}{{ project.title }} - AI Marketing Platform{% endblock %}
-
-{% block dashboard_content %}
+{% extends 'dashboard_layout.html' %} {% load static %} {% block title %}{{
+project.title }} - AI Marketing Platform{% endblock %} {% block
+dashboard_content %}
 <div class="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-    <div class="bg-white shadow-sm rounded-lg overflow-hidden p-8 text-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        
-        <h1 class="mt-4 text-3xl font-extrabold text-gray-900">Subscription Successful!</h1>
-        
-        <div class="mt-6">
-            <p class="text-lg text-gray-600">Thank you for subscribing to our service.</p>
-            <p class="mt-2 text-gray-600">Your subscription is now active, and you have full access to all premium features.</p>
-        </div>
-        
-        <div class="mt-8">
-            <a href="{% url 'accounts:dashboard' %}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-[#9810fa] hover:bg-[#9810fa]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9810fa]">
-                Go to Dashboard
-            </a>
-        </div>
+  <div class="bg-white shadow-sm rounded-lg overflow-hidden p-8 text-center">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="mx-auto h-16 w-16 text-teal-700"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+      />
+    </svg>
+
+    <h1 class="mt-4 text-3xl font-extrabold text-gray-900">
+      Subscription Successful!
+    </h1>
+
+    <div class="mt-6">
+      <p class="text-lg text-gray-600">
+        Thank you for subscribing to our service.
+      </p>
+      <p class="mt-2 text-gray-600">
+        Your subscription is now active, and you have full access to all premium
+        features.
+      </p>
     </div>
+
+    <div class="mt-8">
+      <a
+        href="{% url 'accounts:dashboard' %}"
+        class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-[#9810fa] hover:bg-[#9810fa]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#9810fa]"
+      >
+        Go to Dashboard
+      </a>
+    </div>
+  </div>
 </div>
 {% endblock %}

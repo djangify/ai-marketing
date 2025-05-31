@@ -1,101 +1,187 @@
 <!-- templates/includes/logged_in_public_header.html -->
 <header class="bg-white border-b border-gray-200">
   <div class="container mx-auto px-4">
-      <div class="flex items-center justify-between py-4">
-          <!-- Logo and Brand -->
-          <div class="flex items-center">
-              <a href="/" class="flex items-center">
-                  <img src="/static/images/amp-trans2.webp" class="h-8 mr-3" alt="AI Marketing Platform Logo" />
-                  <span class="self-center text-xl font-semibold whitespace-nowrap">AI Marketing Platform</span>
-              </a>
-          </div>
-          
-          <!-- Navigation Links (Desktop) -->
-          <div class="hidden md:flex md:items-center">
-              <nav class="flex items-center space-x-8 mr-8">
-                  <a href="/documentation/" class="text-gray-700 hover:text-[#9810fa] font-medium px-2 py-1 {% if '/documentation/' in request.path %}text-[#9810fa]{% endif %}">Documentation</a>
-                  <a href="/blog/" class="text-gray-700 hover:text-[#9810fa] font-medium px-2 py-1 {% if '/blog/' in request.path %}text-[#9810fa]{% endif %}">Blog</a>
-              </nav>
-              
-              <div class="flex items-center space-x-5">
-                  <a href="{% url 'accounts:dashboard' %}" class="bg-[#9810fa] text-white font-medium rounded-lg px-5 py-2 hover:bg-[#9810fa]/90 transition-colors">
-                      Back to Dashboard
-                  </a>
-                  
-                  <!-- User Menu (Desktop) -->
-                  <div class="relative" x-data="{ open: false }">
-                      <button 
-                          type="button" 
-                          class="flex items-center text-gray-700 hover:text-[#9810fa]"
-                          id="user-menu-button"
-                          @click="open = !open"
-                      >
-                          <div class="h-8 w-8 rounded-full bg-[#9810fa]/10 flex items-center justify-center text-[#9810fa] mr-2">
-                              <span class="font-medium">{{ user.username.0|upper }}</span>
-                          </div>
-                          <span class="font-medium mr-1 hidden sm:inline">{{ user.username }}</span>
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                          </svg>
-                      </button>
-                      
-                      <!-- Dropdown Menu -->
-                      <div 
-                          id="user-dropdown"
-                          class="hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                      >
-                          <div class="px-4 py-2 text-sm text-gray-700 border-b">
-                              <p class="font-medium truncate">{{ user.email }}</p>
-                          </div>
-                          <a href="{% url 'accounts:profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
-                          <a href="{% url 'accounts:dashboard' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dashboard</a>
-                          <a href="{% url 'accounts:logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
-                      </div>
-                  </div>
+    <div class="flex items-center justify-between py-4">
+      <!-- Logo and Brand -->
+      <div class="flex items-center">
+        <a href="/" class="flex items-center">
+          <img
+            src="/static/images/amp-trans2.svg"
+            class="h-8 mr-3"
+            alt="AI Marketing Platform Logo"
+          />
+          <span class="self-center text-xl font-semibold whitespace-nowrap"
+            >AI Marketing Platform</span
+          >
+        </a>
+      </div>
+
+      <!-- Navigation Links (Desktop) -->
+      <div class="hidden md:flex md:items-center">
+        <nav class="flex items-center space-x-8 mr-8">
+          <a
+            href="/documentation/"
+            class="text-gray-700 hover:text-[#9810fa] font-medium px-2 py-1 {% if '/documentation/' in request.path %}text-[#9810fa]{% endif %}"
+            >Documentation</a
+          >
+          <a
+            href="/blog/"
+            class="text-gray-700 hover:text-[#9810fa] font-medium px-2 py-1 {% if '/blog/' in request.path %}text-[#9810fa]{% endif %}"
+            >Blog</a
+          >
+        </nav>
+
+        <div class="flex items-center space-x-5">
+          <a
+            href="{% url 'accounts:dashboard' %}"
+            class="bg-[#9810fa] text-white font-medium rounded-lg px-5 py-2 hover:bg-[#9810fa]/90 transition-colors"
+          >
+            Back to Dashboard
+          </a>
+
+          <!-- User Menu (Desktop) -->
+          <div class="relative" x-data="{ open: false }">
+            <button
+              type="button"
+              class="flex items-center text-gray-700 hover:text-[#9810fa]"
+              id="user-menu-button"
+              @click="open = !open"
+            >
+              <div
+                class="h-8 w-8 rounded-full bg-[#9810fa]/10 flex items-center justify-center text-[#9810fa] mr-2"
+              >
+                <span class="font-medium">{{ user.username.0|upper }}</span>
               </div>
-          </div>
-          
-          <!-- Mobile menu button -->
-          <button type="button" class="md:hidden text-gray-700 hover:text-gray-900 focus:outline-none" id="mobile-menu-button">
-              <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              <span class="font-medium mr-1 hidden sm:inline"
+                >{{ user.username }}</span
+              >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
-          </button>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div
+              id="user-dropdown"
+              class="hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+            >
+              <div class="px-4 py-2 text-sm text-gray-700 border-b">
+                <p class="font-medium truncate">{{ user.email }}</p>
+              </div>
+              <a
+                href="{% url 'accounts:profile' %}"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >Profile</a
+              >
+              <a
+                href="{% url 'accounts:dashboard' %}"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >Dashboard</a
+              >
+              <a
+                href="{% url 'accounts:logout' %}"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >Sign out</a
+              >
+            </div>
+          </div>
+        </div>
       </div>
-      
-      <!-- Mobile Menu (hidden by default) -->
-      <div class="hidden md:hidden pb-3" id="mobile-menu">
-          <nav class="space-y-2">
-              <a href="/documentation/" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md {% if '/documentation/' in request.path %}text-[#9810fa] font-medium{% endif %}">Documentation</a>
-              <a href="/blog/" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md {% if '/blog/' in request.path %}text-[#9810fa] font-medium{% endif %}">Blog</a>
-              <a href="{% url 'accounts:dashboard' %}" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md">Dashboard</a>
-              <a href="{% url 'accounts:profile' %}" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md">Profile</a>
-              <a href="{% url 'accounts:logout' %}" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md">Sign out</a>
-          </nav>
-      </div>
+
+      <!-- Mobile menu button -->
+      <button
+        type="button"
+        class="md:hidden text-gray-700 hover:text-gray-900 focus:outline-none"
+        id="mobile-menu-button"
+      >
+        <svg
+          class="h-6 w-6"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Menu (hidden by default) -->
+    <div class="hidden md:hidden pb-3" id="mobile-menu">
+      <nav class="space-y-2">
+        <a
+          href="/documentation/"
+          class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md {% if '/documentation/' in request.path %}text-[#9810fa] font-medium{% endif %}"
+          >Documentation</a
+        >
+        <a
+          href="/blog/"
+          class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md {% if '/blog/' in request.path %}text-[#9810fa] font-medium{% endif %}"
+          >Blog</a
+        >
+        <a
+          href="{% url 'accounts:dashboard' %}"
+          class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md"
+          >Dashboard</a
+        >
+        <a
+          href="{% url 'accounts:profile' %}"
+          class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md"
+          >Profile</a
+        >
+        <a
+          href="{% url 'accounts:logout' %}"
+          class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md"
+          >Sign out</a
+        >
+      </nav>
+    </div>
   </div>
 </header>
 
 <script>
   // Mobile menu toggle
-  document.getElementById('mobile-menu-button').addEventListener('click', function() {
-      document.getElementById('mobile-menu').classList.toggle('hidden');
-  });
-  
+  document
+    .getElementById("mobile-menu-button")
+    .addEventListener("click", function () {
+      document.getElementById("mobile-menu").classList.toggle("hidden");
+    });
+
   // User dropdown toggle
-  document.getElementById('user-menu-button').addEventListener('click', function() {
-      document.getElementById('user-dropdown').classList.toggle('hidden');
-  });
-  
+  document
+    .getElementById("user-menu-button")
+    .addEventListener("click", function () {
+      document.getElementById("user-dropdown").classList.toggle("hidden");
+    });
+
   // Close dropdown when clicking outside
-  document.addEventListener('click', function(event) {
-      const dropdown = document.getElementById('user-dropdown');
-      const button = document.getElementById('user-menu-button');
-      
-      if (dropdown && !dropdown.classList.contains('hidden') && 
-          !dropdown.contains(event.target) && 
-          !button.contains(event.target)) {
-          dropdown.classList.add('hidden');
-      }
+  document.addEventListener("click", function (event) {
+    const dropdown = document.getElementById("user-dropdown");
+    const button = document.getElementById("user-menu-button");
+
+    if (
+      dropdown &&
+      !dropdown.classList.contains("hidden") &&
+      !dropdown.contains(event.target) &&
+      !button.contains(event.target)
+    ) {
+      dropdown.classList.add("hidden");
+    }
   });
 </script>
