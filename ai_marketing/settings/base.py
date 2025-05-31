@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     # Third-party apps
     'widget_tweaks',
     'django_celery_results',
+    'django_celery_beat',
     'tinymce',
     
     # Local apps

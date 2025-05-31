@@ -58,18 +58,6 @@ DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='noreply@aimarketingplatf
 # Static files for production
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
-# Production cache (Redis)
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': REDIS_URL,
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        },
-        'TIMEOUT': 300,
-    }
-}
-
 # Site URL for production
 SITE_URL = 'https://aimarketingplatform.app'
 
@@ -187,3 +175,11 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
+# Production cache (Redis)
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': REDIS_URL,
+        'TIMEOUT': 300,
+    }
+}

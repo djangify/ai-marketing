@@ -14,6 +14,9 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()
 
+# IMPORTANT: Also explicitly include our tasks module
+app.autodiscover_tasks(['ai_marketing'])
+
 # Configure Celery Beat
 app.conf.beat_schedule = {
     'system-health-check': {
@@ -36,4 +39,3 @@ app.conf.timezone = 'UTC'
 def debug_task(self):
     print(f'Request: {self.request!r}')
     return 'Debug task completed successfully!'
-    
