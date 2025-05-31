@@ -1,84 +1,102 @@
 <!-- templates/subscriptions/dashboard_status.html -->
 <div class="subscription-status-widget p-4 border-t border-gray-200">
-    {% if subscription and subscription.is_active %}
-        <!-- Active subscription status -->
-        <div class="rounded-lg border border-green-200 bg-green-50 mb-3">
-            <div class="bg-green-500 text-white p-3 rounded-t-lg">
-                <h5 class="text-sm font-semibold mb-0">Active Subscription</h5>
-            </div>
-            <div class="p-4">
-                <p class="text-sm mb-2">
-                    You're currently on the <strong>{{ subscription.get_subscription_type_display }}</strong> plan.
-                </p>
-                <p class="text-sm mb-3">
-                    Next billing date: <strong>{{ subscription.end_date|date:"F j, Y" }}</strong>
-                </p>
-                <a href="{% url 'subscriptions:subscription_portal' %}" class="inline-flex items-center justify-center text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-[#9810fa] text-white hover:bg-[#9810fa]/90 h-8 px-3 py-2 rounded-lg w-full text-center">
-                    Manage Subscription
-                </a>
-            </div>
-        </div>
-    {% elif in_trial %}
-        <!-- Trial period status -->
-        <div class="rounded-lg border border-blue-200 bg-blue-50 mb-3">
-            <div class="bg-blue-500 text-white p-3 rounded-t-lg">
-                <h5 class="text-sm font-semibold mb-0">
-                    Trial Period: {{ trial_days_remaining }} day{{ trial_days_remaining|pluralize }} remaining
-                </h5>
-            </div>
-            <div class="p-4">
-                <p class="text-xs mb-2">
-                    Your trial expires on <strong>{{ trial_end_date|date:"F j, Y" }}</strong>.
-                    Subscribe now to maintain uninterrupted access.
-                </p>
-                
-                <!-- FOMO messaging based on days remaining -->
-                {% if trial_days_remaining == 2 %}
-                <p class="text-xs mb-2 text-orange-700 font-medium">
-                    <strong>Don't lose your saved prompts and progress!</strong> Subscribe now to keep unlimited access and continue where you left off.
-                </p>
-                {% elif trial_days_remaining == 1 %}
-                <p class="text-xs mb-2 text-orange-700 font-medium">
-                    <strong>Your free trial ends tomorrow!</strong> Don't risk losing access to your projects and saved prompts. Upgrade now for uninterrupted access.
-                </p>
-                {% elif trial_days_remaining == 0 %}
-                <p class="text-xs mb-2 text-red-700 font-medium">
-                     Your free trial ends today. Subscribe now to keep all your saved prompts and continue using the platform without interruption.
-                </p>
-                {% endif %}
-                
-                <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
-                    {% if trial_days_remaining == 3 %}
-                        <div class="bg-blue-500 h-2 rounded-full" style="width: 100%;"></div>
-                    {% elif trial_days_remaining == 2 %}
-                        <div class="bg-blue-500 h-2 rounded-full" style="width: 66%;"></div>
-                    {% elif trial_days_remaining == 1 %}
-                        <div class="bg-blue-500 h-2 rounded-full" style="width: 33%;"></div>
-                    {% else %}
-                        <div class="bg-blue-500 h-2 rounded-full" style="width: 0%;"></div>
-                    {% endif %}
-                </div>
-                
-                <a href="{% url 'subscriptions:subscription_detail' %}" class="inline-flex items-center justify-center text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-[#9810fa] text-white hover:bg-[#9810fa]/90 h-8 px-3 py-2 rounded-lg w-full text-center">
-                    Subscribe Now
-                </a>
-            </div>
-        </div>
-    {% else %}
-        <!-- Expired trial status -->
-        <div class="rounded-lg border border-red-200 bg-red-50 mb-3">
-            <div class="bg-red-500 text-white p-3 rounded-t-lg">
-                <h5 class="text-sm font-semibold mb-0">Trial Expired</h5>
-            </div>
-            <div class="p-4">
-                <p class="text-xs mb-3">
-                    Your trial period has ended. Subscribe now to regain access to all features.
-                </p>
-                
-                <a href="{% url 'subscriptions:subscription_detail' %}" class="inline-flex items-center justify-center text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-[#9810fa] text-white hover:bg-[#9810fa]/90 h-8 px-3 py-2 rounded-lg w-full text-center">
-                    Subscribe Now
-                </a>
-            </div>
-        </div>
-    {% endif %}
+  {% if subscription and subscription.is_active %}
+  <!-- Active subscription status -->
+  <div class="rounded-lg border border-green-200 bg-green-50 mb-3">
+    <div class="bg-green-500 text-white p-3 rounded-t-lg">
+      <h5 class="text-sm font-semibold mb-0">Active Subscription</h5>
+    </div>
+    <div class="p-4">
+      <p class="text-sm mb-2">
+        You're currently on the
+        <strong>{{ subscription.get_subscription_type_display }}</strong> plan.
+      </p>
+      <p class="text-sm mb-3">
+        Next billing date:
+        <strong>{{ subscription.end_date|date:"F j, Y" }}</strong>
+      </p>
+      <a
+        href="{% url 'subscriptions:subscription_portal' %}"
+        class="inline-flex items-center justify-center text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-teal-700 text-white h-8 px-3 py-2 rounded-lg w-full text-center"
+      >
+        Manage Subscription
+      </a>
+    </div>
   </div>
+  {% elif in_trial %}
+  <!-- Trial period status -->
+  <div class="rounded-lg border border-blue-200 bg-blue-50 mb-3">
+    <div class="bg-blue-500 text-white p-3 rounded-t-lg">
+      <h5 class="text-sm font-semibold mb-0">
+        Trial Period: {{ trial_days_remaining }} day{{
+        trial_days_remaining|pluralize }} remaining
+      </h5>
+    </div>
+    <div class="p-4">
+      <p class="text-xs mb-2">
+        Your trial expires on
+        <strong>{{ trial_end_date|date:"F j, Y" }}</strong>. Subscribe now to
+        maintain uninterrupted access.
+      </p>
+
+      <!-- FOMO messaging based on days remaining -->
+      {% if trial_days_remaining == 2 %}
+      <p class="text-xs mb-2 text-orange-700 font-medium">
+        <strong>Don't lose your saved prompts and progress!</strong> Subscribe
+        now to keep unlimited access and continue where you left off.
+      </p>
+      {% elif trial_days_remaining == 1 %}
+      <p class="text-xs mb-2 text-orange-700 font-medium">
+        <strong>Your free trial ends tomorrow!</strong> Don't risk losing access
+        to your projects and saved prompts. Upgrade now for uninterrupted
+        access.
+      </p>
+      {% elif trial_days_remaining == 0 %}
+      <p class="text-xs mb-2 text-red-700 font-medium">
+        Your free trial ends today. Subscribe now to keep all your saved prompts
+        and continue using the platform without interruption.
+      </p>
+      {% endif %}
+
+      <div class="w-full bg-gray-200 rounded-full h-2 mb-3">
+        {% if trial_days_remaining == 3 %}
+        <div class="bg-blue-500 h-2 rounded-full" style="width: 100%"></div>
+        {% elif trial_days_remaining == 2 %}
+        <div class="bg-blue-500 h-2 rounded-full" style="width: 66%"></div>
+        {% elif trial_days_remaining == 1 %}
+        <div class="bg-blue-500 h-2 rounded-full" style="width: 33%"></div>
+        {% else %}
+        <div class="bg-blue-500 h-2 rounded-full" style="width: 0%"></div>
+        {% endif %}
+      </div>
+
+      <a
+        href="{% url 'subscriptions:subscription_detail' %}"
+        class="inline-flex items-center justify-center text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-teal-700 text-white h-8 px-3 py-2 rounded-lg w-full text-center"
+      >
+        Subscribe Now
+      </a>
+    </div>
+  </div>
+  {% else %}
+  <!-- Expired trial status -->
+  <div class="rounded-lg border border-red-200 bg-red-50 mb-3">
+    <div class="bg-red-500 text-white p-3 rounded-t-lg">
+      <h5 class="text-sm font-semibold mb-0">Trial Expired</h5>
+    </div>
+    <div class="p-4">
+      <p class="text-xs mb-3">
+        Your trial period has ended. Subscribe now to regain access to all
+        features.
+      </p>
+
+      <a
+        href="{% url 'subscriptions:subscription_detail' %}"
+        class="inline-flex items-center justify-center text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-[#9810fa] text-white hover:bg-[#9810fa]/90 h-8 px-3 py-2 rounded-lg w-full text-center"
+      >
+        Subscribe Now
+      </a>
+    </div>
+  </div>
+  {% endif %}
+</div>
