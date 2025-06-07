@@ -1,15 +1,8 @@
 {% extends 'dashboard_layout.html' %} {% load static %}
-
 <!-- templates/accounts/dashboard.html -->
-
-{% block title %}Dashboard - AI Marketing Platform{% endblock %} {% block
-dashboard_content %} {% comment %}
-<div
-  class="max-w-screen-xl mx-auto p-4 sm:p-6 lg:p-8 bg-white rounded-xl shadow-sm mt-16"
->
-  {% endcomment %} {% comment %}
+{% block dashboard_content %}
+<div class="max-w-screen-xl mx-auto p-4 sm:p-6 lg:p-8 bg-white rounded-xl  mt-16">
   <div class="p-6">
-    {% endcomment %}
     <h1 class="text-2xl font-bold mb-6">Dashboard</h1>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
@@ -22,8 +15,7 @@ dashboard_content %} {% comment %}
         <div class="flex justify-between items-center mb-1">
           <div class="text-gray-500">Prompt Tokens</div>
           <div class="text-sm text-gray-500">
-            {{ prompt_data.formatted_token_count }} / {{ prompt_data.max_tokens
-            }}
+            {{ prompt_data.formatted_token_count }} / {{ prompt_data.max_tokens }}
           </div>
         </div>
         <div class="w-full bg-gray-200 rounded-full h-2.5 mb-2">
@@ -78,9 +70,7 @@ dashboard_content %} {% comment %}
           >
             <div class="flex justify-between items-center">
               <span>{{ project.title }}</span>
-              <span class="text-sm text-gray-500"
-                >{{ project.updated_at|date:"M d, Y" }}</span
-              >
+              <span class="text-sm text-gray-500">{{ project.updated_at|date:"M d, Y" }}</span>
             </div>
           </a>
           {% endfor %}
@@ -90,17 +80,16 @@ dashboard_content %} {% comment %}
           <a
             href="{% url 'projects:project_list' %}"
             class="text-sm text-main hover:underline"
-            >View All Projects</a
-          >
+          >View All Projects</a>
         </div>
-        {% endif %} {% else %}
+        {% endif %}
+        {% else %}
         <div class="bg-yellow-50 text-yellow-700 p-4 rounded">
           You don't have any projects yet.
           <a
             href="{% url 'projects:project_create' %}"
             class="text-main hover:underline"
-            >Create your first project</a
-          >!
+          >Create your first project</a>!
         </div>
         {% endif %}
       </div>

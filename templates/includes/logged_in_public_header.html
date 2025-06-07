@@ -26,7 +26,7 @@
           >
           <a
             href="/blog/"
-            class="text-gray-700 hover:text-[#9810fa] font-medium px-2 py-1 {% if '/blog/' in request.path %}text-[#9810fa]{% endif %}"
+            class="text-gray-700 hover:text-[#9810fa] font-medium px-2 py-1 {% if '/blog/' in request.path %}text-purple-700{% endif %}"
             >Blog</a
           >
         </nav>
@@ -34,7 +34,7 @@
         <div class="flex items-center space-x-5">
           <a
             href="{% url 'accounts:dashboard' %}"
-            class="bg-[#9810fa] text-white font-medium rounded-lg px-5 py-2 hover:bg-[#9810fa]/90 transition-colors"
+            class="bg-purple-700 text-white font-medium rounded-lg px-5 py-2 hover:bg-purple-500 transition-colors"
           >
             Back to Dashboard
           </a>
@@ -43,12 +43,12 @@
           <div class="relative" x-data="{ open: false }">
             <button
               type="button"
-              class="flex items-center text-gray-700 hover:text-[#9810fa]"
+              class="flex items-center text-gray-700 hover:text-[#E0F2F1]"
               id="user-menu-button"
               @click="open = !open"
             >
               <div
-                class="h-8 w-8 rounded-full bg-[#9810fa]/10 flex items-center justify-center text-[#9810fa] mr-2"
+                class="h-8 w-8 rounded-full bg-teal-100 flex items-center justify-center text-[#9810fa] mr-2"
               >
                 <span class="font-medium">{{ user.username.0|upper }}</span>
               </div>
@@ -86,7 +86,7 @@
               >
               <a
                 href="{% url 'accounts:dashboard' %}"
-                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                class="block px-4 py-2 text-sm bg-teal-100 text-gray-700 hover:bg-gray-100"
                 >Dashboard</a
               >
               <a
@@ -132,7 +132,7 @@
         >
         <a
           href="/blog/"
-          class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md {% if '/blog/' in request.path %}text-[#9810fa] font-medium{% endif %}"
+          class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded-md {% if '/blog/' in request.path %}text-purple-700 font-medium{% endif %}"
           >Blog</a
         >
         <a
